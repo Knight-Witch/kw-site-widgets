@@ -20,6 +20,7 @@
   const currency = () => cfg().currency || "USD";
   const asset = o => typeof o === "string" ? o : o?.url || o?.src || o?.originalUrl || o?.thumbnailUrl || o?.imageUrl || o?.image_url || o?.cdnUrl || o?.cdn_url || o?.transformedUrl || "";
   const uniq = a => [...new Set(a.filter(Boolean))];
+  const ignoredOption = name => /^(description|desc)$/i.test(String(name || "").trim());
   const mediaKind = src => /\.(mp4|webm|ogg)(\?|#|$)/i.test(String(src || "")) ? "video" : "image";
   const variants = p => p.variants || p.productVariants || p.product_variants || p.options?.variants || [];
   const variantId = v => v?.id || v?.variantId || v?.uuid || v?.externalId;
@@ -106,7 +107,7 @@
   const optionNames = vs => {
     const s = new Set();
     vs.forEach(v => Object.keys(optMap(v)).forEach(k => s.add(k)));
-    return Array.from(s);
+    return Array.from(s).filter(n => !ignoredOption(n));
   };
   const selectedVariant = (p, panel) => {
     const vs = variants(p).filter(available);
@@ -254,7 +255,7 @@
   };
   const jacketPreset = {
     genders:[["mens", "MEN"], ["ladies", "LADIES"]],
-    categories:[["vests", "VESTS"], ["jackets", "JACKETS"], ["coats", "COATS"], ["cosplay", "COSPLAY"], ["custom", "CUSTOM"]],
+    categories:[["vests", "VESTS"], ["jackets", "JACKETS"], ["coats", "COATS"], ["cosplay", "COSPLAY"]],
     slugs:{
       mens:{ vests:"mens-vests", jackets:"mens-jackets", coats:"mens-coats", cosplay:"mens-cosplay" },
       ladies:{ vests:"ladies-vests", jackets:"ladies-jackets", coats:"ladies-coats", cosplay:"ladies-cosplay" },
