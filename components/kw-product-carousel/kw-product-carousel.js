@@ -2,6 +2,7 @@
   const d = document;
   const w = window;
   const api = "https://storefront-api.fourthwall.com/v1";
+  const repoCdn = "https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@main/fourthwall/";
   const cartKey = "kwfw_cart_id";
   const countKey = "kwfw_cart_count";
   const itemsKey = "kwfw_cart_items";
@@ -46,6 +47,19 @@
     }
   };
   const price = p => money(p.price) || money(p.priceRange?.min) || money(p.price_range?.min) || money(variants(p)[0]?.price) || "";
+  const request = async (u, o = {}) => {
+    const r = await fetch(u, o);
+    const t = await r.text();
+    let j = null;
+    try{ j = t ? JSON.parse(t) : null; }catch{ j = t; }
+    if(!r.ok){
+      const e = new Error(j?.message || j?.error || j?.detail || t || `Fourthwall request failed ${r.status}`);
+      e.status = r.status;
+      e.data = j;
+      throw e;
+    }
+    return j;
+  };
   const getCount = () => Number(localStorage.getItem(countKey) || 0);
   const setCount = n => {
     n = Math.max(0, Number(n) || 0);
@@ -59,30 +73,9 @@
     }
   };
   const getItems = () => {
-    try{
-      return JSON.parse(localStorage.getItem(itemsKey) || "[]");
-    }catch{
-      return [];
-    }
+    try{ return JSON.parse(localStorage.getItem(itemsKey) || "[]"); }catch{ return []; }
   };
   const setItems = a => localStorage.setItem(itemsKey, JSON.stringify(a));
-  const request = async (u, o = {}) => {
-    const r = await fetch(u, o);
-    const t = await r.text();
-    let j = null;
-    try{
-      j = t ? JSON.parse(t) : null;
-    }catch{
-      j = t;
-    }
-    if(!r.ok){
-      const e = new Error(j?.message || j?.error || j?.detail || t || `Fourthwall request failed ${r.status}`);
-      e.status = r.status;
-      e.data = j;
-      throw e;
-    }
-    return j;
-  };
   const optMap = v => {
     const r = {};
     const o = v?.options || v?.attributes || v?.optionValues || v?.selectedOptions || {};
@@ -90,10 +83,11 @@
       o.forEach(x => {
         const n = x.name || x.optionName || x.key || x.type;
         const k = x.value || x.optionValue || x.label || x.name;
-        if(n && k) r[n] = k;
+        if(n && k && !ignoredOption(n)) r[n] = k;
       });
     }else{
       Object.keys(o).forEach(k => {
+        if(ignoredOption(k)) return;
         if(o[k] != null && typeof o[k] !== "object") r[k] = o[k];
         if(o[k] && typeof o[k] === "object") r[k] = o[k].name || o[k].value || o[k].label;
       });
@@ -111,6 +105,11 @@
   };
   const selectedVariant = (p, panel) => {
     const vs = variants(p).filter(available);
+    const ruleId = panel?.dataset?.kwfwRuleVariantId;
+    if(ruleId){
+      const match = vs.find(v => String(variantId(v)) === String(ruleId));
+      if(match) return match;
+    }
     const names = optionNames(vs);
     const sel = {};
     names.forEach(n => {
@@ -131,35 +130,39 @@
       return `<div class="kwfw-field"><label class="kwfw-label">${esc(n)}</label><select class="kwfw-select" data-kwfw-option="${esc(n)}">${vals.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join("")}</select></div>`;
     }).join("");
   };
+  const loadScript = (id, src) => new Promise(resolve => {
+    if(d.getElementById(id)){ resolve(); return; }
+    const s = d.createElement("script");
+    s.id = id;
+    s.src = src;
+    s.defer = true;
+    s.onload = resolve;
+    s.onerror = resolve;
+    d.head.appendChild(s);
+  });
+  const loadModules = () => Promise.all([
+    loadScript("kwfw-size-guide-module", repoCdn + "kwfw-size-guide.js"),
+    loadScript("kwfw-product-rules-module", repoCdn + "kwfw-product-rules.js")
+  ]);
   const fetchProducts = async (handle, limit, tok) => {
-    const h = encodeURIComponent(handle || "all");
-    const tk = encodeURIComponent(tok);
-    const size = encodeURIComponent(limit || 12);
-    const urls = [
-      `${api}/collections/${h}/products?storefront_token=${tk}&page=0&size=${size}`,
-      `${api}/collections/${h}?storefront_token=${tk}&page=0&size=${size}`,
-      `${api}/products?collection=${h}&storefront_token=${tk}&page=0&size=${size}`
-    ];
+    const h = encodeURIComponent(handle || "all"), tk = encodeURIComponent(tok), size = encodeURIComponent(limit || 12);
+    const urls = [`${api}/collections/${h}/products?storefront_token=${tk}&page=0&size=${size}`, `${api}/collections/${h}?storefront_token=${tk}&page=0&size=${size}`, `${api}/products?collection=${h}&storefront_token=${tk}&page=0&size=${size}`];
     let last;
     for(const u of urls){
       try{
         const j = await request(u);
         return j.results || j.products || j.items || j.data?.products || j.data?.results || [];
-      }catch(e){
-        last = e;
-      }
+      }catch(e){ last = e; }
     }
     throw last;
   };
   const fetchProduct = async (p, tok) => {
     if(images(p).length > 1 || !slug(p)) return p;
-    const s = encodeURIComponent(slug(p));
-    const tk = encodeURIComponent(tok);
+    const s = encodeURIComponent(slug(p)), tk = encodeURIComponent(tok);
     const urls = [`${api}/products/${s}?storefront_token=${tk}`, `${api}/products/slug/${s}?storefront_token=${tk}`];
     for(const u of urls){
       try{
-        const j = await request(u);
-        const x = j.product || j.data || j;
+        const j = await request(u), x = j.product || j.data || j;
         return { ...p, ...x };
       }catch{}
     }
@@ -185,9 +188,8 @@
     if(!id) throw new Error("No variant selected");
     const cartId = localStorage.getItem(cartKey);
     if(!cartId) return createCartWithItem(id, qty, tok);
-    try{
-      return await addRequest(cartId, id, qty, tok);
-    }catch(e){
+    try{ return await addRequest(cartId, id, qty, tok); }
+    catch(e){
       if(e.status === 404 || String(e.message || "").includes("CART_NOT_FOUND")){
         localStorage.removeItem(cartKey);
         return createCartWithItem(id, qty, tok);
@@ -197,14 +199,9 @@
   };
   const checkout = () => {
     const id = localStorage.getItem(cartKey);
-    if(id){
-      location.href = `https://${shop()}/cart/checkout?cartId=${encodeURIComponent(id)}&currency=${encodeURIComponent(currency())}`;
-      return;
-    }
+    if(id){ location.href = `https://${shop()}/cart/checkout?cartId=${encodeURIComponent(id)}&currency=${encodeURIComponent(currency())}`; return; }
     const items = getItems();
-    if(items.length){
-      location.href = `https://${shop()}/cart/checkout?products=${encodeURIComponent(items.map(x => `${x.id}:${x.qty}`).join(","))}&currency=${encodeURIComponent(currency())}`;
-    }
+    if(items.length) location.href = `https://${shop()}/cart/checkout?products=${encodeURIComponent(items.map(x => `${x.id}:${x.qty}`).join(","))}&currency=${encodeURIComponent(currency())}`;
   };
   const gallery = media => {
     const items = media.length ? media : [];
@@ -213,17 +210,11 @@
   };
   const modal = () => {
     let m = q(".kwfw-modal");
-    if(!m){
-      m = d.createElement("div");
-      m.className = "kwfw-modal";
-      d.body.appendChild(m);
-    }
+    if(!m){ m = d.createElement("div"); m.className = "kwfw-modal"; d.body.appendChild(m); }
     return m;
   };
   const setGallery = (m, i) => {
-    const track = q(".kwfw-gallery-track", m);
-    const slides = track ? Array.from(track.children) : [];
-    const dots = qa(".kwfw-dot", m);
+    const track = q(".kwfw-gallery-track", m), slides = track ? Array.from(track.children) : [], dots = qa(".kwfw-dot", m);
     if(!track || !slides.length) return;
     i = (i + slides.length) % slides.length;
     m._galleryIndex = i;
@@ -238,9 +229,9 @@
     m._product = p;
     m._token = tok;
     m._galleryIndex = 0;
-    const galleryImages = images(p);
-    const safeImages = galleryImages.length ? galleryImages : [image(p)].filter(Boolean);
+    const safeImages = images(p).length ? images(p) : [image(p)].filter(Boolean);
     m.innerHTML = `<div class="kwfw-panel"><button class="kwfw-modal-close" type="button" aria-label="Close"></button><div class="kwfw-panel-grid">${gallery(safeImages)}<div class="kwfw-panel-info"><h3 class="kwfw-panel-title">${esc(p.title || p.name || "Product")}</h3><p class="kwfw-panel-price">${esc(price(p))}</p>${renderOptions(p)}<div class="kwfw-field"><label class="kwfw-label">Qty</label><div class="kwfw-qty"><button type="button" data-kwfw-qty="-1">−</button><input value="1" min="1" inputmode="numeric" data-kwfw-qty-input><button type="button" data-kwfw-qty="1">+</button></div></div><button type="button" class="kwfw-btn" data-kwfw-add>Add to cart</button><a class="kwfw-btn kwfw-btn-dark" href="${esc(productUrl(p))}" style="margin-top:10px">View details</a><div class="kwfw-status"></div>${p.description ? `<div class="kwfw-desc">${html(p.description)}</div>` : ""}</div>${p.description ? `<div class="kwfw-desc-wide">${html(p.description)}</div>` : ""}</div></div>`;
+    if(w.KWSizeGuide?.installButtons) w.KWSizeGuide.installButtons(m);
   };
   const renderMedia = p => {
     const src = image(p);
@@ -256,32 +247,34 @@
   const jacketPreset = {
     genders:[["mens", "MEN"], ["ladies", "LADIES"]],
     categories:[["vests", "VESTS"], ["jackets", "JACKETS"], ["coats", "COATS"], ["cosplay", "COSPLAY"]],
-    slugs:{
-      mens:{ vests:"mens-vests", jackets:"mens-jackets", coats:"mens-coats", cosplay:"mens-cosplay" },
-      ladies:{ vests:"ladies-vests", jackets:"ladies-jackets", coats:"ladies-coats", cosplay:"ladies-cosplay" },
-      custom:"custom-jacket"
-    }
+    slugs:{ mens:{ vests:"mens-vests", jackets:"mens-jackets", coats:"mens-coats", cosplay:"mens-cosplay" }, ladies:{ vests:"ladies-vests", jackets:"ladies-jackets", coats:"ladies-coats", cosplay:"ladies-cosplay" } }
   };
   const filterButton = (filter, value, label, selected) => `<button type="button" class="kwfw-filter-tab" data-filter="${esc(filter)}" data-value="${esc(value)}" aria-selected="${selected ? "true" : "false"}">${esc(label)}</button>`;
+  const selectedSlug = root => {
+    if(root.dataset.kwCarousel !== "jacket-builder") return root.dataset.collection || root.dataset.collectionSlug || root.dataset.kwfwCollection || "all";
+    const gender = root._kwGender || root.dataset.defaultGender || "mens";
+    const category = root._kwCategory || root.dataset.defaultCategory || "vests";
+    return jacketPreset.slugs[gender]?.[category];
+  };
+  const resolveLayout = root => {
+    if(root.dataset.kwCarousel === "jacket-builder") return "single-row-scroll";
+    const s = String(selectedSlug(root) || "").toLowerCase();
+    if(s.includes("-core")) return "core-two-row";
+    return "featured-grid";
+  };
   const renderFilters = root => {
     if(root.dataset.kwCarousel !== "jacket-builder") return "";
     const gender = root._kwGender || root.dataset.defaultGender || "mens";
     const category = root._kwCategory || root.dataset.defaultCategory || "vests";
     const genders = jacketPreset.genders.map(([value, label]) => filterButton("gender", value, label, value === gender)).join("");
     const categories = jacketPreset.categories.map(([value, label]) => filterButton("category", value, label, value === category)).join("");
-    return `<div class="kwfw-filter-shell"><div class="kwfw-filter-row"><div class="kwfw-filter-group" data-filter="gender" data-disabled="${category === "custom" ? "true" : "false"}" role="tablist" aria-label="Gender">${genders}</div><div class="kwfw-filter-group" data-filter="category" role="tablist" aria-label="Category">${categories}</div></div></div>`;
-  };
-  const selectedSlug = root => {
-    if(root.dataset.kwCarousel !== "jacket-builder") return root.dataset.collection || root.dataset.collectionSlug || root.dataset.kwfwCollection || "all";
-    const gender = root._kwGender || root.dataset.defaultGender || "mens";
-    const category = root._kwCategory || root.dataset.defaultCategory || "vests";
-    return category === "custom" ? jacketPreset.slugs.custom : jacketPreset.slugs[gender]?.[category];
+    return `<div class="kwfw-filter-shell"><div class="kwfw-filter-row"><div class="kwfw-filter-group" data-filter="gender" role="tablist" aria-label="Gender">${genders}</div><div class="kwfw-filter-group" data-filter="category" role="tablist" aria-label="Category">${categories}</div></div></div>`;
   };
   const shell = root => {
     if(root._kwContent) return root._kwContent;
     const content = d.createElement("div");
     content.className = "kwfw-content";
-    root.innerHTML = `${renderFilters(root)}`;
+    root.innerHTML = renderFilters(root);
     root.appendChild(content);
     root._kwContent = content;
     return content;
@@ -293,8 +286,6 @@
       const selected = (tab.dataset.filter === "gender" && tab.dataset.value === gender) || (tab.dataset.filter === "category" && tab.dataset.value === category);
       tab.setAttribute("aria-selected", selected ? "true" : "false");
     });
-    const genderGroup = q('.kwfw-filter-group[data-filter="gender"]', root);
-    if(genderGroup) genderGroup.dataset.disabled = category === "custom" ? "true" : "false";
   };
   const ensureToast = () => {
     if(q(".kwfw-toast")) return;
@@ -305,26 +296,14 @@
     setCount(getCount());
   };
   const loadRoot = async root => {
-    const tok = token(root);
-    const content = shell(root);
-    const handle = selectedSlug(root);
-    const limit = root.dataset.kwfwLimit || root.dataset.limit || 12;
+    const tok = token(root), content = shell(root), handle = selectedSlug(root), limit = root.dataset.kwfwLimit || root.dataset.limit || 12;
     root._token = tok;
-    if(!tok){
-      content.innerHTML = '<div class="kwfw-state">Missing storefront token.</div>';
-      return;
-    }
-    if(!handle){
-      content.innerHTML = '<div class="kwfw-state">Missing collection slug.</div>';
-      return;
-    }
+    root.dataset.kwResolvedLayout = resolveLayout(root);
+    if(!tok){ content.innerHTML = '<div class="kwfw-state">Missing storefront token.</div>'; return; }
+    if(!handle){ content.innerHTML = '<div class="kwfw-state">Missing collection slug.</div>'; return; }
     content.innerHTML = '<div class="kwfw-state">Loading products…</div>';
-    try{
-      const products = await fetchProducts(handle, limit, tok);
-      renderRail(content, products);
-    }catch(e){
-      content.innerHTML = `<div class="kwfw-state">Product load failed: ${esc(e.message)}</div>`;
-    }
+    try{ renderRail(content, await fetchProducts(handle, limit, tok)); }
+    catch(e){ content.innerHTML = `<div class="kwfw-state">Product load failed: ${esc(e.message)}</div>`; }
   };
   const initRoot = root => {
     if(root._kwProductCarouselReady) return;
@@ -335,98 +314,53 @@
     shell(root);
     loadRoot(root);
   };
-  const init = () => qa(".kw-product-carousel").forEach(initRoot);
+  const init = () => loadModules().finally(() => qa(".kw-product-carousel").forEach(initRoot));
   d.addEventListener("click", async e => {
     const filter = e.target.closest(".kwfw-filter-tab");
     if(filter){
       const root = filter.closest(".kw-product-carousel");
       if(!root) return;
-      if(filter.dataset.filter === "gender"){
-        root._kwGender = filter.dataset.value;
-        if(root._kwCategory === "custom") root._kwCategory = "vests";
-      }
-      if(filter.dataset.filter === "category"){
-        root._kwCategory = filter.dataset.value;
-        if(root._kwCategory === "custom") root._kwGender = null;
-        if(root._kwCategory !== "custom" && !root._kwGender) root._kwGender = root.dataset.defaultGender || "mens";
-      }
+      if(filter.dataset.filter === "gender") root._kwGender = filter.dataset.value;
+      if(filter.dataset.filter === "category") root._kwCategory = filter.dataset.value;
       syncFilters(root);
       await loadRoot(root);
       return;
     }
     const close = e.target.closest(".kwfw-modal-close");
-    if(close){
-      e.target.closest(".kwfw-modal").classList.remove("is-open");
-      return;
-    }
-    if(e.target.classList.contains("kwfw-modal")){
-      e.target.classList.remove("is-open");
-      return;
-    }
+    if(close){ e.target.closest(".kwfw-modal").classList.remove("is-open"); return; }
+    if(e.target.classList.contains("kwfw-modal")){ e.target.classList.remove("is-open"); return; }
     const move = e.target.closest("[data-kwfw-gallery-move]");
-    if(move){
-      const m = move.closest(".kwfw-modal");
-      setGallery(m, (m._galleryIndex || 0) + Number(move.dataset.kwfwGalleryMove));
-      return;
-    }
+    if(move){ const m = move.closest(".kwfw-modal"); setGallery(m, (m._galleryIndex || 0) + Number(move.dataset.kwfwGalleryMove)); return; }
     const dot = e.target.closest("[data-kwfw-gallery-dot]");
-    if(dot){
-      setGallery(dot.closest(".kwfw-modal"), Number(dot.dataset.kwfwGalleryDot));
-      return;
-    }
+    if(dot){ setGallery(dot.closest(".kwfw-modal"), Number(dot.dataset.kwfwGalleryDot)); return; }
     const sc = e.target.closest("[data-kwfw-scroll]");
-    if(sc){
-      const rail = q(".kwfw-rail", sc.closest(".kwfw-root"));
-      rail.scrollBy({ left:Number(sc.dataset.kwfwScroll) * Math.max(280, rail.clientWidth * .82), behavior:"smooth" });
-      return;
-    }
+    if(sc){ const rail = q(".kwfw-rail", sc.closest(".kwfw-root")); rail.scrollBy({ left:Number(sc.dataset.kwfwScroll) * Math.max(280, rail.clientWidth * .82), behavior:"smooth" }); return; }
     const open = e.target.closest("[data-kwfw-open]");
     if(open){
-      const content = open.closest(".kwfw-content");
-      const root = content?.closest(".kw-product-carousel");
+      const content = open.closest(".kwfw-content"), root = content?.closest(".kw-product-carousel");
       if(content && root) openProduct(content._products[Number(open.dataset.kwfwOpen)], root._token || token(root));
       return;
     }
     const qty = e.target.closest("[data-kwfw-qty]");
-    if(qty){
-      const input = q("[data-kwfw-qty-input]", qty.closest(".kwfw-panel"));
-      input.value = Math.max(1, (parseInt(input.value, 10) || 1) + Number(qty.dataset.kwfwQty));
-      return;
-    }
-    if(e.target.closest("[data-kwfw-checkout]")){
-      checkout();
-      return;
-    }
+    if(qty){ const input = q("[data-kwfw-qty-input]", qty.closest(".kwfw-panel")); input.value = Math.max(1, (parseInt(input.value, 10) || 1) + Number(qty.dataset.kwfwQty)); return; }
+    if(e.target.closest("[data-kwfw-checkout]")){ checkout(); return; }
     const add = e.target.closest("[data-kwfw-add]");
     if(add){
-      const panel = add.closest(".kwfw-panel");
-      const m = add.closest(".kwfw-modal");
-      const status = q(".kwfw-status", panel);
-      const p = m._product;
-      const v = selectedVariant(p, panel);
-      const id = variantId(v);
-      const qtyValue = Math.max(1, parseInt(q("[data-kwfw-qty-input]", panel).value, 10) || 1);
-      if(!id){
-        status.textContent = "No purchasable variant was found for this selection.";
-        return;
-      }
+      const panel = add.closest(".kwfw-panel"), m = add.closest(".kwfw-modal"), status = q(".kwfw-status", panel), p = m._product, v = selectedVariant(p, panel), id = variantId(v), qtyValue = Math.max(1, parseInt(q("[data-kwfw-qty-input]", panel).value, 10) || 1);
+      if(!id){ status.textContent = "No purchasable variant was found for this selection."; return; }
       add.disabled = true;
       status.textContent = "Adding…";
       try{
         await addToCart(id, qtyValue, m._token || token(q(".kw-product-carousel")));
-        const items = getItems();
-        const existing = items.find(x => x.id === id);
+        const items = getItems(), existing = items.find(x => x.id === id);
         existing ? existing.qty += qtyValue : items.push({ id, qty:qtyValue });
         setItems(items);
         setCount(getCount() + qtyValue);
         status.textContent = "Added to cart.";
         add.textContent = "Added";
         setTimeout(() => add.textContent = "Add to cart", 1200);
-      }catch(err){
-        status.textContent = "Failed to add: " + err.message;
-      }finally{
-        add.disabled = false;
-      }
+      }catch(err){ status.textContent = "Failed to add: " + err.message; }
+      finally{ add.disabled = false; }
     }
   });
   d.addEventListener("touchstart", e => {
@@ -438,19 +372,14 @@
   d.addEventListener("touchend", e => {
     const g = e.target.closest("[data-kwfw-gallery]");
     if(!g || g._sx == null) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - g._sx;
-    const dy = t.clientY - g._sy;
+    const t = e.changedTouches[0], dx = t.clientX - g._sx, dy = t.clientY - g._sy;
     if(Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.2) setGallery(g.closest(".kwfw-modal"), (g.closest(".kwfw-modal")._galleryIndex || 0) + (dx < 0 ? 1 : -1));
     g._sx = null;
     g._sy = null;
   }, { passive:true });
   d.addEventListener("change", e => {
     if(e.target.matches("[data-kwfw-option]")){
-      const panel = e.target.closest(".kwfw-panel");
-      const p = e.target.closest(".kwfw-modal")._product;
-      const v = selectedVariant(p, panel);
-      const pr = money(v?.price) || price(p);
+      const panel = e.target.closest(".kwfw-panel"), p = e.target.closest(".kwfw-modal")._product, v = selectedVariant(p, panel), pr = money(v?.price) || price(p);
       if(pr) q(".kwfw-panel-price", panel).textContent = pr;
     }
   });
