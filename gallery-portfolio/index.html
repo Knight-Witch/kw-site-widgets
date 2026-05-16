@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" as="font" href="https://knightwitch.nyc3.cdn.digitaloceanspaces.com/FONTS/AgencyFB-CY.woff2" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./gallery-portfolio.css">
+  <title>Knight Witch Gallery Portfolio</title>
+</head>
+<body>
+  <section class="kw-gallery-portfolio" data-kw-gallery-portfolio>
+    <div class="kwgp-shell">
+      <header class="kwgp-header">
+        <p class="kwgp-kicker">Knight Witch LED Art</p>
+        <h1 class="kwgp-title" data-kwgp-title>Gallery Portfolio</h1>
+        <p class="kwgp-deck" data-kwgp-deck></p>
+      </header>
+
+      <nav class="kwgp-nav" aria-label="Portfolio categories" data-kwgp-nav></nav>
+
+      <div class="kwgp-stage" aria-live="polite">
+        <article class="kwgp-video-card">
+          <div class="kwgp-card-heading">
+            <span>Motion Preview</span>
+            <span data-kwgp-video-count></span>
+          </div>
+          <div class="kwgp-media-shell kwgp-video-shell kwgp-swipe" data-kwgp-swipe="video">
+            <video class="kwgp-video" data-kwgp-video autoplay muted loop playsinline preload="metadata">
+              <source data-kwgp-video-source src="" type="video/webm">
+            </video>
+            <div class="kwgp-loader" data-kwgp-loader>Loading</div>
+          </div>
+          <div class="kwgp-controls">
+            <button type="button" class="kwgp-arrow" data-kwgp-action="video-prev" aria-label="Previous video">‹</button>
+            <div class="kwgp-dots" data-kwgp-video-dots></div>
+            <button type="button" class="kwgp-arrow" data-kwgp-action="video-next" aria-label="Next video">›</button>
+          </div>
+        </article>
+
+        <div class="kwgp-image-grid">
+          <article class="kwgp-image-card">
+            <div class="kwgp-card-heading">
+              <span data-kwgp-feature-label>Featured Build</span>
+              <span data-kwgp-feature-count></span>
+            </div>
+            <button type="button" class="kwgp-media-shell kwgp-image-button kwgp-swipe" data-kwgp-action="open-feature" data-kwgp-swipe="feature" aria-label="Open featured build image">
+              <img data-kwgp-feature-image alt="" loading="lazy" decoding="async">
+              <span class="kwgp-expand">Expand</span>
+            </button>
+            <div class="kwgp-controls">
+              <button type="button" class="kwgp-arrow" data-kwgp-action="feature-prev" aria-label="Previous featured image">‹</button>
+              <div class="kwgp-dots" data-kwgp-feature-dots></div>
+              <button type="button" class="kwgp-arrow" data-kwgp-action="feature-next" aria-label="Next featured image">›</button>
+            </div>
+          </article>
+
+          <article class="kwgp-image-card">
+            <div class="kwgp-card-heading">
+              <span data-kwgp-detail-label>Detail Gallery</span>
+              <span data-kwgp-detail-count></span>
+            </div>
+            <button type="button" class="kwgp-media-shell kwgp-image-button kwgp-swipe" data-kwgp-action="open-detail" data-kwgp-swipe="detail" aria-label="Open detail image">
+              <img data-kwgp-detail-image alt="" loading="lazy" decoding="async">
+              <span class="kwgp-expand">Expand</span>
+            </button>
+            <div class="kwgp-controls">
+              <button type="button" class="kwgp-arrow" data-kwgp-action="detail-prev" aria-label="Previous detail image">‹</button>
+              <div class="kwgp-dots" data-kwgp-detail-dots></div>
+              <button type="button" class="kwgp-arrow" data-kwgp-action="detail-next" aria-label="Next detail image">›</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="kwgp-lightbox" data-kwgp-lightbox aria-hidden="true" role="dialog" aria-modal="true" aria-label="Expanded gallery image">
+      <button type="button" class="kwgp-lightbox-close" data-kwgp-action="lightbox-close" aria-label="Close expanded image">×</button>
+      <button type="button" class="kwgp-lightbox-arrow kwgp-lightbox-prev" data-kwgp-action="lightbox-prev" aria-label="Previous expanded image">‹</button>
+      <figure class="kwgp-lightbox-frame">
+        <img data-kwgp-lightbox-image alt="">
+        <figcaption data-kwgp-lightbox-caption></figcaption>
+      </figure>
+      <button type="button" class="kwgp-lightbox-arrow kwgp-lightbox-next" data-kwgp-action="lightbox-next" aria-label="Next expanded image">›</button>
+    </div>
+  </section>
+
+  <script src="./gallery-portfolio.js"></script>
+</body>
+</html>
