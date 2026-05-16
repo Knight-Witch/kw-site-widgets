@@ -7,7 +7,7 @@
 
 .kwfw-filter-shell{
   width:min(1280px,100%);
-  margin:0 auto 10px;
+  margin:0 auto 14px;
   padding:0 12px;
   font-family:'AgencyFB','Agency FB',AgencyFB,sans-serif;
   color:#fff;
@@ -19,7 +19,7 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:14px;
+  gap:18px;
   flex-wrap:wrap;
 }
 
@@ -27,9 +27,9 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:8px;
+  gap:10px;
   flex-wrap:wrap;
-  padding:6px;
+  padding:8px;
   border:1px solid rgba(255,255,255,.18);
   border-radius:7px;
   background:rgba(0,0,0,.62);
@@ -43,13 +43,13 @@
 
 .kwfw-filter-tab{
   appearance:none;
-  min-height:38px;
-  padding:8px 15px;
+  min-height:48px;
+  padding:12px 24px;
   border:1px solid rgba(255,255,255,.24);
   border-radius:6px;
   background:rgba(0,0,0,.5);
   color:#fff;
-  font:900 16px/1 'AgencyFB','Agency FB',AgencyFB,sans-serif;
+  font:900 19px/1 'AgencyFB','Agency FB',AgencyFB,sans-serif;
   letter-spacing:.08em;
   cursor:pointer;
   text-transform:uppercase;
@@ -94,27 +94,35 @@
   }
 
   .kwfw-filter-row{
-    flex-direction:column;
-    gap:10px;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:6px;
+    width:min(380px,95vw);
+    margin:0 auto;
   }
 
   .kwfw-filter-group{
-    width:min(380px,95vw);
+    display:grid;
+    width:100%;
+    gap:6px;
+    padding:5px;
+    border-radius:6px;
   }
 
-  .kwfw-filter-group[data-filter="gender"] .kwfw-filter-tab{
-    flex:1 1 calc(50% - 8px);
+  .kwfw-filter-group[data-filter="gender"]{
+    grid-template-columns:repeat(2,minmax(0,1fr));
   }
 
-  .kwfw-filter-group[data-filter="category"] .kwfw-filter-tab{
-    flex:1 1 calc(50% - 8px);
-    font-size:15px;
-    padding-left:10px;
-    padding-right:10px;
+  .kwfw-filter-group[data-filter="category"]{
+    grid-template-columns:repeat(4,minmax(0,1fr));
   }
 
-  .kwfw-filter-group[data-filter="category"] .kwfw-filter-tab[data-value="cosplay"],
-  .kwfw-filter-group[data-filter="category"] .kwfw-filter-tab[data-value="custom"]{
-    flex-basis:100%;
+  .kwfw-filter-tab{
+    min-height:34px;
+    width:100%;
+    padding:8px 4px;
+    border-radius:5px;
+    font-size:13px;
+    letter-spacing:.045em;
   }
 }
