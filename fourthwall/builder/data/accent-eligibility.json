@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "defaultEligible": false,
+  "eligibleCoreSlugs": [],
+  "ineligibleCoreSlugs": [],
+  "notes": "Placeholder. Fill eligibleCoreSlugs when accent-color rules are defined."
+}
