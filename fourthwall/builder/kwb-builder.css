@@ -1,0 +1,35 @@
+@font-face{font-family:'AgencyFB';src:url('https://knightwitch.nyc3.cdn.digitaloceanspaces.com/FONTS/agencyfb-webfont.woff2') format('woff2'),url('https://knightwitch.nyc3.cdn.digitaloceanspaces.com/FONTS/agencyfb-webfont.woff') format('woff');font-weight:400;font-style:normal;font-display:swap}
+.kwb-builder{--kwb-red:#f10b0b;--kwb-orange:#ff7a00;--kwb-yellow:#ffb000;--kwb-bg:#050000;position:relative;width:100%;max-width:1220px;margin:16px auto;padding:0;color:#fff;font-family:'AgencyFB','Agency FB',Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.kwb-builder *{box-sizing:border-box}
+.kwb-frame{position:relative;min-height:640px;border:1px solid var(--kwb-red);background:#050000;overflow:hidden;box-shadow:0 0 42px rgba(255,0,0,.18)}
+.kwb-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(180,0,0,.42),rgba(0,0,0,.6) 48%,#000 100%);opacity:.9;pointer-events:none}
+.kwb-shell{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) 290px;min-height:640px}
+.kwb-main{position:relative;min-width:0;padding:28px 34px}
+.kwb-side{border-left:1px solid rgba(255,0,0,.65);background:rgba(0,0,0,.72);padding:18px 18px 20px}
+.kwb-title{margin:0;color:#ff2a1d;font-size:clamp(36px,5vw,64px);font-weight:400;line-height:1;letter-spacing:.18em;text-transform:uppercase}
+.kwb-cover{display:grid;grid-template-columns:38% 1fr;gap:34px;align-items:center;min-height:580px}
+.kwb-cover-media{height:580px;background:#000;border-right:1px solid rgba(255,0,0,.4);overflow:hidden}
+.kwb-cover-media video,.kwb-cover-media img{width:100%;height:100%;object-fit:cover;display:block}
+.kwb-cover-copy{text-align:center}
+.kwb-cover-lines{margin:44px 0 38px;color:#f10b0b;font-size:34px;line-height:1.55;letter-spacing:.2em}
+.kwb-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:12px 28px;border:1px solid #b35300;border-radius:0;background:#ff7a00;color:#140a00;font-family:'AgencyFB','Agency FB',Arial,sans-serif;font-size:28px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:transform .18s ease,filter .18s ease}
+.kwb-btn:hover{animation:kwbFlicker .9s linear infinite;box-shadow:0 0 10px rgba(255,122,0,.55),0 0 24px rgba(255,122,0,.35);transform:scale(1.025)}
+.kwb-btn:disabled{opacity:.45;cursor:not-allowed;animation:none;transform:none}
+.kwb-step{display:none}.kwb-step.is-active{display:block}
+.kwb-step-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 24px}
+.kwb-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.kwb-card{position:relative;aspect-ratio:1/1;border:2px solid var(--kwb-red);background:#000;overflow:hidden;cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.kwb-card:hover,.kwb-card.is-focus{transform:scale(1.045);z-index:2}
+.kwb-card.is-selected{border-color:#ff7a00;animation:kwbSelectedPulse 1.05s ease-in-out infinite;box-shadow:0 0 12px rgba(255,122,0,.8),0 0 30px rgba(255,122,0,.45)}
+.kwb-card img{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+.kwb-card-title{position:absolute;left:0;right:0;bottom:0;padding:10px;background:linear-gradient(to top,rgba(0,0,0,.9),transparent);font-size:15px;letter-spacing:.08em;text-align:center}
+.kwb-side-title{margin:0 0 12px;border:1px solid var(--kwb-red);padding:8px 10px;color:#ff4b20;font-size:32px;text-align:center;letter-spacing:.18em;font-weight:400}
+.kwb-weave-thumb{width:150px;height:150px;margin:0 auto 12px;border:1px solid var(--kwb-red);background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+.kwb-weave-thumb img{width:100%;height:100%;object-fit:contain}
+.kwb-side-slot{margin:12px 0;border:1px solid rgba(255,0,0,.75);padding:12px;text-align:center;color:rgba(255,255,255,.62);font-size:24px;letter-spacing:.16em;min-height:78px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
+.kwb-line{display:flex;justify-content:space-between;gap:16px;margin:10px 0;font-family:Arial,Helvetica,sans-serif;text-transform:none;letter-spacing:.08em;font-size:14px;color:#d8d8d8}
+.kwb-next{width:100%;margin-top:18px}
+.kwb-state{padding:24px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.58);font-family:Arial,Helvetica,sans-serif;letter-spacing:.04em;text-transform:none;color:#fff}
+@keyframes kwbFlicker{0%{filter:brightness(1)}5%{filter:brightness(1.25)}10%{filter:brightness(.85)}15%{filter:brightness(1.3)}25%{filter:brightness(.9)}35%{filter:brightness(1.2)}55%{filter:brightness(1)}75%{filter:brightness(1.35)}100%{filter:brightness(1)}}
+@keyframes kwbSelectedPulse{0%,100%{box-shadow:0 0 8px rgba(255,122,0,.55),0 0 22px rgba(255,122,0,.28)}50%{box-shadow:0 0 18px rgba(255,122,0,1),0 0 44px rgba(255,122,0,.58)}}
+@media(max-width:900px){.kwb-shell{grid-template-columns:1fr}.kwb-side{border-left:0;border-top:1px solid rgba(255,0,0,.65)}.kwb-cover{grid-template-columns:1fr}.kwb-cover-media{height:320px}.kwb-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
