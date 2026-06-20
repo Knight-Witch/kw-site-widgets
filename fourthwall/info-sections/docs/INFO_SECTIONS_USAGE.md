@@ -1,6 +1,6 @@
 # Knight Witch Info Sections
 
-Shared Fourthwall accordion system for FAQ, warranty, maintenance, contact, and other reusable information modules.
+Shared Fourthwall accordion system for FAQ, warranty, maintenance, contact, returns, and other reusable information modules.
 
 ## Footer install for testing
 
@@ -18,15 +18,47 @@ After merge, change `@kw-info-accordion-dev` to `@main`.
 Put this where the information sections should render:
 
 ```html
-<div class="kw-info-sections" data-kw-info-sections="faq,warranty,maintenance,contact"></div>
+<div class="kw-info-sections" data-kw-info-sections="faq,returns,warranty,maintenance,contact"></div>
 ```
 
 The modules render in the exact order listed.
 
+## Recommended page setups
+
+FAQ page:
+
+```html
+<div class="kw-info-sections" data-kw-info-sections="faq,returns,warranty,maintenance,contact"></div>
+```
+
+Warranty page:
+
+```html
+<div class="kw-info-sections" data-kw-info-sections="warranty,maintenance,contact"></div>
+```
+
+Maintenance & Repairs page:
+
+```html
+<div class="kw-info-sections" data-kw-info-sections="maintenance,warranty,contact"></div>
+```
+
+Returns page:
+
+```html
+<div class="kw-info-sections" data-kw-info-sections="returns,contact"></div>
+```
+
+Test page:
+
+```html
+<div class="kw-info-sections" data-kw-info-sections="test"></div>
+```
+
 ## Alternate true/false config
 
 ```html
-<div class="kw-info-sections" data-kw-info-config='{"faq":true,"warranty":true,"maintenance":false,"contact":true}'></div>
+<div class="kw-info-sections" data-kw-info-config='{"faq":true,"returns":true,"warranty":true,"maintenance":false,"contact":true}'></div>
 ```
 
 ## Multiple open sections
@@ -49,14 +81,31 @@ The widget uses CSS variables for page-level spacing:
 
 - `test`
 - `faq`
+- `returns`
 - `maintenance`
 - `warranty`
-- `returns`
 - `about`
 - `promos`
 - `inquiries`
 - `partnerships`
 - `contact`
+
+## Content migration status
+
+Migrated content:
+
+- `faq`
+- `returns`
+- `maintenance`
+- `warranty`
+- `contact`
+
+Placeholder modules ready for future editing:
+
+- `about`
+- `promos`
+- `inquiries`
+- `partnerships`
 
 ## Editing module content
 
