@@ -27,6 +27,7 @@
   const variantId = v => v?.id || v?.variantId || v?.uuid || v?.externalId;
   const available = v => v && v.available !== false && v.isAvailable !== false && v.inStock !== false && v.stock !== 0 && v.inventory !== 0;
   const slug = p => p.slug || p.handle || p.productSlug || p.product_slug || "";
+  const productKey = p => slug(p) || p.id || p.productId || p.uuid || p.externalId || p.title || p.name || "";
   const productUrl = p => p.url || p.productUrl || p.product_url || (slug(p) ? "/products/" + slug(p) : "#");
   const images = p => {
     const a = [p.featuredImage, p.featured_image, p.image, p.thumbnail, p.primaryImage, p.primary_image, ...(p.images || []), ...(p.media || []), ...(p.gallery || []), ...(p.productImages || []), ...(p.product_images || [])].map(asset);
@@ -156,6 +157,19 @@
     }
     throw last;
   };
+  const fetchProductList = async (handles, limit, tok) => {
+    const list = Array.isArray(handles) ? handles.filter(Boolean) : [handles].filter(Boolean);
+    const batches = await Promise.all(list.map(handle => fetchProducts(handle, limit, tok)));
+    const seen = new Set();
+    const out = [];
+    batches.flat().forEach(p => {
+      const key = productKey(p);
+      if(key && seen.has(key)) return;
+      if(key) seen.add(key);
+      out.push(p);
+    });
+    return out;
+  };
   const fetchProduct = async (p, tok) => {
     if(images(p).length > 1 || !slug(p)) return p;
     const s = encodeURIComponent(slug(p)), tk = encodeURIComponent(tok);
@@ -244,31 +258,39 @@
     el._products = products;
     el.innerHTML = `<section class="kwfw-root"><div class="kwfw-head">${title ? `<h2 class="kwfw-title">${esc(title)}</h2>` : "<span></span>"}<button type="button" class="kwfw-cart-btn" data-kwfw-checkout>Cart <span class="kwfw-cart-count">${getCount()}</span></button></div><div class="kwfw-rail-wrap"><button type="button" class="kwfw-arrow kwfw-prev" data-kwfw-scroll="-1">‹</button><div class="kwfw-rail">${rows}</div><button type="button" class="kwfw-arrow kwfw-next" data-kwfw-scroll="1">›</button></div></section>`;
   };
-  const jacketPreset = {
-    genders:[["mens", "MEN"], ["ladies", "LADIES"]],
-    categories:[["vests", "VESTS"], ["jackets", "JACKETS"], ["coats", "COATS"], ["cosplay", "COSPLAY"]],
+  const plainJacketPreset = {
+    genders:["mens", "ladies", "all"],
+    genderLabels:{ mens:"MEN", ladies:"LADIES", all:"ALL" },
+    categories:["vests", "jackets", "coats", "cosplay"],
+    categoryLabels:{ vests:"VESTS", jackets:"JACKETS", coats:"COATS", cosplay:"COSPLAY" },
     slugs:{ mens:{ vests:"mens-vests", jackets:"mens-jackets", coats:"mens-coats", cosplay:"mens-cosplay" }, ladies:{ vests:"ladies-vests", jackets:"ladies-jackets", coats:"ladies-coats", cosplay:"ladies-cosplay" } }
   };
+  const plainJacketCarousel = root => root.dataset.kwCarousel === "plain-jackets" || root.dataset.kwCarousel === "plain-jacket-selector" || root.dataset.kwCarousel === "jacket-step-2";
   const filterButton = (filter, value, label, selected) => `<button type="button" class="kwfw-filter-tab" data-filter="${esc(filter)}" data-value="${esc(value)}" aria-selected="${selected ? "true" : "false"}">${esc(label)}</button>`;
+  const selectedHandles = root => {
+    if(!plainJacketCarousel(root)) return root.dataset.collection || root.dataset.collectionSlug || root.dataset.kwfwCollection || "all";
+    const gender = root._kwGender || root.dataset.defaultGender || "all";
+    const category = root._kwCategory || root.dataset.defaultCategory || root.dataset.defaultType || "vests";
+    if(gender === "all") return [plainJacketPreset.slugs.mens?.[category], plainJacketPreset.slugs.ladies?.[category]].filter(Boolean);
+    return plainJacketPreset.slugs[gender]?.[category];
+  };
   const selectedSlug = root => {
-    if(root.dataset.kwCarousel !== "jacket-builder") return root.dataset.collection || root.dataset.collectionSlug || root.dataset.kwfwCollection || "all";
-    const gender = root._kwGender || root.dataset.defaultGender || "mens";
-    const category = root._kwCategory || root.dataset.defaultCategory || "vests";
-    return jacketPreset.slugs[gender]?.[category];
+    const handles = selectedHandles(root);
+    return Array.isArray(handles) ? handles.join(",") : handles;
   };
   const resolveLayout = root => {
-    if(root.dataset.kwCarousel === "jacket-builder") return "single-row-scroll";
+    if(plainJacketCarousel(root)) return "single-row-scroll";
     const s = String(selectedSlug(root) || "").toLowerCase();
     if(s.includes("-core")) return "core-two-row";
     return "featured-grid";
   };
   const renderFilters = root => {
-    if(root.dataset.kwCarousel !== "jacket-builder") return "";
-    const gender = root._kwGender || root.dataset.defaultGender || "mens";
-    const category = root._kwCategory || root.dataset.defaultCategory || "vests";
-    const genders = jacketPreset.genders.map(([value, label]) => filterButton("gender", value, label, value === gender)).join("");
-    const categories = jacketPreset.categories.map(([value, label]) => filterButton("category", value, label, value === category)).join("");
-    return `<div class="kwfw-filter-shell"><div class="kwfw-filter-row"><div class="kwfw-filter-group" data-filter="gender" role="tablist" aria-label="Gender">${genders}</div><div class="kwfw-filter-group" data-filter="category" role="tablist" aria-label="Category">${categories}</div></div></div>`;
+    if(!plainJacketCarousel(root)) return "";
+    const gender = root._kwGender || root.dataset.defaultGender || "all";
+    const category = root._kwCategory || root.dataset.defaultCategory || root.dataset.defaultType || "vests";
+    const genders = plainJacketPreset.genders.map(value => filterButton("gender", value, plainJacketPreset.genderLabels[value], value === gender)).join("");
+    const categories = plainJacketPreset.categories.map(value => filterButton("category", value, plainJacketPreset.categoryLabels[value], value === category)).join("");
+    return `<div class="kwfw-filter-shell kwfw-plain-jackets-filter"><div class="kwfw-filter-row"><div class="kwfw-filter-group" data-filter="gender" role="tablist" aria-label="Garment fit">${genders}</div><div class="kwfw-filter-group" data-filter="category" role="tablist" aria-label="Garment category">${categories}</div></div></div>`;
   };
   const shell = root => {
     if(root._kwContent) return root._kwContent;
@@ -280,8 +302,9 @@
     return content;
   };
   const syncFilters = root => {
-    const gender = root._kwGender || root.dataset.defaultGender || "mens";
-    const category = root._kwCategory || root.dataset.defaultCategory || "vests";
+    if(!plainJacketCarousel(root)) return;
+    const gender = root._kwGender || root.dataset.defaultGender || "all";
+    const category = root._kwCategory || root.dataset.defaultCategory || root.dataset.defaultType || "vests";
     qa(".kwfw-filter-tab", root).forEach(tab => {
       const selected = (tab.dataset.filter === "gender" && tab.dataset.value === gender) || (tab.dataset.filter === "category" && tab.dataset.value === category);
       tab.setAttribute("aria-selected", selected ? "true" : "false");
@@ -296,20 +319,22 @@
     setCount(getCount());
   };
   const loadRoot = async root => {
-    const tok = token(root), content = shell(root), handle = selectedSlug(root), limit = root.dataset.kwfwLimit || root.dataset.limit || 12;
+    const tok = token(root), content = shell(root), handles = selectedHandles(root), limit = root.dataset.kwfwLimit || root.dataset.limit || 12;
     root._token = tok;
     root.dataset.kwResolvedLayout = resolveLayout(root);
     if(!tok){ content.innerHTML = '<div class="kwfw-state">Missing storefront token.</div>'; return; }
-    if(!handle){ content.innerHTML = '<div class="kwfw-state">Missing collection slug.</div>'; return; }
+    if(!handles || (Array.isArray(handles) && !handles.length)){ content.innerHTML = '<div class="kwfw-state">Missing collection slug.</div>'; return; }
     content.innerHTML = '<div class="kwfw-state">Loading products…</div>';
-    try{ renderRail(content, await fetchProducts(handle, limit, tok)); }
+    try{ renderRail(content, await fetchProductList(handles, limit, tok)); }
     catch(e){ content.innerHTML = `<div class="kwfw-state">Product load failed: ${esc(e.message)}</div>`; }
   };
   const initRoot = root => {
     if(root._kwProductCarouselReady) return;
     root._kwProductCarouselReady = true;
-    root._kwGender = root.dataset.defaultGender || "mens";
-    root._kwCategory = root.dataset.defaultCategory || root.dataset.defaultType || "vests";
+    if(plainJacketCarousel(root)){
+      root._kwGender = root.dataset.defaultGender || "all";
+      root._kwCategory = root.dataset.defaultCategory || root.dataset.defaultType || "vests";
+    }
     ensureToast();
     shell(root);
     loadRoot(root);
@@ -319,7 +344,7 @@
     const filter = e.target.closest(".kwfw-filter-tab");
     if(filter){
       const root = filter.closest(".kw-product-carousel");
-      if(!root) return;
+      if(!root || !plainJacketCarousel(root)) return;
       if(filter.dataset.filter === "gender") root._kwGender = filter.dataset.value;
       if(filter.dataset.filter === "category") root._kwCategory = filter.dataset.value;
       syncFilters(root);
