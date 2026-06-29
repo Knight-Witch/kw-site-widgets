@@ -90,9 +90,9 @@ The widget uses CSS variables for page-level spacing:
 - `partnerships`
 - `contact`
 
-## Content migration status
+## Current content status
 
-Migrated content:
+Rewritten and production-ready first-pass content:
 
 - `faq`
 - `returns`
@@ -100,7 +100,7 @@ Migrated content:
 - `warranty`
 - `contact`
 
-Placeholder modules ready for future editing:
+Modules intentionally left as editable starters for future content:
 
 - `about`
 - `promos`
