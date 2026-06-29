@@ -14,6 +14,38 @@
   };
   const normalizeKey = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "");
   const splitKeys = (value) => String(value || "").split(",").map(normalizeKey).filter(Boolean);
+  const zeroBlockStart = (node) => {
+    if (!node || !node.style) return;
+    node.style.setProperty("margin-top", "0", "important");
+    node.style.setProperty("padding-top", "0", "important");
+  };
+  const zeroBlockEnd = (node) => {
+    if (!node || !node.style) return;
+    node.style.setProperty("margin-bottom", "0", "important");
+    node.style.setProperty("padding-bottom", "0", "important");
+  };
+  const neutralizeSpacing = (holder) => {
+    holder.style.setProperty("--kw-info-top-desktop", "0px");
+    holder.style.setProperty("--kw-info-top-mobile", "0px");
+    holder.style.setProperty("--kw-info-bottom-desktop", "0px");
+    holder.style.setProperty("--kw-info-bottom-mobile", "0px");
+    zeroBlockStart(holder);
+    zeroBlockEnd(holder);
+    const list = holder.querySelector(".kw-info-list");
+    zeroBlockStart(list);
+    zeroBlockEnd(list);
+    const firstItem = holder.querySelector(".kw-info-list > .kw-info-item:first-child");
+    if (firstItem) firstItem.style.setProperty("margin-top", "0", "important");
+    const lastItem = holder.querySelector(".kw-info-list > .kw-info-item:last-child");
+    if (lastItem) lastItem.style.setProperty("margin-bottom", "0", "important");
+    let node = holder.parentElement;
+    for (let i = 0; node && i < 6; i += 1, node = node.parentElement) {
+      if (node.matches(".container.wrapper, .custom-html, .fw-section")) {
+        node.classList.add("kw-info-host");
+        zeroBlockStart(node);
+      }
+    }
+  };
   const configKeys = (holder) => {
     const direct = splitKeys(holder.dataset.kwInfoSections || holder.dataset.kwInfoOrder || "");
     if (direct.length) return direct;
@@ -67,16 +99,19 @@
   const render = (holder, items) => {
     holder.classList.add("kw-info-root");
     holder.innerHTML = `<div class="kw-info-list">${items.map(renderItem).join("")}</div>`;
+    neutralizeSpacing(holder);
   };
   const initHolder = async (holder) => {
     const keys = configKeys(holder);
     holder.classList.add("kw-info-root");
     holder.innerHTML = `<div class="kw-info-state">Loading information sections…</div>`;
+    neutralizeSpacing(holder);
     try {
       const groups = await Promise.all(keys.map(loadModule));
       render(holder, groups.flat());
     } catch (error) {
       holder.innerHTML = `<div class="kw-info-state">${esc(error.message)}</div>`;
+      neutralizeSpacing(holder);
     }
   };
   const closeItem = (item) => {
