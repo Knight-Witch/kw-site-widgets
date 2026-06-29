@@ -1,0 +1,3 @@
+.kw-info-root {
+  padding-top: 1px;
+}
