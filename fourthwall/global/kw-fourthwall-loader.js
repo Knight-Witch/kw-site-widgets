@@ -37,6 +37,7 @@
     { type: "js", key: "kw-header-js", src: url(selfRef, "fourthwall/global/kw-header.js", version) },
     { type: "js", key: "kw-title-bars-js", src: url("main", "components/kw-title-bars/kw-title-bars.js", version) },
     { type: "js", key: "kw-info-sections-js", src: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.js", "20260628-info-host-spacing-1") },
+    { type: "js", key: "kw-info-spacing-runtime-js", src: url(selfRef, "fourthwall/global/kw-info-spacing-runtime.js", "20260628-info-spacing-runtime-2") },
     { type: "js", key: "kwfw-carousel-js", src: url("1dd6c66c60d54694a177e6f663c060c322154826", "fourthwall/kwfw-carousel.js") },
     { type: "js", key: "kwfw-size-guide-js", src: url("f00c8dd64c573dd0c782036cf3df3a7dca53482c", "fourthwall/kwfw-size-guide.js") },
     { type: "js", key: "kwfw-universal-media-js", src: url("4327ad13c67468e6b260dbc44758cd9b90574f6d", "fourthwall/kwfw-universal-media.js") },
