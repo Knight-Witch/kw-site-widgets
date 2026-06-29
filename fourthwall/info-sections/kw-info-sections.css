@@ -10,10 +10,10 @@
   --kw-info-max-width: 900px;
   --kw-info-red: #ff0000;
   --kw-info-black: rgba(0, 0, 0, 0.82);
-  --kw-info-top-desktop: 150px;
-  --kw-info-top-mobile: 60px;
-  --kw-info-bottom-desktop: 40px;
-  --kw-info-bottom-mobile: 30px;
+  --kw-info-top-desktop: 1px;
+  --kw-info-top-mobile: 1px;
+  --kw-info-bottom-desktop: 1px;
+  --kw-info-bottom-mobile: 1px;
   width: 100%;
   position: relative;
   z-index: 3;
@@ -34,7 +34,7 @@
 .kw-info-item {
   width: 100%;
   max-width: var(--kw-info-max-width);
-  margin: 30px auto;
+  margin: 10px auto;
 }
 
 .kw-info-trigger {
@@ -113,7 +113,7 @@
   display: grid;
   grid-template-rows: 0fr;
   max-width: var(--kw-info-max-width);
-  margin: -10px auto 20px;
+  margin: 0 auto 20px;
   opacity: 0;
   transition: grid-template-rows 0.35s ease, opacity 0.25s ease;
 }
@@ -261,7 +261,7 @@
 
 .kw-info-state {
   max-width: var(--kw-info-max-width);
-  margin: 30px auto;
+  margin: 10px auto;
   padding: 20px;
   border: 2px solid var(--kw-info-red);
   background: var(--kw-info-black);
@@ -306,7 +306,7 @@
   }
 
   .kw-info-item {
-    margin: 20px auto;
+    margin: 10px auto;
   }
 
   .kw-info-trigger {
