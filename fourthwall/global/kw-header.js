@@ -53,18 +53,12 @@
       title: "About",
       href: "/pages/about",
       children: [
-        { title: "User Guide: Getting Started", href: "/pages/userguide" },
         { title: "About Us", href: "/pages/about" },
-        { title: "News & Updates", href: "/pages/news" },
+        { title: "User Guide", href: "/pages/userguide" },
         { title: "FAQ", href: "/pages/faq" },
-        { title: "Promos", href: "/pages/promos" },
-        { title: "Warranty Coverage", href: "/pages/warranty" },
-        { title: "Maintenance & Repair Program", href: "/pages/maintenance" },
-        { title: "Returns", href: "/pages/returns" },
-        { title: "General Inquiries", href: "/pages/contact" },
-        { title: "Partnership Inquiries", href: "/pages/partnerships" },
-        { title: "Careers: Join The Coven", href: "/pages/careers" },
-        { title: "Terms of Service", href: "/pages/terms-of-service" }
+        { title: "Maintenance & Repairs", href: "/pages/maintenance" },
+        { title: "Coverage & Care Plan", href: "/pages/warranty" },
+        { title: "News & Updates", href: "/pages/news" }
       ]
     },
     { title: "View Cart", href: "/cart", className: "kw-cart" }
