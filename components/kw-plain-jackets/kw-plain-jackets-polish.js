@@ -25,11 +25,29 @@
     tabs(group).forEach(item => item.classList.toggle("is-active",item === tab));
     updateGroup(group);
   };
+  const delayedClick = tab => {
+    if(tab.dataset.kwpjAllowBaseClick === "true") return true;
+    tab.dataset.kwpjAllowBaseClick = "pending";
+    setActive(tab);
+    setTimeout(() => {
+      tab.dataset.kwpjAllowBaseClick = "true";
+      tab.click();
+      requestAnimationFrame(() => {
+        delete tab.dataset.kwpjAllowBaseClick;
+      });
+    },300);
+    return false;
+  };
   const boot = () => updateAll(document);
   document.addEventListener("click",e => {
     const tab = e.target.closest(".kwpj-tab");
     if(!tab) return;
-    setActive(tab);
+    if(delayedClick(tab)){
+      setActive(tab);
+      return;
+    }
+    e.preventDefault();
+    e.stopImmediatePropagation();
   },true);
   new MutationObserver(mutations => {
     for(const mutation of mutations){
