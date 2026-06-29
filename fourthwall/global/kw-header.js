@@ -262,86 +262,119 @@
       desktopMenu.querySelectorAll(".kw-sub").forEach(sub => syncDesktopDropdownHeight(sub));
     }
 
+    function calculateMobilePanelWidth() {
+      const viewport = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      if (!viewport) return 360;
+      return Math.min(viewport, Math.max(280, Math.min(viewport * 0.96, 430)));
+    }
+
+    function setMobilePanelWidth() {
+      const width = Math.round(calculateMobilePanelWidth());
+      panelsRoot.style.setProperty("--kw-mobile-panel-width", width + "px");
+      document.getElementById("kw-header")?.style.setProperty("--kw-mobile-panel-width", width + "px");
+    }
+
+    function navigateAfterTap(element, href) {
+      element.style.color = "#ff0000";
+      setTimeout(() => { window.location.href = href; }, 120);
+    }
+
     function buildMobilePanels() {
       if (window.innerWidth > 1024) return;
       panelsRoot.innerHTML = "";
+      panelsRoot.dataset.kwMobileMode = "main";
+      setMobilePanelWidth();
 
       const main = document.createElement("div");
-      main.className = "kw-panel main";
+      main.className = "kw-panel main open";
       panelsRoot.appendChild(main);
 
+      function closeSubPanels() {
+        panelsRoot.dataset.kwMobileMode = "main";
+        main.classList.remove("kw-panel-off");
+        panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(panel => panel.classList.remove("open"));
+      }
+
+      function openSubPanel(panel) {
+        panelsRoot.dataset.kwMobileMode = "sub";
+        main.classList.add("kw-panel-off");
+        panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(openPanel => {
+          if (openPanel !== panel) openPanel.classList.remove("open");
+        });
+        panel.classList.add("open");
+      }
+
       const topItems = desktopMenu.querySelectorAll(":scope > li");
-      topItems.forEach(li => {
+      topItems.forEach((li, index) => {
         const a = li.querySelector(":scope > a");
         if (!a) return;
 
-        const item = document.createElement("a");
-        item.href = a.getAttribute("href") || "#";
-        item.textContent = a.textContent.trim();
-        if (a.classList.contains("active")) item.classList.add("active");
-
+        const label = a.textContent.trim();
+        const href = a.getAttribute("href") || "#";
         const hasSub = li.classList.contains("has-sub");
+
         if (hasSub) {
-          const sub = document.createElement("div");
-          sub.className = "kw-panel sub";
-          sub.style.transform = "translateX(-100%)";
-          sub.style.left = "var(--kw-sub-left,260px)";
-          sub.style.transition = "none";
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "kw-mobile-parent";
+          button.textContent = label;
+          if (a.classList.contains("active")) button.classList.add("active");
+
+          const panel = document.createElement("div");
+          panel.className = "kw-panel sub";
+          panel.dataset.kwParentIndex = String(index);
+
+          const back = document.createElement("button");
+          back.type = "button";
+          back.className = "kw-panel-back";
+          back.textContent = "‹ Back";
+          back.addEventListener("click", e => {
+            e.preventDefault();
+            closeSubPanels();
+          });
+          panel.appendChild(back);
+
+          const title = document.createElement("a");
+          title.className = "kw-panel-title";
+          title.href = href;
+          title.textContent = label;
+          title.addEventListener("click", e => {
+            e.preventDefault();
+            navigateAfterTap(title, title.href);
+          });
+          panel.appendChild(title);
 
           const subList = getDesktopSubList(li);
           const links = subList ? subList.querySelectorAll("a") : [];
           links.forEach(s => {
-            const sl = document.createElement("a");
-            sl.href = s.getAttribute("href") || "#";
-            sl.textContent = s.textContent.trim();
-            if (s.classList.contains("active")) sl.classList.add("active");
-            sl.addEventListener("click", e => {
+            const subLink = document.createElement("a");
+            subLink.href = s.getAttribute("href") || "#";
+            subLink.textContent = s.textContent.trim();
+            if (s.classList.contains("active")) subLink.classList.add("active");
+            subLink.addEventListener("click", e => {
               e.preventDefault();
-              sl.style.color = "#ff0000";
-              setTimeout(() => { window.location.href = sl.href; }, 120);
+              navigateAfterTap(subLink, subLink.href);
             });
-            sub.appendChild(sl);
+            panel.appendChild(subLink);
           });
-          panelsRoot.appendChild(sub);
 
-          const wrap = document.createElement("div");
-          wrap.className = "has-sub";
-          wrap.appendChild(item);
-          main.appendChild(wrap);
-
-          sub.classList.remove("open");
-
-          item.addEventListener("click", e => {
+          panelsRoot.appendChild(panel);
+          button.addEventListener("click", e => {
             e.preventDefault();
-            const isOpen = sub.classList.contains("open");
-            panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(p => p.classList.remove("open"));
-            if (!isOpen) sub.classList.add("open");
-            else window.location.href = item.href;
+            openSubPanel(panel);
           });
+          main.appendChild(button);
         } else {
+          const item = document.createElement("a");
+          item.href = href;
+          item.textContent = label;
+          if (a.classList.contains("active")) item.classList.add("active");
           item.addEventListener("click", e => {
             e.preventDefault();
-            item.style.color = "#ff0000";
-            setTimeout(() => { window.location.href = item.href; }, 120);
+            navigateAfterTap(item, item.href);
           });
           main.appendChild(item);
         }
-      });
-
-      requestAnimationFrame(() => {
-        const links = main.querySelectorAll("a");
-        let w = 220;
-        links.forEach(el => { w = Math.max(w, Math.ceil(el.getBoundingClientRect().width) + 24); });
-        w = Math.min(w, Math.floor(window.innerWidth * 0.8));
-        main.style.width = w + "px";
-        panelsRoot.style.setProperty("--kw-sub-left", (w + 8) + "px");
-
-        const waitForPanels = () => {
-          const subsReady = panelsRoot.querySelectorAll(".kw-panel.sub").length;
-          if (subsReady) requestAnimationFrame(() => main.classList.add("open"));
-          else requestAnimationFrame(waitForPanels);
-        };
-        waitForPanels();
       });
     }
 
@@ -357,6 +390,7 @@
       overlay.classList.remove("open");
       closeBtn.style.display = "none";
       panelsRoot.innerHTML = "";
+      panelsRoot.dataset.kwMobileMode = "";
     }
 
     toggle.addEventListener("click", () => {
@@ -371,6 +405,7 @@
       const isMobile = window.innerWidth <= 1024;
       if (wasMobile !== isMobile) closeMobile();
       wasMobile = isMobile;
+      if (isMobile && panelsRoot.innerHTML.trim()) setMobilePanelWidth();
       if (resizeFrame) cancelAnimationFrame(resizeFrame);
       resizeFrame = requestAnimationFrame(() => {
         initDesktopDropdownScroll();
