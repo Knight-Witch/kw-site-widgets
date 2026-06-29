@@ -2,7 +2,7 @@
   const d = document;
   const script = d.currentScript;
   const base = "https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets";
-  const version = script?.dataset.version || "20260628-carousel-flex-native-2";
+  const version = script?.dataset.version || "20260628-carousel-v6";
   const settings = window.KWFW_SETTINGS || {};
 
   window.KWFW_SETTINGS = {
@@ -24,16 +24,17 @@
     {type:"css",key:"kw-info-sections-css",href:url("kw-info-accordion-dev","fourthwall/info-sections/kw-info-sections.css","20260628-tight-spacing-4")},
     {type:"css",key:"kwfw-carousel-css",href:url("69e95f9562e165299897b793103949bfba0ab6e3","fourthwall/kwfw-carousel.css")},
     {type:"css",key:"kwfw-font-agencyfb-css",href:url("988f5aa2bb75880d43ccfc58a751b73e20d9e1aa","fourthwall/kwfw-font-agencyfb.css")},
-    {type:"css",key:"kwfw-carousel-desktop-grid-css",href:url("2916732ad1ad6cbb7a6756971051a37d2b143774","fourthwall/kwfw-carousel-desktop-grid.css")},
     {type:"css",key:"kwfw-size-guide-css",href:url("03e30bd4c28f5de3fc956ea39a874e6e447583d0","fourthwall/kwfw-size-guide.css")},
     {type:"css",key:"kwfw-universal-media-css",href:url("579c6124748dec87d5957716eabf0563dfc9401c","fourthwall/kwfw-universal-media.css")},
     {type:"css",key:"kwfw-product-rules-css",href:url("db73f85d3d4b982e46fea1e57bba48863b651889","fourthwall/kwfw-product-rules.css")},
+    {type:"css",key:"kwfw-carousel-v6-css",href:url("5333106d81a5577c3fcb316d09bccb23fbb6d262","fourthwall/kwfw-carousel-v6.css")},
     {type:"css",key:"kw-cart-runtime-css",href:url("main","fourthwall/global/kw-cart-runtime.css",version)},
     {type:"js",key:"kw-header-js",src:url("main","fourthwall/global/kw-header.js",version)},
     {type:"js",key:"kw-title-bars-js",src:url("main","components/kw-title-bars/kw-title-bars.js",version)},
     {type:"js",key:"kw-info-sections-js",src:url("kw-info-accordion-dev","fourthwall/info-sections/kw-info-sections.js","20260628-info-host-spacing-1")},
     {type:"js",key:"kw-info-spacing-runtime-js",src:url("main","fourthwall/global/kw-info-spacing-runtime.js","20260628-info-spacing-runtime-2")},
     {type:"js",key:"kwfw-carousel-js",src:url("1dd6c66c60d54694a177e6f663c060c322154826","fourthwall/kwfw-carousel.js")},
+    {type:"js",key:"kwfw-carousel-v6-runtime-js",src:url("cdef821129aec2ee5eb3a1fe01ddf1a30be14bee","fourthwall/kwfw-carousel-v6-runtime.js")},
     {type:"js",key:"kwfw-size-guide-js",src:url("f00c8dd64c573dd0c782036cf3df3a7dca53482c","fourthwall/kwfw-size-guide.js")},
     {type:"js",key:"kwfw-universal-media-js",src:url("4327ad13c67468e6b260dbc44758cd9b90574f6d","fourthwall/kwfw-universal-media.js")},
     {type:"js",key:"kwfw-product-rules-js",src:url("ef9f1ec0947d4144803c46c45c331e93b09dc9d3","fourthwall/kwfw-product-rules.js")},
