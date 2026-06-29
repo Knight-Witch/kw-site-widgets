@@ -1,3 +1,0 @@
-.kw-info-item {
-  margin: 10px auto;
-}
