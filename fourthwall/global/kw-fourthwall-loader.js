@@ -24,6 +24,7 @@
   };
 
   const resources = [
+    { type: "css", key: "kw-fourthwall-layout-guard-css", href: url(selfRef, "fourthwall/global/kw-fourthwall-layout-guard.css", "20260629-footer-flow-1") },
     { type: "css", key: "kw-header-css", href: url(selfRef, "fourthwall/global/kw-header.css", version) },
     { type: "css", key: "kw-title-bars-css", href: url("main", "components/kw-title-bars/kw-title-bars.css", version) },
     { type: "css", key: "kw-info-sections-css", href: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.css", "20260628-tight-spacing-4") },
