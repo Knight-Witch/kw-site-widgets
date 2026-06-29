@@ -26,7 +26,7 @@
   const resources = [
     { type: "css", key: "kw-header-css", href: url(selfRef, "fourthwall/global/kw-header.css", version) },
     { type: "css", key: "kw-title-bars-css", href: url("main", "components/kw-title-bars/kw-title-bars.css", version) },
-    { type: "css", key: "kw-info-sections-css", href: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.css", "20260628-tight-spacing-2") },
+    { type: "css", key: "kw-info-sections-css", href: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.css", "20260628-tight-spacing-3") },
     { type: "css", key: "kwfw-carousel-css", href: url("658dde1f9a6b6d7dea81c221c28baeccd3d8cf00", "fourthwall/kwfw-carousel.css") },
     { type: "css", key: "kwfw-font-agencyfb-css", href: url("988f5aa2bb75880d43ccfc58a751b73e20d9e1aa", "fourthwall/kwfw-font-agencyfb.css") },
     { type: "css", key: "kwfw-carousel-desktop-grid-css", href: url("72f644427115adbd531949ec1d3ce461972cf5ec", "fourthwall/kwfw-carousel-desktop-grid.css") },
