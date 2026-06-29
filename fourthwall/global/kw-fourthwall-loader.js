@@ -26,7 +26,7 @@
   const resources = [
     { type: "css", key: "kw-header-css", href: url(selfRef, "fourthwall/global/kw-header.css", version) },
     { type: "css", key: "kw-title-bars-css", href: url("main", "components/kw-title-bars/kw-title-bars.css", version) },
-    { type: "css", key: "kw-info-sections-css", href: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.css", "20260628-tight-spacing-3") },
+    { type: "css", key: "kw-info-sections-css", href: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.css", "20260628-tight-spacing-4") },
     { type: "css", key: "kwfw-carousel-css", href: url("658dde1f9a6b6d7dea81c221c28baeccd3d8cf00", "fourthwall/kwfw-carousel.css") },
     { type: "css", key: "kwfw-font-agencyfb-css", href: url("988f5aa2bb75880d43ccfc58a751b73e20d9e1aa", "fourthwall/kwfw-font-agencyfb.css") },
     { type: "css", key: "kwfw-carousel-desktop-grid-css", href: url("72f644427115adbd531949ec1d3ce461972cf5ec", "fourthwall/kwfw-carousel-desktop-grid.css") },
@@ -36,7 +36,7 @@
     { type: "css", key: "kw-cart-runtime-css", href: url(selfRef, "fourthwall/global/kw-cart-runtime.css", version) },
     { type: "js", key: "kw-header-js", src: url(selfRef, "fourthwall/global/kw-header.js", version) },
     { type: "js", key: "kw-title-bars-js", src: url("main", "components/kw-title-bars/kw-title-bars.js", version) },
-    { type: "js", key: "kw-info-sections-js", src: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.js", version) },
+    { type: "js", key: "kw-info-sections-js", src: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.js", "20260628-info-host-spacing-1") },
     { type: "js", key: "kwfw-carousel-js", src: url("1dd6c66c60d54694a177e6f663c060c322154826", "fourthwall/kwfw-carousel.js") },
     { type: "js", key: "kwfw-size-guide-js", src: url("f00c8dd64c573dd0c782036cf3df3a7dca53482c", "fourthwall/kwfw-size-guide.js") },
     { type: "js", key: "kwfw-universal-media-js", src: url("4327ad13c67468e6b260dbc44758cd9b90574f6d", "fourthwall/kwfw-universal-media.js") },
