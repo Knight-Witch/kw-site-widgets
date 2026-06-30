@@ -14,7 +14,6 @@
 .kw-lab-menu>li.is-open>.kw-lab-sub-wrap{visibility:visible;opacity:1;pointer-events:auto;transform:translate(-50%,0) scale(1);transition-delay:0s;}
 .kw-lab-sub{display:flex;flex-direction:column;max-height:calc(100vh - 96px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;-ms-overflow-style:none;padding:10px 0;}
 .kw-lab-sub::-webkit-scrollbar{width:0;height:0;display:none;}
-.kw-lab-sub-title{color:#f00;font-size:21px;line-height:1.05;padding:8px 20px 12px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:4px;white-space:nowrap;}
 .kw-lab-sub a{display:block;color:#fff;text-decoration:none;font-size:20px;line-height:1.1;padding:8px 20px;white-space:nowrap;transition:color .2s ease,background .2s ease;}
 .kw-lab-sub a:hover{color:#f00;background:rgba(255,255,255,.1);}
 .kw-lab-glitch{position:relative;isolation:isolate;}
