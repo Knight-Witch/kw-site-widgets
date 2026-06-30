@@ -8,6 +8,8 @@
   const version = current?.dataset.version || "20260629-nav-lab-1";
   const cssUrl = `https://cdn.jsdelivr.net/gh/${repo}@${ref}/fourthwall/global/kw-header-lab.css?v=${encodeURIComponent(version)}`;
   const mobileGlitchDelay = 420;
+  const textSwapDelay = 130;
+  const swapTimers = new WeakMap();
 
   const navItems = [
     { title: "Home", href: "/" },
@@ -128,11 +130,21 @@
   }
 
   function setGlitchText(element, value) {
+    if (!element) return;
     const text = String(value ?? "");
-    if (!element || element.dataset.kwLabText === text) return;
-    element.textContent = text;
-    element.dataset.kwLabText = text;
+    const currentText = element.dataset.kwLabText || element.textContent || "";
+    const existing = swapTimers.get(element);
+    if (existing) window.clearTimeout(existing);
+    swapTimers.delete(element);
+    if (currentText === text) return;
     triggerGlitch(element);
+    const timer = window.setTimeout(() => {
+      element.textContent = text;
+      element.dataset.kwLabText = text;
+      triggerGlitch(element);
+      swapTimers.delete(element);
+    }, textSwapDelay);
+    swapTimers.set(element, timer);
   }
 
   function initGlitch() {
@@ -166,7 +178,7 @@
     function resetButton(li) {
       const button = li.querySelector(":scope > .kw-lab-top-button");
       if (!button) return;
-      setGlitchText(button, button.dataset.kwLabTitle || button.dataset.kwLabText || button.textContent);
+      setGlitchText(button, button.dataset.kwLabTitle || button.textContent);
     }
 
     function setDrawerButton(li) {
