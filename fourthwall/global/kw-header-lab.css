@@ -12,10 +12,10 @@
 .kw-lab-cart>a:hover{border-color:rgba(255,0,0,.7);}
 .kw-lab-sub-wrap{position:absolute;top:100%;left:50%;display:block;visibility:hidden;opacity:0;pointer-events:none;transform:translate(-50%,-10px) scale(.98);transform-origin:top center;background:#000;border:1px solid rgba(255,255,255,.1);min-width:240px;max-height:calc(100vh - 96px);overflow:hidden;transition:opacity .22s ease,transform .22s ease,visibility 0s linear .22s;}
 .kw-lab-menu>li.is-open>.kw-lab-sub-wrap{visibility:visible;opacity:1;pointer-events:auto;transform:translate(-50%,0) scale(1);transition-delay:0s;}
-.kw-lab-sub{display:flex;flex-direction:column;max-height:calc(100vh - 96px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;-ms-overflow-style:none;padding:10px 0;}
+.kw-lab-sub{display:flex;flex-direction:column;max-height:calc(100vh - 96px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;-ms-overflow-style:none;padding:10px 0;text-align:center;}
 .kw-lab-sub::-webkit-scrollbar{width:0;height:0;display:none;}
-.kw-lab-desktop-subtitle{display:block;color:rgba(255,255,255,.72);font-size:15px;line-height:1.2;letter-spacing:1.4px;padding:8px 20px 12px;margin-bottom:4px;white-space:nowrap;border-bottom:1px solid rgba(255,255,255,.12);min-height:38px;}
-.kw-lab-sub a{display:block;color:#fff;text-decoration:none;font-size:20px;line-height:1.1;padding:8px 20px;white-space:nowrap;transition:color .2s ease,background .2s ease;}
+.kw-lab-desktop-subtitle{display:block;color:rgba(255,255,255,.72);font-size:15px;line-height:1.2;letter-spacing:1.4px;padding:8px 20px 12px;margin-bottom:4px;white-space:nowrap;border-bottom:1px solid rgba(255,255,255,.12);min-height:38px;text-align:center;}
+.kw-lab-sub a{display:block;color:#fff;text-decoration:none;font-size:20px;line-height:1.1;padding:8px 20px;white-space:nowrap;text-align:center;transition:color .2s ease,background .2s ease;}
 .kw-lab-sub a:hover{color:#f00;background:rgba(255,255,255,.1);}
 .kw-lab-glitch{position:relative;isolation:isolate;}
 .kw-lab-glitch::before,.kw-lab-glitch::after{content:attr(data-kw-lab-text);position:absolute;top:0;left:0;width:100%;height:100%;background:#000;pointer-events:none;opacity:0;}
