@@ -22,8 +22,8 @@
       href: "/pages/the-cauldron",
       children: [
         { title: "Enter The Cauldron", href: "/pages/the-cauldron" },
-        { title: "Spellcraft - Commission", href: "/pages/spellcraft" },
-        { title: "Dark Alchemy Modification", href: "/pages/dark-alchemy" }
+        { title: "Spellcraft: Create", href: "/pages/spellcraft" },
+        { title: "Dark Alchemy: Modify", href: "/pages/dark-alchemy" }
       ]
     },
     {
