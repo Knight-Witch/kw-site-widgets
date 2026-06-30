@@ -6,6 +6,7 @@
   const styleKey = "kwfw-carousel-scroll-controller-style";
   const controller = new AbortController();
   const previous = window.KWFWCarouselScrollController;
+
   if (previous && typeof previous.destroy === "function") previous.destroy();
 
   window.KWFWCarouselScrollController = {
@@ -72,22 +73,25 @@
 `;
 
   const injectStyle = () => {
-    d.querySelectorAll(`[data-kw-loader-resource="${styleKey}"], [data-kwfw-carousel-scroll-controller]`).forEach(element => element.remove());
-    const style = d.createElement("style");
-    style.dataset.kwLoaderResource = styleKey;
-    style.dataset.kwfwCarouselScrollController = "";
-    style.textContent = css;
-    d.head.appendChild(style);
+    let style = d.querySelector(`[data-kw-loader-resource="${styleKey}"]`);
+    if (!style) {
+      style = d.createElement("style");
+      style.dataset.kwLoaderResource = styleKey;
+      style.dataset.kwfwCarouselScrollController = "";
+      d.head.appendChild(style);
+    }
+    if (style.textContent !== css) style.textContent = css;
   };
 
   const holders = () => Array.from(d.querySelectorAll(".kwfw-carousel,[data-kwfw-collection]")).filter(holder => holder.querySelector(".kwfw-rail"));
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const scrollLimit = rail => Math.max(0, rail.scrollHeight - rail.clientHeight);
 
   const sync = holder => {
-    const root = holder.querySelector(".kwfw-root");
-    const rail = holder.querySelector(".kwfw-rail");
+    const root = holder?.querySelector(".kwfw-root");
+    const rail = holder?.querySelector(".kwfw-rail");
     if (!root || !rail) return;
-    const max = Math.max(0, rail.scrollHeight - rail.clientHeight);
+    const max = scrollLimit(rail);
     root.classList.toggle("kwfw-scroll-has-more", max > edge);
     root.classList.toggle("kwfw-scroll-at-top", rail.scrollTop <= edge);
     root.classList.toggle("kwfw-scroll-at-bottom", rail.scrollTop >= max - edge);
@@ -99,24 +103,25 @@
     const rail = holder.querySelector(".kwfw-rail");
     const cards = Array.from(holder.querySelectorAll(".kwfw-card"));
     if (!rail || !cards.length) return null;
+
     const railRect = rail.getBoundingClientRect();
-    const visibleCards = cards.map(card => card.getBoundingClientRect()).filter(rect => rect.width && rect.height && rect.bottom > railRect.top && rect.top < railRect.bottom);
+    const visibleCards = cards
+      .map(card => card.getBoundingClientRect())
+      .filter(rect => rect.width && rect.height && rect.bottom > railRect.top && rect.top < railRect.bottom);
+
     if (!visibleCards.length) return null;
-    const left = clamp(Math.min(...visibleCards.map(rect => rect.left)) - zonePad, 0, window.innerWidth);
-    const right = clamp(Math.max(...visibleCards.map(rect => rect.right)) + zonePad, 0, window.innerWidth);
+
     return {
       holder,
       rail,
-      left,
-      right,
+      left: clamp(Math.min(...visibleCards.map(rect => rect.left)) - zonePad, 0, window.innerWidth),
+      right: clamp(Math.max(...visibleCards.map(rect => rect.right)) + zonePad, 0, window.innerWidth),
       top: railRect.top,
       bottom: railRect.bottom
     };
   };
 
   const zoneAt = (x, y) => holders().map(zoneFor).filter(Boolean).find(zone => x >= zone.left && x <= zone.right && y >= zone.top && y <= zone.bottom);
-
-  const scrollLimit = rail => Math.max(0, rail.scrollHeight - rail.clientHeight);
 
   const canScroll = (rail, delta) => {
     const max = scrollLimit(rail);
@@ -128,30 +133,35 @@
 
   const onWheel = event => {
     if (mq.matches) return;
+
     const zone = zoneAt(event.clientX, event.clientY);
     if (!zone) return;
+
     const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
     if (!delta || !canScroll(zone.rail, delta)) return;
+
     event.preventDefault();
     zone.rail.scrollTop = clamp(zone.rail.scrollTop + delta, 0, scrollLimit(zone.rail));
     sync(zone.holder);
   };
 
   injectStyle();
+
   d.addEventListener("wheel", onWheel, { passive: false, signal: controller.signal });
   d.addEventListener("scroll", event => {
     const rail = event.target?.closest?.(".kwfw-rail");
     if (rail) sync(rail.closest(".kwfw-carousel,[data-kwfw-collection]"));
   }, { capture: true, passive: true, signal: controller.signal });
 
-  new MutationObserver(() => {
-    injectStyle();
-    requestAnimationFrame(syncAll);
-  }).observe(d.documentElement, { childList: true, subtree: true });
+  const observer = new MutationObserver(() => requestAnimationFrame(syncAll));
+  observer.observe(d.documentElement, { childList: true, subtree: true });
+  controller.signal.addEventListener("abort", () => observer.disconnect(), { once: true });
 
   addEventListener("resize", () => requestAnimationFrame(syncAll), { passive: true, signal: controller.signal });
+
   if (d.readyState === "loading") d.addEventListener("DOMContentLoaded", syncAll, { once: true, signal: controller.signal });
   else syncAll();
+
   setTimeout(syncAll, 250);
   setTimeout(syncAll, 1000);
 })();
