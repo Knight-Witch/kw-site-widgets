@@ -23,7 +23,7 @@
       drawerTitle: "The Collection Domain",
       mobileSubtitle: "Shop Signature Spellweaves",
       children: [
-        { title: "See The Full Collection", href: "/pages/the-collection-domain" },
+        { title: "Shop The Full Collection", href: "/pages/the-collection-domain" },
         { title: "Edgerunners", href: "/pages/edgerunners" },
         { title: "Basscraft", href: "/pages/basscraft" },
         { title: "Wicked Hearts", href: "/pages/wicked-hearts" },
