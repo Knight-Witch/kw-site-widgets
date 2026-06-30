@@ -10,23 +10,48 @@ The Fourthwall footer should not include separate component CSS or JavaScript ta
 
 ## Current production footer
 
-Known-good pinned commit: `31a02608065694efdd766bad4e5efc35c097e25a`
+Known-good pinned commit: `9462b8249a4f88a8e6e8e3bfc53df5846fd50721`
 
-Current production cache key: `20260629-carousel-scroll-4`
+Current production cache key: `20260630-nav-phase-2-drawer-link-glitch`
 
 Production loader URL:
 
-`https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@31a02608065694efdd766bad4e5efc35c097e25a/fourthwall/global/kw-fourthwall-loader.js?v=20260629-carousel-scroll-4`
+`https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@9462b8249a4f88a8e6e8e3bfc53df5846fd50721/fourthwall/global/kw-fourthwall-loader.js?v=20260630-nav-phase-2-drawer-link-glitch`
 
 Required footer attributes:
 
 - `defer`
-- `data-version="20260629-carousel-scroll-4"`
+- `data-version="20260630-nav-phase-2-drawer-link-glitch"`
 - `data-storefront-token` must remain the active Fourthwall storefront token from the live footer.
 - `data-shop-domain="knightwitchapparel.com"`
 - `data-currency="USD"`
 
 Do not switch the live Fourthwall footer back to `@main` after this fix. Use the pinned commit above as the live storefront entrypoint until the next verified deploy.
+
+## Current header/nav state
+
+The current verified header/nav deploy is `20260630-nav-phase-2-drawer-link-glitch` at commit `9462b8249a4f88a8e6e8e3bfc53df5846fd50721`.
+
+Verified behavior:
+
+- Desktop main nav links use the black/white glitch effect on hover.
+- Desktop drawer links use the same glitch effect on hover and click before navigation.
+- Desktop drawer open/close uses the fade/slide transition instead of instant pop-in.
+- Desktop main nav drawer buttons swap into domain titles on hover/click and swap back on close.
+- Desktop drawer subtitles decode/reveal above the drawer links.
+- Desktop drawer content is center-aligned.
+- Mobile hamburger drilldown remains intact.
+- Mobile parent menu labels glitch before submenu open.
+- Mobile submenu subtitles decode/reveal when the panel opens.
+- Mobile submenu links glitch before navigation.
+
+Current header labels:
+
+- `Shop The Full Collection`
+- `Repairs`
+- `Care Plan`
+
+Keep nav/header work scoped to `kw-header.js`, `kw-header.css`, `kw-header-lab.js`, or `kw-header-lab.css` unless dependency loading changes require `kw-fourthwall-loader.js`.
 
 ## Current carousel state
 
@@ -42,10 +67,10 @@ The current fixed loader replaces same-key resources when the URL differs. The c
 
 Expected live carousel runtime checks:
 
-- Footer loader URL includes `31a02608065694efdd766bad4e5efc35c097e25a`.
-- Footer loader query includes `v=20260629-carousel-scroll-4`.
-- `data-version` is `20260629-carousel-scroll-4`.
-- `kwfw-carousel-wheel-bridge.js` loads with `20260629-carousel-scroll-4`.
+- Footer loader URL includes `9462b8249a4f88a8e6e8e3bfc53df5846fd50721`.
+- Footer loader query includes `v=20260630-nav-phase-2-drawer-link-glitch`.
+- `data-version` is `20260630-nav-phase-2-drawer-link-glitch`.
+- `kwfw-carousel-wheel-bridge.js` loads with `20260630-nav-phase-2-drawer-link-glitch`.
 - `window.KWFWCarouselScrollController.destroy` exists.
 - A style element with `data-kwfw-carousel-scroll-controller` exists.
 - Desktop carousel rails compute to `display:flex`, `flex-wrap:wrap`, `justify-content:center`, `overflow-y:auto`, and `scroll-snap-type:none`.
@@ -55,17 +80,6 @@ Expected live carousel runtime checks:
 Do not treat `kwfw-carousel-wheel-bridge.js` as only a wheel listener. In the current fixed version, it also injects the final desktop carousel override so the base carousel CSS cannot win the cascade.
 
 Do not reintroduce a MutationObserver that removes and recreates the same style element it observes. That caused Fourthwall/browser freezing when attempting to save the footer snippet. If the controller style needs to be maintained, update the existing style element in place.
-
-## Nav/header lab notes
-
-Current preferred nav lab glitch direction: the alternate text-glitch effect in `kw-header-lab.css`, with black and white split layers and the existing red hover state.
-
-Pending nav/header follow-up tasks:
-
-1. Add the same glitch animation to mobile parent menu buttons. On tap, play the glitch animation first, then open that button's submenu after the animation delay.
-2. Replace the desktop drawer instant open/close behavior with a smoother animated transition similar to the mobile drilldown movement. Avoid a hard pop-in on hover or click-lock open.
-
-Keep nav/header work scoped to `kw-header.js`, `kw-header.css`, `kw-header-lab.js`, or `kw-header-lab.css` unless dependency loading changes require `kw-fourthwall-loader.js`.
 
 ## Layout guard
 
