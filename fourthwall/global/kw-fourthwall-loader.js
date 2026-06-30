@@ -7,7 +7,7 @@
   const repo = m ? m[1] : "Knight-Witch/kw-site-widgets";
   const selfRef = m ? m[2] : "main";
   const base = `https://cdn.jsdelivr.net/gh/${repo}`;
-  const version = s?.dataset.version || "20260629-carousel-no-scroll-1";
+  const version = s?.dataset.version || "20260629-carousel-scroll-3";
 
   const manifest =
     s?.dataset.productMediaManifest ||
@@ -48,16 +48,21 @@
     { type: "js", key: "kw-info-sections-js", src: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.js", "20260628-info-host-spacing-1") },
     { type: "js", key: "kw-info-spacing-runtime-js", src: url(selfRef, "fourthwall/global/kw-info-spacing-runtime.js", "20260628-info-spacing-runtime-2") },
     { type: "js", key: "kwfw-carousel-js", src: url("1dd6c66c60d54694a177e6f663c060c322154826", "fourthwall/kwfw-carousel.js") },
+    { type: "js", key: "kwfw-carousel-wheel-bridge-js", src: url(selfRef, "fourthwall/kwfw-carousel-wheel-bridge.js", version) },
     { type: "js", key: "kwfw-size-guide-js", src: url("f00c8dd64c573dd0c782036cf3df3a7dca53482c", "fourthwall/kwfw-size-guide.js") },
     { type: "js", key: "kwfw-universal-media-js", src: url("4327ad13c67468e6b260dbc44758cd9b90574f6d", "fourthwall/kwfw-universal-media.js") },
     { type: "js", key: "kwfw-product-rules-js", src: url("ef9f1ec0947d4144803c46c45c331e93b09dc9d3", "fourthwall/kwfw-product-rules.js") },
     { type: "js", key: "kw-cart-runtime-js", src: url(selfRef, "fourthwall/global/kw-cart-runtime.js", version) },
   ];
 
-  const exists = (key) => d.querySelector(`[data-kw-loader-resource="${key}"]`);
+  const currentUrl = element => element?.src || element?.href || "";
+  const sameUrl = (a, b) => currentUrl(a) === b;
+  const existing = key => Array.from(d.querySelectorAll(`[data-kw-loader-resource="${key}"]`));
 
-  const loadCss = (r) => {
-    if (exists(r.key)) return;
+  const loadCss = r => {
+    const matches = existing(r.key);
+    if (matches.some(element => sameUrl(element, r.href))) return;
+    matches.forEach(element => element.remove());
     const link = d.createElement("link");
     link.rel = "stylesheet";
     link.href = r.href;
@@ -65,13 +70,14 @@
     d.head.appendChild(link);
   };
 
-  const loadScript = (r) =>
+  const loadScript = r =>
     new Promise((resolve, reject) => {
-      if (exists(r.key)) {
+      const matches = existing(r.key);
+      if (matches.some(element => sameUrl(element, r.src))) {
         resolve();
         return;
       }
-
+      matches.forEach(element => element.remove());
       const element = d.createElement("script");
       element.src = r.src;
       element.defer = true;
@@ -82,11 +88,11 @@
       d.head.appendChild(element);
     });
 
-  resources.filter((r) => r.type === "css").forEach(loadCss);
+  resources.filter(r => r.type === "css").forEach(loadCss);
   resources
-    .filter((r) => r.type === "js")
+    .filter(r => r.type === "js")
     .reduce((chain, r) => chain.then(() => loadScript(r)), Promise.resolve())
-    .catch((error) => {
+    .catch(error => {
       window.KW_GLOBAL_LOADER_ERROR = error;
       console.error(error);
     });
