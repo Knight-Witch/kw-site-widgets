@@ -108,8 +108,9 @@
       }
       const title = item.title;
       const drawerTitle = item.drawerTitle || item.title;
+      const subtitle = item.mobileSubtitle ? `<div class="kw-lab-desktop-subtitle kw-lab-subtitle-reveal" data-kw-lab-subtitle="${escapeAttribute(item.mobileSubtitle)}" data-kw-lab-decoded="0"></div>` : "";
       const links = item.children.map(child => `<a href="${escapeAttribute(child.href)}">${escapeHtml(child.title)}</a>`).join("");
-      return `<li class="${escapeAttribute(className)}" data-kw-lab-index="${index}"><button class="kw-lab-top-button kw-lab-glitch" data-kw-lab-title="${escapeAttribute(title)}" data-kw-lab-drawer-title="${escapeAttribute(drawerTitle)}" data-kw-lab-text="${escapeAttribute(title)}" type="button">${escapeHtml(title)}</button><div class="kw-lab-sub-wrap"><div class="kw-lab-sub">${links}</div></div></li>`;
+      return `<li class="${escapeAttribute(className)}" data-kw-lab-index="${index}"><button class="kw-lab-top-button kw-lab-glitch" data-kw-lab-title="${escapeAttribute(title)}" data-kw-lab-drawer-title="${escapeAttribute(drawerTitle)}" data-kw-lab-text="${escapeAttribute(title)}" type="button">${escapeHtml(title)}</button><div class="kw-lab-sub-wrap"><div class="kw-lab-sub">${subtitle}${links}</div></div></li>`;
     }).join("");
   }
 
@@ -188,12 +189,12 @@
     subtitleTimers.set(element, timer);
   }
 
-  function resetPanelSubtitles(panel) {
-    panel?.querySelectorAll(".kw-lab-mobile-subtitle").forEach(resetSubtitleReveal);
+  function resetElementSubtitles(element) {
+    element?.querySelectorAll(".kw-lab-subtitle-reveal").forEach(resetSubtitleReveal);
   }
 
-  function revealPanelSubtitle(panel) {
-    const subtitle = panel?.querySelector(".kw-lab-mobile-subtitle");
+  function revealElementSubtitle(element) {
+    const subtitle = element?.querySelector(".kw-lab-subtitle-reveal");
     if (!subtitle) return;
     resetSubtitleReveal(subtitle);
     window.setTimeout(() => revealSubtitle(subtitle), subtitleRevealDelay);
@@ -242,6 +243,7 @@
     function closeItem(li) {
       li.classList.remove("is-open");
       resetButton(li);
+      resetElementSubtitles(li);
     }
 
     function closeAll() {
@@ -254,6 +256,7 @@
       });
       li.classList.add("is-open");
       if (lockTitle) setDrawerButton(li);
+      revealElementSubtitle(li);
     }
 
     menu.querySelectorAll(":scope > li.has-sub").forEach(li => {
@@ -313,7 +316,7 @@
       main.classList.remove("is-off");
       panels.querySelectorAll(".kw-lab-panel.sub.is-open").forEach(panel => {
         panel.classList.remove("is-open");
-        resetPanelSubtitles(panel);
+        resetElementSubtitles(panel);
       });
     }
 
@@ -323,11 +326,11 @@
       panels.querySelectorAll(".kw-lab-panel.sub.is-open").forEach(openPanel => {
         if (openPanel !== panel) {
           openPanel.classList.remove("is-open");
-          resetPanelSubtitles(openPanel);
+          resetElementSubtitles(openPanel);
         }
       });
       panel.classList.add("is-open");
-      revealPanelSubtitle(panel);
+      revealElementSubtitle(panel);
     }
 
     navItems.forEach(item => {
@@ -372,7 +375,7 @@
 
       if (item.mobileSubtitle) {
         const subtitle = d.createElement("div");
-        subtitle.className = "kw-lab-mobile-subtitle";
+        subtitle.className = "kw-lab-mobile-subtitle kw-lab-subtitle-reveal";
         subtitle.dataset.kwLabSubtitle = item.mobileSubtitle;
         subtitle.dataset.kwLabDecoded = "0";
         subtitle.textContent = "";
@@ -421,7 +424,7 @@
     function shut() {
       overlay.classList.remove("is-open");
       close.style.display = "none";
-      panels.querySelectorAll(".kw-lab-panel.sub").forEach(resetPanelSubtitles);
+      panels.querySelectorAll(".kw-lab-panel.sub").forEach(resetElementSubtitles);
       panels.innerHTML = "";
       panels.dataset.mode = "";
     }
