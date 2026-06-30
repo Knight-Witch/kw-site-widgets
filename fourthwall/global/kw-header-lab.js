@@ -210,7 +210,7 @@
 
       li.addEventListener("mouseenter", () => {
         if (window.innerWidth <= 1024 || locked) return;
-        openItem(li, false);
+        openItem(li, true);
       });
 
       button.addEventListener("click", event => {
