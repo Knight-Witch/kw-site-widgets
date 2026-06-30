@@ -1,4 +1,12 @@
 (() => {
+  const mobileGlitchDelay = 420;
+  const textSwapDelay = 130;
+  const subtitleRevealDelay = 180;
+  const subtitleRevealStep = 28;
+  const subtitleAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const swapTimers = new WeakMap();
+  const subtitleTimers = new WeakMap();
+
   const navItems = [
     { title: "Home", href: "/" },
     { title: "Gallery", href: "/pages/gallery" },
@@ -6,8 +14,9 @@
       title: "Shop The Collection",
       drawerTitle: "The Collection Domain",
       href: "/pages/the-collection-domain",
+      mobileSubtitle: "Shop Signature Spellweaves",
       children: [
-        { title: "See The Full Collection", href: "/pages/the-collection-domain" },
+        { title: "Shop The Full Collection", href: "/pages/the-collection-domain" },
         { title: "Edgerunners", href: "/pages/edgerunners" },
         { title: "Basscraft", href: "/pages/basscraft" },
         { title: "Wicked Hearts", href: "/pages/wicked-hearts" },
@@ -20,6 +29,7 @@
       title: "Shop The Cauldron",
       drawerTitle: "The Cauldron Domain",
       href: "/pages/the-cauldron",
+      mobileSubtitle: "Customize A Spellweave",
       children: [
         { title: "Enter The Cauldron", href: "/pages/the-cauldron" },
         { title: "Spellcraft: Create", href: "/pages/spellcraft" },
@@ -30,6 +40,7 @@
       title: "Shop Decor",
       drawerTitle: "The Decor Domain",
       href: "/pages/the-decor-domain",
+      mobileSubtitle: "LED Wall Art & More",
       children: [
         { title: "Shop All Decor", href: "/pages/the-decor-domain" },
         { title: "Wicked Originals", href: "/pages/wicked-designs" },
@@ -56,13 +67,14 @@
     },
     {
       title: "About",
+      drawerTitle: "About",
       href: "/pages/about",
       children: [
         { title: "About Us", href: "/pages/about" },
         { title: "User Guide", href: "/pages/userguide" },
         { title: "FAQ", href: "/pages/faq" },
-        { title: "Maintenance & Repairs", href: "/pages/maintenance" },
-        { title: "Coverage & Care Plan", href: "/pages/warranty" },
+        { title: "Repairs", href: "/pages/maintenance" },
+        { title: "Care Plan", href: "/pages/warranty" },
         { title: "News & Updates", href: "/pages/news" }
       ]
     },
@@ -72,13 +84,18 @@
   const escapeHtml = value => String(value ?? "").replace(/[&<>\"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[character]));
   const escapeAttribute = escapeHtml;
 
-  function renderItems(items) {
+  function renderItems(items, level = 0) {
     return items.map(item => {
       const hasSub = Array.isArray(item.children) && item.children.length;
+      const isTopLevel = level === 0;
       const classNames = [item.className, hasSub ? "has-sub" : ""].filter(Boolean).join(" ");
-      const sub = hasSub ? `<ul class="kw-sub">${renderItems(item.children)}</ul>` : "";
-      const drawerTitle = item.drawerTitle ? ` data-kw-drawer-title="${escapeAttribute(item.drawerTitle)}"` : "";
-      return `<li${classNames ? ` class="${escapeAttribute(classNames)}"` : ""}><a href="${escapeAttribute(item.href)}"${drawerTitle}>${escapeHtml(item.title)}</a>${sub}</li>`;
+      const drawerTitle = item.drawerTitle || item.title;
+      const linkClass = isTopLevel ? "kw-glitch" : "";
+      const linkData = isTopLevel ? ` data-kw-title="${escapeAttribute(item.title)}" data-kw-text="${escapeAttribute(item.title)}"` : "";
+      const drawerData = isTopLevel && hasSub ? ` data-kw-drawer-title="${escapeAttribute(drawerTitle)}" data-kw-mobile-subtitle="${escapeAttribute(item.mobileSubtitle || "")}"` : "";
+      const subtitle = isTopLevel && item.mobileSubtitle ? `<li class="kw-desktop-subtitle kw-subtitle-reveal" data-kw-subtitle="${escapeAttribute(item.mobileSubtitle)}" data-kw-decoded="0"></li>` : "";
+      const sub = hasSub ? `<ul class="kw-sub">${subtitle}${renderItems(item.children, level + 1)}</ul>` : "";
+      return `<li${classNames ? ` class="${escapeAttribute(classNames)}"` : ""}><a${linkClass ? ` class="${linkClass}"` : ""} href="${escapeAttribute(item.href)}"${linkData}${drawerData}>${escapeHtml(item.title)}</a>${sub}</li>`;
     }).join("");
   }
 
@@ -87,9 +104,88 @@
     document.body.insertAdjacentHTML("afterbegin", `<nav id="kw-header"><div class="kw-bar"><button id="kw-toggle" type="button" aria-label="Open navigation">☰</button><button id="kw-close" type="button" aria-label="Close navigation">✕</button><ul class="kw-menu">${renderItems(navItems)}</ul><div class="kw-overlay" id="kw-overlay"></div><div class="kw-panels" id="kw-panels"></div></div></nav>`);
   }
 
+  function triggerGlitch(element) {
+    if (!element) return;
+    element.classList.remove("is-glitching");
+    void element.offsetWidth;
+    element.classList.add("is-glitching");
+  }
+
+  function setGlitchText(element, value) {
+    if (!element) return;
+    const text = String(value ?? "");
+    const currentText = element.dataset.kwText || element.textContent || "";
+    const existing = swapTimers.get(element);
+    if (existing) window.clearTimeout(existing);
+    swapTimers.delete(element);
+    if (currentText === text) return;
+    triggerGlitch(element);
+    const timer = window.setTimeout(() => {
+      element.textContent = text;
+      element.dataset.kwText = text;
+      triggerGlitch(element);
+      swapTimers.delete(element);
+    }, textSwapDelay);
+    swapTimers.set(element, timer);
+  }
+
+  function clearSubtitleReveal(element) {
+    const existing = subtitleTimers.get(element);
+    if (existing) window.clearInterval(existing);
+    subtitleTimers.delete(element);
+  }
+
+  function resetSubtitleReveal(element) {
+    if (!element) return;
+    clearSubtitleReveal(element);
+    element.textContent = "";
+    element.dataset.kwDecoded = "0";
+  }
+
+  function revealSubtitle(element) {
+    if (!element) return;
+    const text = element.dataset.kwSubtitle || "";
+    if (!text || element.dataset.kwDecoded === "1") return;
+    clearSubtitleReveal(element);
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      element.textContent = text;
+      element.dataset.kwDecoded = "1";
+      return;
+    }
+    let iteration = 0;
+    element.textContent = "";
+    const timer = window.setInterval(() => {
+      element.textContent = text.split("").map((character, index) => {
+        if (character === " ") return " ";
+        if (index < iteration) return character;
+        return subtitleAlphabet[Math.floor(Math.random() * subtitleAlphabet.length)];
+      }).join("");
+      if (iteration >= text.length) {
+        clearSubtitleReveal(element);
+        element.textContent = text;
+        element.dataset.kwDecoded = "1";
+        return;
+      }
+      iteration += 0.55;
+    }, subtitleRevealStep);
+    subtitleTimers.set(element, timer);
+  }
+
+  function resetElementSubtitles(element) {
+    element?.querySelectorAll(".kw-subtitle-reveal").forEach(resetSubtitleReveal);
+  }
+
+  function revealElementSubtitle(element) {
+    const subtitle = element?.querySelector(".kw-subtitle-reveal");
+    if (!subtitle) return;
+    resetSubtitleReveal(subtitle);
+    window.setTimeout(() => revealSubtitle(subtitle), subtitleRevealDelay);
+  }
+
   function initHeader() {
     injectHeader();
 
+    const header = document.getElementById("kw-header");
     const toggle = document.getElementById("kw-toggle");
     const closeBtn = document.getElementById("kw-close");
     const overlay = document.getElementById("kw-overlay");
@@ -98,8 +194,9 @@
     const desktopDropdownBottomBuffer = 32;
     const desktopDropdownScrollSpeed = 0.34;
     let resizeFrame = null;
+    let lockedDesktopItem = null;
 
-    if (!toggle || !closeBtn || !overlay || !desktopMenu || !panelsRoot) return;
+    if (!header || !toggle || !closeBtn || !overlay || !desktopMenu || !panelsRoot) return;
 
     const here = location.pathname.replace(/\/+$/, "") || "/";
     document.querySelectorAll("#kw-header a[href]").forEach(a => {
@@ -135,7 +232,6 @@
       if (window.innerWidth <= 1024) return;
       const li = sub.closest(".kw-menu > li");
       const trigger = li ? li.querySelector(":scope > a") : null;
-      const header = document.getElementById("kw-header");
       const triggerBottom = trigger ? trigger.getBoundingClientRect().bottom : header.getBoundingClientRect().bottom;
       const availableHeight = Math.floor(window.innerHeight - triggerBottom - desktopDropdownBottomBuffer);
       const maxHeight = Math.max(48, availableHeight);
@@ -268,6 +364,93 @@
       desktopMenu.querySelectorAll(".kw-sub").forEach(sub => syncDesktopDropdownHeight(sub));
     }
 
+    function resetTopLink(li) {
+      const link = li.querySelector(":scope > a.kw-glitch");
+      if (!link) return;
+      setGlitchText(link, link.dataset.kwTitle || link.textContent);
+    }
+
+    function setDrawerTopLink(li) {
+      const link = li.querySelector(":scope > a.kw-glitch");
+      if (!link) return;
+      setGlitchText(link, link.dataset.kwDrawerTitle || link.dataset.kwTitle || link.textContent);
+    }
+
+    function closeDesktopItem(li) {
+      li.classList.remove("open");
+      resetTopLink(li);
+      resetElementSubtitles(li);
+    }
+
+    function closeDesktopItems() {
+      desktopMenu.querySelectorAll(":scope > li.has-sub").forEach(closeDesktopItem);
+    }
+
+    function openDesktopItem(li) {
+      desktopMenu.querySelectorAll(":scope > li.has-sub").forEach(item => {
+        if (item !== li) closeDesktopItem(item);
+      });
+      li.classList.add("open");
+      setDrawerTopLink(li);
+      revealElementSubtitle(li);
+      const sub = getDesktopSubList(li);
+      if (sub) syncDesktopDropdownHeight(sub);
+    }
+
+    function initDesktopInteractions() {
+      desktopMenu.querySelectorAll(":scope > li.has-sub").forEach(li => {
+        const link = li.querySelector(":scope > a.kw-glitch");
+        if (!link) return;
+
+        li.addEventListener("mouseenter", () => {
+          if (window.innerWidth <= 1024 || lockedDesktopItem) return;
+          openDesktopItem(li);
+        });
+
+        link.addEventListener("click", event => {
+          if (window.innerWidth <= 1024) return;
+          event.preventDefault();
+          event.stopPropagation();
+          if (lockedDesktopItem === li) {
+            lockedDesktopItem = null;
+            closeDesktopItem(li);
+            return;
+          }
+          lockedDesktopItem = li;
+          openDesktopItem(li);
+        });
+      });
+
+      desktopMenu.addEventListener("mouseleave", () => {
+        if (!lockedDesktopItem) closeDesktopItems();
+      });
+
+      document.addEventListener("click", event => {
+        if (window.innerWidth <= 1024) return;
+        if (header.contains(event.target)) return;
+        lockedDesktopItem = null;
+        closeDesktopItems();
+      });
+    }
+
+    function initGlitch() {
+      header.addEventListener("pointerover", event => {
+        if (event.pointerType && event.pointerType !== "mouse") return;
+        const target = event.target instanceof Element ? event.target : null;
+        const element = target?.closest(".kw-glitch");
+        if (!element || !header.contains(element)) return;
+        const related = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+        if (related && element.contains(related)) return;
+        triggerGlitch(element);
+      });
+
+      header.addEventListener("animationend", event => {
+        const target = event.target instanceof Element ? event.target : null;
+        const element = target?.closest(".kw-glitch");
+        if (element) element.classList.remove("is-glitching");
+      }, true);
+    }
+
     function calculateMobilePanelWidth() {
       const viewport = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
       if (!viewport) return 360;
@@ -277,7 +460,7 @@
     function setMobilePanelWidth() {
       const width = Math.round(calculateMobilePanelWidth());
       panelsRoot.style.setProperty("--kw-mobile-panel-width", width + "px");
-      document.getElementById("kw-header")?.style.setProperty("--kw-mobile-panel-width", width + "px");
+      header.style.setProperty("--kw-mobile-panel-width", width + "px");
     }
 
     function navigateAfterTap(element, href) {
@@ -298,16 +481,23 @@
       function closeSubPanels() {
         panelsRoot.dataset.kwMobileMode = "main";
         main.classList.remove("kw-panel-off");
-        panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(panel => panel.classList.remove("open"));
+        panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(panel => {
+          panel.classList.remove("open");
+          resetElementSubtitles(panel);
+        });
       }
 
       function openSubPanel(panel) {
         panelsRoot.dataset.kwMobileMode = "sub";
         main.classList.add("kw-panel-off");
         panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(openPanel => {
-          if (openPanel !== panel) openPanel.classList.remove("open");
+          if (openPanel !== panel) {
+            openPanel.classList.remove("open");
+            resetElementSubtitles(openPanel);
+          }
         });
         panel.classList.add("open");
+        revealElementSubtitle(panel);
       }
 
       const topItems = desktopMenu.querySelectorAll(":scope > li");
@@ -315,18 +505,24 @@
         const a = li.querySelector(":scope > a");
         if (!a) return;
 
-        const label = a.textContent.trim();
+        const label = a.dataset.kwTitle || a.textContent.trim();
         const href = a.getAttribute("href") || "#";
         const drawerTitle = a.dataset.kwDrawerTitle || label;
         const hasCustomDrawerTitle = Boolean(a.dataset.kwDrawerTitle);
+        const subtitleText = a.dataset.kwMobileSubtitle || "";
         const hasSub = li.classList.contains("has-sub");
 
         if (hasSub) {
           const button = document.createElement("button");
           button.type = "button";
           button.className = "kw-mobile-parent";
-          button.textContent = label;
           if (a.classList.contains("active")) button.classList.add("active");
+
+          const buttonLabel = document.createElement("span");
+          buttonLabel.className = "kw-mobile-label kw-glitch";
+          buttonLabel.dataset.kwText = label;
+          buttonLabel.textContent = label;
+          button.appendChild(buttonLabel);
 
           const panel = document.createElement("div");
           panel.className = "kw-panel sub";
@@ -359,6 +555,15 @@
             panel.appendChild(title);
           }
 
+          if (subtitleText) {
+            const subtitle = document.createElement("div");
+            subtitle.className = "kw-panel-subtitle kw-subtitle-reveal";
+            subtitle.dataset.kwSubtitle = subtitleText;
+            subtitle.dataset.kwDecoded = "0";
+            subtitle.textContent = "";
+            panel.appendChild(subtitle);
+          }
+
           const subList = getDesktopSubList(li);
           const links = subList ? subList.querySelectorAll("a") : [];
           links.forEach(s => {
@@ -374,14 +579,26 @@
           });
 
           panelsRoot.appendChild(panel);
+          button.addEventListener("pointerenter", event => {
+            if (event.pointerType && event.pointerType !== "mouse") return;
+            triggerGlitch(buttonLabel);
+          });
           button.addEventListener("click", e => {
             e.preventDefault();
-            openSubPanel(panel);
+            if (button.dataset.opening === "1") return;
+            button.dataset.opening = "1";
+            triggerGlitch(buttonLabel);
+            window.setTimeout(() => {
+              button.dataset.opening = "";
+              openSubPanel(panel);
+            }, mobileGlitchDelay);
           });
           main.appendChild(button);
         } else {
           const item = document.createElement("a");
           item.href = href;
+          item.className = "kw-glitch";
+          item.dataset.kwText = label;
           item.textContent = label;
           if (a.classList.contains("active")) item.classList.add("active");
           item.addEventListener("click", e => {
@@ -404,6 +621,7 @@
     function closeMobile() {
       overlay.classList.remove("open");
       closeBtn.style.display = "none";
+      panelsRoot.querySelectorAll(".kw-panel.sub").forEach(resetElementSubtitles);
       panelsRoot.innerHTML = "";
       panelsRoot.dataset.kwMobileMode = "";
     }
@@ -419,6 +637,10 @@
     window.addEventListener("resize", () => {
       const isMobile = window.innerWidth <= 1024;
       if (wasMobile !== isMobile) closeMobile();
+      if (isMobile) {
+        lockedDesktopItem = null;
+        closeDesktopItems();
+      }
       wasMobile = isMobile;
       if (isMobile && panelsRoot.innerHTML.trim()) setMobilePanelWidth();
       if (resizeFrame) cancelAnimationFrame(resizeFrame);
@@ -429,6 +651,8 @@
     });
 
     initDesktopDropdownScroll();
+    initDesktopInteractions();
+    initGlitch();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initHeader);
