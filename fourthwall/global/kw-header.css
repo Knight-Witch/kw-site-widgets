@@ -33,7 +33,7 @@
   min-height: 38px; text-align: center;
 }
 .kw-sub a { font-size: 20px; padding: 8px 20px; text-align: center; }
-.kw-sub a:hover { background: rgba(255,255,255,0.1); }
+.kw-sub a:hover { background: transparent; color: #ff0000; }
 .kw-menu > li.open > .kw-sub { display: flex; }
 .kw-menu > li.open > .kw-sub-wrap { visibility: visible; opacity: 1; pointer-events: auto; transform: translate(-50%,0) scale(1); transition-delay: 0s; }
 .kw-menu a.active { color: #ff0000 !important; }
