@@ -4,8 +4,10 @@
     { title: "Gallery", href: "/pages/gallery" },
     {
       title: "Shop The Collection",
+      drawerTitle: "The Collection Domain",
       href: "/pages/the-collection-domain",
       children: [
+        { title: "Enter The Full Collection", href: "/pages/the-collection-domain" },
         { title: "Edgerunners", href: "/pages/edgerunners" },
         { title: "Basscraft", href: "/pages/basscraft" },
         { title: "Wicked Hearts", href: "/pages/wicked-hearts" },
@@ -16,17 +18,20 @@
     },
     {
       title: "Shop The Cauldron",
+      drawerTitle: "The Cauldron Domain",
       href: "/pages/the-cauldron",
       children: [
-        { title: "Spellcraft", href: "/pages/spellcraft" },
-        { title: "Dark Alchemy", href: "/pages/dark-alchemy" }
+        { title: "Enter The Cauldron", href: "/pages/the-cauldron" },
+        { title: "Spellcraft - Commission", href: "/pages/spellcraft" },
+        { title: "Dark Alchemy Modification", href: "/pages/dark-alchemy" }
       ]
     },
     {
       title: "Shop Decor",
+      drawerTitle: "The Decor Domain",
       href: "/pages/the-decor-domain",
       children: [
-        { title: "All Decor", href: "/pages/the-decor-domain" },
+        { title: "Shop All Decor", href: "/pages/the-decor-domain" },
         { title: "Wicked Originals", href: "/pages/wicked-designs" },
         { title: "Anime", href: "/pages/anime" },
         { title: "Arcane", href: "/pages/arcane" },
@@ -72,7 +77,8 @@
       const hasSub = Array.isArray(item.children) && item.children.length;
       const classNames = [item.className, hasSub ? "has-sub" : ""].filter(Boolean).join(" ");
       const sub = hasSub ? `<ul class="kw-sub">${renderItems(item.children)}</ul>` : "";
-      return `<li${classNames ? ` class="${escapeAttribute(classNames)}"` : ""}><a href="${escapeAttribute(item.href)}">${escapeHtml(item.title)}</a>${sub}</li>`;
+      const drawerTitle = item.drawerTitle ? ` data-kw-drawer-title="${escapeAttribute(item.drawerTitle)}"` : "";
+      return `<li${classNames ? ` class="${escapeAttribute(classNames)}"` : ""}><a href="${escapeAttribute(item.href)}"${drawerTitle}>${escapeHtml(item.title)}</a>${sub}</li>`;
     }).join("");
   }
 
@@ -311,6 +317,8 @@
 
         const label = a.textContent.trim();
         const href = a.getAttribute("href") || "#";
+        const drawerTitle = a.dataset.kwDrawerTitle || label;
+        const hasCustomDrawerTitle = Boolean(a.dataset.kwDrawerTitle);
         const hasSub = li.classList.contains("has-sub");
 
         if (hasSub) {
@@ -334,15 +342,22 @@
           });
           panel.appendChild(back);
 
-          const title = document.createElement("a");
-          title.className = "kw-panel-title";
-          title.href = href;
-          title.textContent = label;
-          title.addEventListener("click", e => {
-            e.preventDefault();
-            navigateAfterTap(title, title.href);
-          });
-          panel.appendChild(title);
+          if (hasCustomDrawerTitle) {
+            const title = document.createElement("div");
+            title.className = "kw-panel-title kw-panel-title-static";
+            title.textContent = drawerTitle;
+            panel.appendChild(title);
+          } else {
+            const title = document.createElement("a");
+            title.className = "kw-panel-title";
+            title.href = href;
+            title.textContent = drawerTitle;
+            title.addEventListener("click", e => {
+              e.preventDefault();
+              navigateAfterTap(title, title.href);
+            });
+            panel.appendChild(title);
+          }
 
           const subList = getDesktopSubList(li);
           const links = subList ? subList.querySelectorAll("a") : [];
