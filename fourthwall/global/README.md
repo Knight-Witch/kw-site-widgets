@@ -56,6 +56,17 @@ Do not treat `kwfw-carousel-wheel-bridge.js` as only a wheel listener. In the cu
 
 Do not reintroduce a MutationObserver that removes and recreates the same style element it observes. That caused Fourthwall/browser freezing when attempting to save the footer snippet. If the controller style needs to be maintained, update the existing style element in place.
 
+## Nav/header lab notes
+
+Current preferred nav lab glitch direction: the alternate text-glitch effect in `kw-header-lab.css`, with black and white split layers and the existing red hover state.
+
+Pending nav/header follow-up tasks:
+
+1. Add the same glitch animation to mobile parent menu buttons. On tap, play the glitch animation first, then open that button's submenu after the animation delay.
+2. Replace the desktop drawer instant open/close behavior with a smoother animated transition similar to the mobile drilldown movement. Avoid a hard pop-in on hover or click-lock open.
+
+Keep nav/header work scoped to `kw-header.js`, `kw-header.css`, `kw-header-lab.js`, or `kw-header-lab.css` unless dependency loading changes require `kw-fourthwall-loader.js`.
+
 ## Layout guard
 
 `fourthwall/global/kw-fourthwall-layout-guard.css` is loaded first by the global loader. It owns the Fourthwall page and footer layout correction. It must keep the main page region expanding above the footer so the native Fourthwall footer does not appear in the middle of short pages.
