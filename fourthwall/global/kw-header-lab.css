@@ -49,6 +49,6 @@
   .kw-lab-mobile-parent[data-opening="1"]{pointer-events:none;}
   .kw-lab-back{font-size:clamp(18px,5vw,24px)!important;letter-spacing:2px!important;color:rgba(255,255,255,.78)!important;margin-bottom:8px;padding-bottom:10px!important;border-bottom:1px solid rgba(255,255,255,.12)!important;}
   .kw-lab-mobile-title{color:#f00!important;cursor:default!important;pointer-events:none;margin-bottom:-14px;}
-  .kw-lab-mobile-subtitle{font-size:clamp(15px,4.2vw,20px)!important;letter-spacing:clamp(1.5px,.5vw,3px)!important;color:rgba(255,255,255,.72)!important;cursor:default!important;pointer-events:none;margin-bottom:8px;padding-bottom:14px!important;border-bottom:1px solid rgba(255,255,255,.12);}
+  .kw-lab-mobile-subtitle{font-size:clamp(15px,4.2vw,20px)!important;letter-spacing:clamp(1.5px,.5vw,3px)!important;color:rgba(255,255,255,.72)!important;cursor:default!important;pointer-events:none;margin-bottom:8px;padding-bottom:14px!important;border-bottom:1px solid rgba(255,255,255,.12);min-height:calc(clamp(15px,4.2vw,20px) * 1.25 + 14px);}
 }
 @media (prefers-reduced-motion:reduce){.kw-lab-sub-wrap,.kw-lab-panel{transition:none!important}.kw-lab-glitch.is-glitching::before,.kw-lab-glitch.is-glitching::after{animation:none!important;opacity:0!important;}}
