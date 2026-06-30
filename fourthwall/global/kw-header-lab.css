@@ -1,5 +1,5 @@
 .kw-nav-lab-active #kw-header{display:none!important;}
-#kw-header-lab{--kw-lab-panel-width:min(96vw,430px);--kw-lab-glitch-primary:#f00;--kw-lab-glitch-secondary:#ff7a00;position:fixed;top:0;left:0;width:100%;z-index:2147483200;background:#000;font-family:'AgencyFB',sans-serif;letter-spacing:1.5px;text-transform:uppercase;}
+#kw-header-lab{--kw-lab-panel-width:min(96vw,430px);--kw-lab-glitch-primary:#fff;--kw-lab-glitch-secondary:#ff7a00;position:fixed;top:0;left:0;width:100%;z-index:2147483200;background:#000;font-family:'AgencyFB',sans-serif;letter-spacing:1.5px;text-transform:uppercase;}
 #kw-header-lab *{box-sizing:border-box;}
 #kw-header-lab ul{list-style:none;margin:0;padding:0;}
 #kw-header-lab a,#kw-header-lab button{font-family:inherit;text-transform:inherit;letter-spacing:inherit;}
