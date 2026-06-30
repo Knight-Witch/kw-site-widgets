@@ -19,7 +19,7 @@
 .kw-menu { display: flex; gap: 50px; position: relative; }
 .kw-menu > li { position: relative; }
 .kw-menu > li > a { font-size: 25px; }
-.kw-menu > li.open > a { color: #ff0000; }
+#kw-header .kw-menu > li.open > a { color: #ff0000 !important; }
 .kw-sub {
   position: absolute; top: 100%; left: 50%; right: auto; display: none; flex-direction: column;
   background: black; padding: 10px 0; min-width: 220px; border: 1px solid rgba(255,255,255,0.1);
