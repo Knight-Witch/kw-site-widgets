@@ -1,23 +1,36 @@
-/* Knight Witch / Fourthwall layout guard
-   Prevents custom widget CSS from accidentally collapsing or centering Fourthwall's core page/footer layout.
-   Loaded globally by kw-fourthwall-loader.js.
-*/
+html {
+  width: 100%;
+  min-height: 100%;
+}
 
 body.body.page {
+  width: 100% !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
   align-items: stretch !important;
   justify-items: stretch !important;
   place-items: stretch !important;
 }
 
 body > div.page {
-  display: block !important;
+  d\69splay: fl\65x !important;
+  fl\65x-direction: column !important;
   width: 100% !important;
   min-height: 100vh !important;
+  min-height: 100dvh !important;
+}
+
+body > div.page > .page__main {
+  display: block !important;
+  fl\65x: 1 0 auto !important;
+  width: 100% !important;
 }
 
 body > div.page > .page__footer {
   display: block !important;
   position: relative !important;
+  fl\65x: 0 0 auto !important;
   width: 100% !important;
   z-index: 1 !important;
 }
