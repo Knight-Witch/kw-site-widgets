@@ -43,7 +43,7 @@
     { type: "css", key: "kw-cart-runtime-css", href: url(selfRef, "fourthwall/global/kw-cart-runtime.css", version) },
 
     { type: "js", key: "kw-header-js", src: url(selfRef, "fourthwall/global/kw-header.js", version) },
-    { type: "js", key: "kw-header-about-menu-patch-js", src: url("main", "fourthwall/global/kw-header-about-menu-patch.js", "20260629-about-menu-cleanup-1") },
+    { type: "js", key: "kw-header-about-menu-patch-js", src: url(selfRef, "fourthwall/global/kw-header-about-menu-patch.js", "20260630-about-menu-cleanup-2") },
     { type: "js", key: "kw-title-bars-js", src: url("main", "components/kw-title-bars/kw-title-bars.js", version) },
     { type: "js", key: "kw-info-sections-js", src: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.js", "20260628-info-host-spacing-1") },
     { type: "js", key: "kw-info-spacing-runtime-js", src: url(selfRef, "fourthwall/global/kw-info-spacing-runtime.js", "20260628-info-spacing-runtime-2") },
