@@ -9,7 +9,11 @@
   const cssUrl = `https://cdn.jsdelivr.net/gh/${repo}@${ref}/fourthwall/global/kw-header-lab.css?v=${encodeURIComponent(version)}`;
   const mobileGlitchDelay = 420;
   const textSwapDelay = 130;
+  const subtitleRevealDelay = 180;
+  const subtitleRevealStep = 28;
+  const subtitleAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const swapTimers = new WeakMap();
+  const subtitleTimers = new WeakMap();
 
   const navItems = [
     { title: "Home", href: "/" },
@@ -147,6 +151,54 @@
     swapTimers.set(element, timer);
   }
 
+  function clearSubtitleReveal(element) {
+    const existing = subtitleTimers.get(element);
+    if (existing) window.clearInterval(existing);
+    subtitleTimers.delete(element);
+  }
+
+  function resetSubtitleReveal(element) {
+    if (!element) return;
+    clearSubtitleReveal(element);
+    element.textContent = "";
+    element.dataset.kwLabDecoded = "0";
+  }
+
+  function revealSubtitle(element) {
+    if (!element) return;
+    const text = element.dataset.kwLabSubtitle || "";
+    if (!text || element.dataset.kwLabDecoded === "1") return;
+    clearSubtitleReveal(element);
+    let iteration = 0;
+    element.textContent = "";
+    const timer = window.setInterval(() => {
+      element.textContent = text.split("").map((character, index) => {
+        if (character === " ") return " ";
+        if (index < iteration) return character;
+        return subtitleAlphabet[Math.floor(Math.random() * subtitleAlphabet.length)];
+      }).join("");
+      if (iteration >= text.length) {
+        clearSubtitleReveal(element);
+        element.textContent = text;
+        element.dataset.kwLabDecoded = "1";
+        return;
+      }
+      iteration += 0.55;
+    }, subtitleRevealStep);
+    subtitleTimers.set(element, timer);
+  }
+
+  function resetPanelSubtitles(panel) {
+    panel?.querySelectorAll(".kw-lab-mobile-subtitle").forEach(resetSubtitleReveal);
+  }
+
+  function revealPanelSubtitle(panel) {
+    const subtitle = panel?.querySelector(".kw-lab-mobile-subtitle");
+    if (!subtitle) return;
+    resetSubtitleReveal(subtitle);
+    window.setTimeout(() => revealSubtitle(subtitle), subtitleRevealDelay);
+  }
+
   function initGlitch() {
     const nav = d.getElementById("kw-header-lab");
     if (!nav) return;
@@ -259,16 +311,23 @@
     function closeSub() {
       panels.dataset.mode = "main";
       main.classList.remove("is-off");
-      panels.querySelectorAll(".kw-lab-panel.sub.is-open").forEach(panel => panel.classList.remove("is-open"));
+      panels.querySelectorAll(".kw-lab-panel.sub.is-open").forEach(panel => {
+        panel.classList.remove("is-open");
+        resetPanelSubtitles(panel);
+      });
     }
 
     function openSub(panel) {
       panels.dataset.mode = "sub";
       main.classList.add("is-off");
       panels.querySelectorAll(".kw-lab-panel.sub.is-open").forEach(openPanel => {
-        if (openPanel !== panel) openPanel.classList.remove("is-open");
+        if (openPanel !== panel) {
+          openPanel.classList.remove("is-open");
+          resetPanelSubtitles(openPanel);
+        }
       });
       panel.classList.add("is-open");
+      revealPanelSubtitle(panel);
     }
 
     navItems.forEach(item => {
@@ -314,7 +373,9 @@
       if (item.mobileSubtitle) {
         const subtitle = d.createElement("div");
         subtitle.className = "kw-lab-mobile-subtitle";
-        subtitle.textContent = item.mobileSubtitle;
+        subtitle.dataset.kwLabSubtitle = item.mobileSubtitle;
+        subtitle.dataset.kwLabDecoded = "0";
+        subtitle.textContent = "";
         panel.appendChild(subtitle);
       }
 
@@ -360,6 +421,7 @@
     function shut() {
       overlay.classList.remove("is-open");
       close.style.display = "none";
+      panels.querySelectorAll(".kw-lab-panel.sub").forEach(resetPanelSubtitles);
       panels.innerHTML = "";
       panels.dataset.mode = "";
     }
