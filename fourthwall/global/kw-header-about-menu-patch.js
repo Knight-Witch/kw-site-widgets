@@ -1,11 +1,11 @@
 (() => {
-  const patchVersion = "20260629-about-menu-cleanup-1";
+  const patchVersion = "20260630-about-menu-cleanup-2";
   const aboutLinks = [
     { title: "About Us", href: "/pages/about" },
     { title: "User Guide", href: "/pages/userguide" },
     { title: "FAQ", href: "/pages/faq" },
-    { title: "Maintenance & Repairs", href: "/pages/maintenance" },
-    { title: "Coverage & Care Plan", href: "/pages/warranty" },
+    { title: "Repairs", href: "/pages/maintenance" },
+    { title: "Care Plan", href: "/pages/warranty" },
     { title: "News & Updates", href: "/pages/news" }
   ];
 
