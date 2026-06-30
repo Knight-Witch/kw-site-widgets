@@ -7,6 +7,7 @@
   const ref = match ? match[2] : "main";
   const version = current?.dataset.version || "20260629-nav-lab-1";
   const cssUrl = `https://cdn.jsdelivr.net/gh/${repo}@${ref}/fourthwall/global/kw-header-lab.css?v=${encodeURIComponent(version)}`;
+  const mobileGlitchDelay = 420;
 
   const navItems = [
     { title: "Home", href: "/" },
@@ -117,13 +118,17 @@
     d.getElementById("kw-header-lab")?.style.setProperty("--kw-lab-panel-width", Math.round(width) + "px");
   }
 
+  function triggerGlitch(element) {
+    element.classList.remove("is-glitching");
+    void element.offsetWidth;
+    element.classList.add("is-glitching");
+  }
+
   function initGlitch() {
     d.querySelectorAll("#kw-header-lab .kw-lab-glitch").forEach(element => {
       element.addEventListener("mouseenter", () => {
         if (window.innerWidth <= 1024) return;
-        element.classList.remove("is-glitching");
-        void element.offsetWidth;
-        element.classList.add("is-glitching");
+        triggerGlitch(element);
       });
       element.addEventListener("animationend", () => element.classList.remove("is-glitching"));
     });
@@ -225,7 +230,12 @@
       const button = d.createElement("button");
       button.type = "button";
       button.className = "kw-lab-mobile-parent";
-      button.textContent = item.title;
+
+      const label = d.createElement("span");
+      label.className = "kw-lab-mobile-label kw-lab-glitch";
+      label.dataset.kwLabText = item.title;
+      label.textContent = item.title;
+      button.appendChild(label);
 
       const panel = d.createElement("div");
       panel.className = "kw-lab-panel sub";
@@ -262,7 +272,13 @@
       panels.appendChild(panel);
       button.addEventListener("click", event => {
         event.preventDefault();
-        openSub(panel);
+        if (button.dataset.opening === "1") return;
+        button.dataset.opening = "1";
+        triggerGlitch(label);
+        window.setTimeout(() => {
+          button.dataset.opening = "";
+          openSub(panel);
+        }, mobileGlitchDelay);
       });
       main.appendChild(button);
     });
