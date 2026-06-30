@@ -7,7 +7,7 @@
   const repo = m ? m[1] : "Knight-Witch/kw-site-widgets";
   const selfRef = m ? m[2] : "main";
   const base = `https://cdn.jsdelivr.net/gh/${repo}`;
-  const version = s?.dataset.version || "20260629-header-about-menu-patch-1";
+  const version = s?.dataset.version || "20260629-carousel-scroll-1";
 
   const manifest =
     s?.dataset.productMediaManifest ||
@@ -36,7 +36,7 @@
     { type: "css", key: "kw-info-sections-css", href: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.css", "20260628-tight-spacing-4") },
     { type: "css", key: "kwfw-carousel-css", href: url("69e95f9562e165299897b793103949bfba0ab6e3", "fourthwall/kwfw-carousel.css") },
     { type: "css", key: "kwfw-font-agencyfb-css", href: url("988f5aa2bb75880d43ccfc58a751b73e20d9e1aa", "fourthwall/kwfw-font-agencyfb.css") },
-    { type: "css", key: "kwfw-carousel-desktop-grid-css", href: url("a4f56c6eab3ca9793c7ea1009c1a69318fd1d73c", "fourthwall/kwfw-carousel-desktop-grid.css") },
+    { type: "css", key: "kwfw-carousel-desktop-grid-css", href: url(selfRef, "fourthwall/kwfw-carousel-desktop-grid.css", version) },
     { type: "css", key: "kwfw-size-guide-css", href: url("03e30bd4c28f5de3fc956ea39a874e6e447583d0", "fourthwall/kwfw-size-guide.css") },
     { type: "css", key: "kwfw-universal-media-css", href: url("579c6124748dec87d5957716eabf0563dfc9401c", "fourthwall/kwfw-universal-media.css") },
     { type: "css", key: "kwfw-product-rules-css", href: url("db73f85d3d4b982e46fea1e57bba48863b651889", "fourthwall/kwfw-product-rules.css") },
