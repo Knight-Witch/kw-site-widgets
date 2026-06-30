@@ -1,5 +1,6 @@
 (() => {
   const mobileGlitchDelay = 420;
+  const navigationDelay = 220;
   const textSwapDelay = 130;
   const subtitleRevealDelay = 180;
   const subtitleRevealStep = 28;
@@ -90,12 +91,11 @@
       const isTopLevel = level === 0;
       const classNames = [item.className, hasSub ? "has-sub" : ""].filter(Boolean).join(" ");
       const drawerTitle = item.drawerTitle || item.title;
-      const linkClass = isTopLevel ? "kw-glitch" : "";
-      const linkData = isTopLevel ? ` data-kw-title="${escapeAttribute(item.title)}" data-kw-text="${escapeAttribute(item.title)}"` : "";
+      const linkData = ` data-kw-text="${escapeAttribute(item.title)}"${isTopLevel ? ` data-kw-title="${escapeAttribute(item.title)}"` : ""}`;
       const drawerData = isTopLevel && hasSub ? ` data-kw-drawer-title="${escapeAttribute(drawerTitle)}" data-kw-mobile-subtitle="${escapeAttribute(item.mobileSubtitle || "")}"` : "";
       const subtitle = isTopLevel && item.mobileSubtitle ? `<li class="kw-desktop-subtitle kw-subtitle-reveal" data-kw-subtitle="${escapeAttribute(item.mobileSubtitle)}" data-kw-decoded="0"></li>` : "";
       const sub = hasSub ? `<ul class="kw-sub">${subtitle}${renderItems(item.children, level + 1)}</ul>` : "";
-      return `<li${classNames ? ` class="${escapeAttribute(classNames)}"` : ""}><a${linkClass ? ` class="${linkClass}"` : ""} href="${escapeAttribute(item.href)}"${linkData}${drawerData}>${escapeHtml(item.title)}</a>${sub}</li>`;
+      return `<li${classNames ? ` class="${escapeAttribute(classNames)}"` : ""}><a class="kw-glitch" href="${escapeAttribute(item.href)}"${linkData}${drawerData}>${escapeHtml(item.title)}</a>${sub}</li>`;
     }).join("");
   }
 
@@ -180,6 +180,16 @@
     if (!subtitle) return;
     resetSubtitleReveal(subtitle);
     window.setTimeout(() => revealSubtitle(subtitle), subtitleRevealDelay);
+  }
+
+  function isModifiedNavigation(event) {
+    return event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+  }
+
+  function navigateAfterTap(element, href) {
+    triggerGlitch(element);
+    element.style.color = "#ff0000";
+    setTimeout(() => { window.location.href = href; }, navigationDelay);
   }
 
   function initHeader() {
@@ -444,6 +454,18 @@
         triggerGlitch(element);
       });
 
+      header.addEventListener("click", event => {
+        const target = event.target instanceof Element ? event.target : null;
+        const link = target?.closest(".kw-sub a.kw-glitch");
+        if (!link || !header.contains(link) || window.innerWidth <= 1024 || isModifiedNavigation(event)) return;
+        const targetWindow = link.getAttribute("target");
+        const href = link.href;
+        if (!href || targetWindow === "_blank") return;
+        event.preventDefault();
+        triggerGlitch(link);
+        window.setTimeout(() => { window.location.href = href; }, navigationDelay);
+      });
+
       header.addEventListener("animationend", event => {
         const target = event.target instanceof Element ? event.target : null;
         const element = target?.closest(".kw-glitch");
@@ -461,11 +483,6 @@
       const width = Math.round(calculateMobilePanelWidth());
       panelsRoot.style.setProperty("--kw-mobile-panel-width", width + "px");
       header.style.setProperty("--kw-mobile-panel-width", width + "px");
-    }
-
-    function navigateAfterTap(element, href) {
-      element.style.color = "#ff0000";
-      setTimeout(() => { window.location.href = href; }, 120);
     }
 
     function buildMobilePanels() {
@@ -545,7 +562,8 @@
             panel.appendChild(title);
           } else {
             const title = document.createElement("a");
-            title.className = "kw-panel-title";
+            title.className = "kw-panel-title kw-glitch";
+            title.dataset.kwText = drawerTitle;
             title.href = href;
             title.textContent = drawerTitle;
             title.addEventListener("click", e => {
@@ -568,8 +586,11 @@
           const links = subList ? subList.querySelectorAll("a") : [];
           links.forEach(s => {
             const subLink = document.createElement("a");
+            const text = s.textContent.trim();
             subLink.href = s.getAttribute("href") || "#";
-            subLink.textContent = s.textContent.trim();
+            subLink.className = "kw-glitch";
+            subLink.dataset.kwText = text;
+            subLink.textContent = text;
             if (s.classList.contains("active")) subLink.classList.add("active");
             subLink.addEventListener("click", e => {
               e.preventDefault();
