@@ -98,7 +98,8 @@
   .kw-panel.sub{transform:translateX(105%);opacity:0;}
   .kw-panel.sub.open{transform:translateX(0);opacity:1;}
   .kw-panel a,
-  .kw-panel button{
+  .kw-panel button,
+  .kw-panel .kw-panel-title{
     appearance:none;-webkit-appearance:none;background:none;border:0;color:white;text-decoration:none;text-align:left;
     font-family:'AgencyFB', sans-serif;text-transform:uppercase;letter-spacing:clamp(2px,.7vw,4px);
     font-size:clamp(22px,6.4vw,32px);line-height:1.08;padding:4px 0;display:block;
@@ -118,5 +119,8 @@
   .kw-panel-back:hover{color:#ff0000!important;}
   .kw-panel-title{
     color:#ff0000!important;margin-bottom:8px;padding-bottom:14px!important;border-bottom:1px solid rgba(255,255,255,.12);
+  }
+  .kw-panel-title-static{
+    cursor:default!important;pointer-events:none;
   }
 }
