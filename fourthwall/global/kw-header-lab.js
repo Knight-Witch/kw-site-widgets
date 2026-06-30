@@ -100,8 +100,10 @@
       if (!hasSub) {
         return `<li${className ? ` class="${escapeAttribute(className)}"` : ""}><a class="kw-lab-top-link kw-lab-glitch" data-kw-lab-text="${escapeAttribute(item.title)}" href="${escapeAttribute(item.href)}">${escapeHtml(item.title)}</a></li>`;
       }
+      const title = item.title;
+      const drawerTitle = item.drawerTitle || item.title;
       const links = item.children.map(child => `<a href="${escapeAttribute(child.href)}">${escapeHtml(child.title)}</a>`).join("");
-      return `<li class="${escapeAttribute(className)}" data-kw-lab-index="${index}"><button class="kw-lab-top-button kw-lab-glitch" data-kw-lab-text="${escapeAttribute(item.title)}" type="button">${escapeHtml(item.title)}</button><div class="kw-lab-sub-wrap"><div class="kw-lab-sub"><div class="kw-lab-sub-title">${escapeHtml(item.drawerTitle || item.title)}</div>${links}</div></div></li>`;
+      return `<li class="${escapeAttribute(className)}" data-kw-lab-index="${index}"><button class="kw-lab-top-button kw-lab-glitch" data-kw-lab-title="${escapeAttribute(title)}" data-kw-lab-drawer-title="${escapeAttribute(drawerTitle)}" data-kw-lab-text="${escapeAttribute(title)}" type="button">${escapeHtml(title)}</button><div class="kw-lab-sub-wrap"><div class="kw-lab-sub">${links}</div></div></li>`;
     }).join("");
   }
 
@@ -119,19 +121,39 @@
   }
 
   function triggerGlitch(element) {
+    if (!element) return;
     element.classList.remove("is-glitching");
     void element.offsetWidth;
     element.classList.add("is-glitching");
   }
 
+  function setGlitchText(element, value) {
+    const text = String(value ?? "");
+    if (!element || element.dataset.kwLabText === text) return;
+    element.textContent = text;
+    element.dataset.kwLabText = text;
+    triggerGlitch(element);
+  }
+
   function initGlitch() {
-    d.querySelectorAll("#kw-header-lab .kw-lab-glitch").forEach(element => {
-      element.addEventListener("mouseenter", () => {
-        if (window.innerWidth <= 1024) return;
-        triggerGlitch(element);
-      });
-      element.addEventListener("animationend", () => element.classList.remove("is-glitching"));
+    const nav = d.getElementById("kw-header-lab");
+    if (!nav) return;
+
+    nav.addEventListener("pointerover", event => {
+      if (event.pointerType && event.pointerType !== "mouse") return;
+      const target = event.target instanceof Element ? event.target : null;
+      const element = target?.closest(".kw-lab-glitch");
+      if (!element || !nav.contains(element)) return;
+      const related = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+      if (related && element.contains(related)) return;
+      triggerGlitch(element);
     });
+
+    nav.addEventListener("animationend", event => {
+      const target = event.target instanceof Element ? event.target : null;
+      const element = target?.closest(".kw-lab-glitch");
+      if (element) element.classList.remove("is-glitching");
+    }, true);
   }
 
   function initDesktop() {
@@ -141,13 +163,33 @@
 
     let locked = null;
 
-    function closeAll() {
-      menu.querySelectorAll("li.is-open").forEach(li => li.classList.remove("is-open"));
+    function resetButton(li) {
+      const button = li.querySelector(":scope > .kw-lab-top-button");
+      if (!button) return;
+      setGlitchText(button, button.dataset.kwLabTitle || button.dataset.kwLabText || button.textContent);
     }
 
-    function openItem(li) {
-      closeAll();
+    function setDrawerButton(li) {
+      const button = li.querySelector(":scope > .kw-lab-top-button");
+      if (!button) return;
+      setGlitchText(button, button.dataset.kwLabDrawerTitle || button.dataset.kwLabTitle || button.textContent);
+    }
+
+    function closeItem(li) {
+      li.classList.remove("is-open");
+      resetButton(li);
+    }
+
+    function closeAll() {
+      menu.querySelectorAll(":scope > li.has-sub").forEach(closeItem);
+    }
+
+    function openItem(li, lockTitle = false) {
+      menu.querySelectorAll(":scope > li.has-sub").forEach(item => {
+        if (item !== li) closeItem(item);
+      });
       li.classList.add("is-open");
+      if (lockTitle) setDrawerButton(li);
     }
 
     menu.querySelectorAll(":scope > li.has-sub").forEach(li => {
@@ -156,7 +198,7 @@
 
       li.addEventListener("mouseenter", () => {
         if (window.innerWidth <= 1024 || locked) return;
-        openItem(li);
+        openItem(li, false);
       });
 
       button.addEventListener("click", event => {
@@ -164,11 +206,11 @@
         event.stopPropagation();
         if (locked === li) {
           locked = null;
-          closeAll();
+          closeItem(li);
           return;
         }
         locked = li;
-        openItem(li);
+        openItem(li, true);
       });
     });
 
@@ -222,6 +264,8 @@
       if (!hasSub) {
         const link = d.createElement("a");
         link.href = item.href;
+        link.className = "kw-lab-glitch";
+        link.dataset.kwLabText = item.title;
         link.textContent = item.title;
         main.appendChild(link);
         return;
@@ -270,6 +314,10 @@
       });
 
       panels.appendChild(panel);
+      button.addEventListener("pointerenter", event => {
+        if (event.pointerType && event.pointerType !== "mouse") return;
+        triggerGlitch(label);
+      });
       button.addEventListener("click", event => {
         event.preventDefault();
         if (button.dataset.opening === "1") return;
