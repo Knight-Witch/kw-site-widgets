@@ -8,7 +8,10 @@
 
   html body .kwfw-root .kwfw-rail-wrap {
     position: relative !important;
-    width: 100% !important;
+    width: min(984px, calc(100vw - 32px)) !important;
+    max-width: none !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   html body .kwfw-root .kwfw-rail {
@@ -20,13 +23,20 @@
     gap: 12px !important;
     width: min(984px, calc(100vw - 32px)) !important;
     max-width: none !important;
-    max-height: none !important;
+    max-height: 886px !important;
     margin: 0 auto !important;
     padding: 4px 0 18px !important;
-    overflow: visible !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
     overscroll-behavior: auto !important;
     scroll-snap-type: none !important;
-    scrollbar-width: auto !important;
+    scrollbar-width: none !important;
+  }
+
+  html body .kwfw-root .kwfw-rail::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 
   html body .kwfw-root .kwfw-card {
