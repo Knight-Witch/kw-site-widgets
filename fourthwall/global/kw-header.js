@@ -7,7 +7,7 @@
       drawerTitle: "The Collection Domain",
       href: "/pages/the-collection-domain",
       children: [
-        { title: "Enter The Full Collection", href: "/pages/the-collection-domain" },
+        { title: "See The Full Collection", href: "/pages/the-collection-domain" },
         { title: "Edgerunners", href: "/pages/edgerunners" },
         { title: "Basscraft", href: "/pages/basscraft" },
         { title: "Wicked Hearts", href: "/pages/wicked-hearts" },
