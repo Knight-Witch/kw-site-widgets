@@ -1,14 +1,7 @@
-.kw-collection-transparent-wrapper {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-.kw-collection-transparent-wrapper::before,
-.kw-collection-transparent-wrapper::after {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
+.desktop-banner-container,
+.banner-buttons-mobile,
+.standalone-video-section {
+  display: none !important;
 }
 
 .kw-collection-domain {
