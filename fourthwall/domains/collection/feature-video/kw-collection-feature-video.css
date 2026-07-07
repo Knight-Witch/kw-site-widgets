@@ -1,6 +1,6 @@
 .kw-collection-feature-module {
   width: min(92vw, 1280px);
-  margin: 50px auto;
+  margin: 16px auto 28px;
   padding: 0;
   position: relative;
   z-index: 10;
@@ -74,7 +74,7 @@
 @media (max-width: 768px) {
   .kw-collection-feature-module {
     width: 94vw;
-    margin: 6px auto 28px;
+    margin: 4px auto 24px;
   }
 
   .kw-collection-feature-controls {
