@@ -12,9 +12,9 @@ If a live website element is not documented in `/ARCHITECTURE.md`, `/STYLE_KEYS.
 
 Media direction:
 
-- Product images may still be Fourthwall-hosted as native product media.
-- Product support media, banners, backgrounds, and feature videos should use the Knight Witch CDN where practical.
-- Long-term goal is to move away from Fourthwall media hosting where possible.
+- Native product media returned by the Fourthwall product API can remain Fourthwall-hosted.
+- All other site media used by this repo is on the Knight Witch DigitalOcean CDN unless a documented exception says otherwise.
+- Repo-local assets belong in `/ASSETS/`.
 
 ## Current live / production-facing systems
 
@@ -304,6 +304,7 @@ Status: legacy; not documented as global-loader active.
 - Expanded repo architecture, style, master, changelog, pre-flight, and diff records.
 - Documented current global loader, active hotfix, title-bar risk, loader order, website element inventory, and media-hosting boundary.
 - Split Collection feature video into standalone module.
+- Added `/fourthwall/domains/collection/feature-video/README.md`.
 - Removed Collection lower feature video from banner module.
 - Tightened carousel/title-bar spacing.
 - Added temporary title-bar hotfix loader and stylesheet.
@@ -314,7 +315,7 @@ Status: legacy; not documented as global-loader active.
 1. Fold title-bar hotfix into base component/global loader.
 2. Stop title-bar CSS/JS from floating from `main` in the global loader.
 3. Update or deprecate stale notes in `fourthwall/global/README.md`.
-4. Finish module README coverage for current modules and legacy systems.
+4. Finish remaining module README coverage, especially `fourthwall/prod_card_media/README.md`.
 5. Audit legacy carousel files and decide keep/remove/archive status.
 6. Stabilize or document the `kw-info-accordion-dev` dependency.
 7. Resolve or document the missing `gallery-portfolio/gallery-portfolio.js`.
@@ -324,12 +325,12 @@ Status: legacy; not documented as global-loader active.
 
 ## Planned work
 
-- Complete deeper documentation pass for all GitHub-hosted website elements.
+- Continue deeper documentation passes for GitHub-hosted website elements.
 - Use `/HISTORY/PRE_FLIGHT_Check.md` before future code edits.
 - Use `/HISTORY/CHANGELOG.md` and `/HISTORY/DIFFS/` for every GitHub update.
 - Keep current production snippets/URLs in this file.
 - Move temporary fixes into proper owning modules when verified.
-- Gradually migrate non-native media references to external CDN sources where practical.
+- Keep non-product-API media references on the Knight Witch CDN unless an exception is documented.
 
 ## Current production snippets / URLs
 
