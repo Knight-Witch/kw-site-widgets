@@ -42,12 +42,12 @@
       .sort((a, b) => a - b);
 
     const chooseDesiredResolution = () => {
-      const width = Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0);
+      const cssWidth = Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0);
+      const pixelWidth = cssWidth * Math.max(window.devicePixelRatio || 1, 1);
 
       if (mobileViewport || slowConnection) return 720;
-      if (width >= 2560) return 2160;
-      if (width >= 1600) return 1440;
-      return 1080;
+      if (pixelWidth >= 1200 || effectiveType === "" || effectiveType === "4g") return 2160;
+      return 1440;
     };
 
     const nearestResolution = desired => {
@@ -96,6 +96,7 @@
 
     const playVideo = video => {
       const ready = () => {
+        wrapper.style.backgroundImage = "none";
         video.classList.add("is-ready");
         video.play().catch(() => {});
       };
@@ -107,7 +108,7 @@
     };
 
     const desiredResolution = chooseDesiredResolution();
-    const initialResolution = !mobileViewport && desiredResolution > 1080 && !slowConnection ? 1080 : desiredResolution;
+    const initialResolution = !mobileViewport && desiredResolution > 1440 && !slowConnection ? 1440 : desiredResolution;
     const initialAsset = selectAsset(initialResolution);
     const desiredAsset = selectAsset(desiredResolution);
 
