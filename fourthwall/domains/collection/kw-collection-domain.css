@@ -144,13 +144,14 @@
   position: relative;
   z-index: 10;
   margin: 50px auto;
-  padding: 18px;
-  background: rgba(0, 0, 0, 0.8);
+  padding: 0;
+  background: transparent;
 }
 
 .kw-collection-feature-video-container {
   width: 100%;
   position: relative;
+  background: transparent;
 }
 
 .kw-collection-feature-video {
@@ -237,7 +238,8 @@
   .kw-collection-video-section {
     width: 94vw;
     margin: 6px auto 28px;
-    padding: 8px;
+    padding: 0;
+    background: transparent;
   }
 
   .kw-collection-controls {
