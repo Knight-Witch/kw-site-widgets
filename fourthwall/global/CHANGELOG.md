@@ -1,5 +1,22 @@
 # Fourthwall Global Changelog
 
+This module changelog records global-runtime-specific notes. `/HISTORY/CHANGELOG.md` remains the canonical repo-wide changelog.
+
+## 2026-07-07 — global README reconciliation
+
+Documentation-only update.
+
+Reconciled `fourthwall/global/README.md` with the current root documentation state.
+
+Current documented production state now points to:
+
+- Global loader commit: `b7672d41f8a011f47675ef2394b7d99028c90158`
+- Global loader cache key: `20260706-title-carousel-spacing-2`
+- Temporary title-bar hotfix commit: `663b046d1dcb77b86a06ee1af427af2a5b0821dc`
+- Temporary title-bar hotfix cache key: `20260706-titlebar-hotfix-1`
+
+The older `20260629-carousel-scroll-4` and `20260630-nav-phase-2-title-hold-red` notes below are historical and should not be treated as the current production footer state.
+
 ## 2026-06-29 — verified carousel scroll runtime
 
 Verified live storefront fix:
