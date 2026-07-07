@@ -139,6 +139,7 @@ Owned by:
 fourthwall/kwfw-universal-media.css
 fourthwall/kwfw-universal-media.js
 fourthwall/prod_card_media/manifest.json
+fourthwall/prod_card_media/README.md
 ```
 
 Status: active via the global loader.
@@ -305,6 +306,7 @@ Status: legacy; not documented as global-loader active.
 - Documented current global loader, active hotfix, title-bar risk, loader order, website element inventory, and media-hosting boundary.
 - Split Collection feature video into standalone module.
 - Added `/fourthwall/domains/collection/feature-video/README.md`.
+- Added `/fourthwall/prod_card_media/README.md`.
 - Removed Collection lower feature video from banner module.
 - Tightened carousel/title-bar spacing.
 - Added temporary title-bar hotfix loader and stylesheet.
@@ -315,13 +317,12 @@ Status: legacy; not documented as global-loader active.
 1. Fold title-bar hotfix into base component/global loader.
 2. Stop title-bar CSS/JS from floating from `main` in the global loader.
 3. Update or deprecate stale notes in `fourthwall/global/README.md`.
-4. Finish remaining module README coverage, especially `fourthwall/prod_card_media/README.md`.
-5. Audit legacy carousel files and decide keep/remove/archive status.
-6. Stabilize or document the `kw-info-accordion-dev` dependency.
-7. Resolve or document the missing `gallery-portfolio/gallery-portfolio.js`.
-8. Audit remaining Fourthwall hard-coded site sections and either migrate them into GitHub or document them as Fourthwall-owned.
-9. Continue backfilling changelog history from recent commits.
-10. Expand product media migration notes as CDN-hosted product-support media is added.
+4. Audit legacy carousel files and decide keep/remove/archive status.
+5. Stabilize or document the `kw-info-accordion-dev` dependency.
+6. Resolve or document the missing `gallery-portfolio/gallery-portfolio.js`.
+7. Audit remaining Fourthwall hard-coded site sections and either migrate them into GitHub or document them as Fourthwall-owned.
+8. Continue backfilling changelog history from recent commits.
+9. Expand product media migration notes as CDN-hosted product-support media is added.
 
 ## Planned work
 
