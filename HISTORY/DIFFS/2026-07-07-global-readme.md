@@ -25,10 +25,14 @@ Documentation-only reconciliation for global runtime docs.
 - `84850a0feb9cc454c028f659f39715a85d097aaf`
 - `6a440708d2d708b5b4ae2a1da34db415d81b1d94`
 - `b84694c76b48af3fcea56ac36ec8fb4b7304fb27`
+- `e0cad86c8e4757671dae70b5181a97ee80a3616a`
+- `5749d85b22dee99ab6fe2f43259c73165cdfa8d5`
 
 ## Notes
 
 Updated stale global runtime documentation to match current root docs and current loader behavior. No runtime files changed. No live testing was performed.
+
+The canonical changelog was condensed during this update because a larger replacement was blocked by the connector safety layer. The changelog now points to diff files for older detailed records where available.
 
 ## Rollback
 
