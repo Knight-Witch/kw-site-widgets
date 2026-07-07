@@ -1,7 +1,7 @@
 html body .kwfw-root {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
-  margin-top: -50px !important;
+  margin-top: -35px !important;
   margin-bottom: -24px !important;
   background: transparent !important;
 }
@@ -77,7 +77,7 @@ html body .kwfw-root .kwfw-rail {
   html body .kwfw-root {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
-    margin-top: -50px !important;
+    margin-top: -35px !important;
     margin-bottom: -20px !important;
   }
 
