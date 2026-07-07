@@ -4,6 +4,51 @@ This is the canonical repo-wide changelog for Knight Witch site/widgets.
 
 Module-specific changelogs may remain, but they do not replace this file.
 
+## 2026-07-07 09:42 UTC — KW-DOC-PROD-MEDIA-005 — Product card media README
+
+ID: KW-DOC-PROD-MEDIA-005
+
+Date: 2026-07-07
+
+Timestamp: 09:42 UTC
+
+Summary:
+- Created `/fourthwall/prod_card_media/README.md`.
+- Documented product-support media ownership, universal media runtime dependency, CDN boundary, current manifest entry, entry fields, and update rules.
+- Updated `/MASTER.md` to mark the product-card media README as completed and remove it from pending module README cleanup.
+- Added a paired diff record for this documentation-only update.
+
+Reason:
+- The product-card media manifest was already documented in `/STYLE_KEYS.md`, but the owning folder did not have local module documentation.
+- Future product-support media additions need clear rules distinguishing native Fourthwall product media from CDN-hosted support media.
+
+Affected files:
+- `/fourthwall/prod_card_media/README.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/HISTORY/DIFFS/2026-07-07-product-card-media-readme.md`
+
+Commit SHAs:
+- `196751d10f09818e2c9c73526777716f7f2cdc18` — Added `/fourthwall/prod_card_media/README.md`.
+- `a6094356c78c4298d2d4619ef4d59683c3b0f624` — Updated `/MASTER.md` for product-card media docs.
+
+Rollback notes:
+- Documentation-only change. Runtime behavior should not change.
+- To rollback, revert the commits listed above and the follow-up changelog/pre-flight/diff commits.
+
+Risks / follow-ups:
+- `fourthwall/global/README.md` still needs reconciliation.
+- Live Fourthwall hard-coded snippets still need a separate audit.
+- The product-card media manifest itself was not changed.
+
+Validation:
+- Confirmed the target README was missing before creation.
+- Read `fourthwall/prod_card_media/manifest.json` and documented its current entry.
+- Created the target README successfully.
+- No runtime CSS/JS/JSON changed.
+- No live storefront testing performed.
+
 ## 2026-07-07 09:28 UTC — KW-DOC-FEATURE-MODULE-004 — Collection feature module README
 
 ID: KW-DOC-FEATURE-MODULE-004
