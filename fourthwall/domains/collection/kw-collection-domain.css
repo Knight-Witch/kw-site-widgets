@@ -1,0 +1,254 @@
+.kw-collection-domain {
+  width: 100%;
+  color: #fff;
+  font-family: "AgencyFB", Arial, sans-serif;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.kw-collection-domain * {
+  box-sizing: border-box;
+}
+
+.kw-collection-hero {
+  margin: 0 auto;
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.kw-collection-video-banner {
+  width: 100%;
+  position: relative;
+}
+
+.kw-collection-hero-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+}
+
+.kw-collection-hero-video.is-ready,
+.kw-collection-feature-video.is-ready {
+  opacity: 1;
+}
+
+.kw-collection-buttons-desktop {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 0 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.kw-collection-buttons-desktop::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.kw-collection-buttons-mobile {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  z-index: 2;
+}
+
+.kw-collection-button {
+  position: relative;
+  isolation: isolate;
+  flex: 0 0 auto;
+  min-width: max-content;
+  padding: 10px 15px;
+  font-family: "AgencyFB", Arial, sans-serif;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  text-align: center;
+  border: 2px solid #f00;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  transform: translateZ(0);
+}
+
+.kw-collection-button:hover,
+.kw-collection-button:focus-visible {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #f00;
+  border-color: #f00;
+  outline: none;
+}
+
+.kw-collection-button:active {
+  background-color: #f00;
+  color: #000;
+  border-color: #000;
+}
+
+.kw-collection-button::before,
+.kw-collection-button::after {
+  content: attr(data-kw-text);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: inherit;
+  border-radius: inherit;
+  background: #000;
+  pointer-events: none;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.kw-collection-button.is-glitching::before {
+  color: #fff;
+  opacity: 1;
+  animation: kwCollectionGlitchText 0.4s cubic-bezier(.25,.46,.45,.94) both;
+}
+
+.kw-collection-button.is-glitching::after {
+  color: #000;
+  opacity: 1;
+  animation: kwCollectionGlitchText 0.4s cubic-bezier(.25,.46,.45,.94) reverse both;
+}
+
+.kw-collection-video-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  margin: 50px auto;
+  padding: 20px 0;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.kw-collection-feature-video-container {
+  width: 100%;
+  max-width: 3000px;
+  position: relative;
+}
+
+.kw-collection-feature-video {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+}
+
+.kw-collection-controls {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  z-index: 100;
+}
+
+.kw-collection-mute,
+.kw-collection-restart {
+  background: rgba(0, 0, 0, 0.3);
+  border: 0;
+  color: #fff;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-family: "AgencyFB", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1;
+  border-radius: 5px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.kw-collection-mute:hover,
+.kw-collection-restart:hover,
+.kw-collection-mute:focus-visible,
+.kw-collection-restart:focus-visible {
+  opacity: 1;
+  outline: none;
+}
+
+.kw-collection-restart img {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+@keyframes kwCollectionGlitchText {
+  0% { transform: translate(0); clip-path: inset(0 0 0 0); }
+  20% { transform: translate(-3px, 2px); clip-path: inset(50% 0 20% 0); }
+  40% { transform: translate(2px, -1px); clip-path: inset(20% 0 60% 0); }
+  60% { transform: translate(-2px, 1px); clip-path: inset(80% 0 5% 0); }
+  80% { transform: translate(2px, -2px); clip-path: inset(30% 0 45% 0); }
+  100% { transform: translate(0); clip-path: inset(0 0 0 0); }
+}
+
+@media (max-width: 768px) {
+  .kw-collection-hero,
+  .kw-collection-hero-video {
+    height: auto;
+  }
+
+  .kw-collection-buttons-desktop {
+    display: none;
+  }
+
+  .kw-collection-buttons-mobile {
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 8px;
+    position: static;
+  }
+
+  .kw-collection-button {
+    width: 80%;
+    max-width: 390px;
+    min-width: 0;
+    font-size: 24px;
+  }
+
+  .kw-collection-video-section {
+    margin: 6px auto 28px;
+    padding: 8px 0 12px;
+  }
+
+  .kw-collection-controls {
+    top: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kw-collection-button.is-glitching::before,
+  .kw-collection-button.is-glitching::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
