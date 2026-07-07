@@ -15,6 +15,7 @@ Timestamp: 09:12 UTC
 Summary:
 - Added `/MEDIA.md` as the explicit media-hosting boundary.
 - Updated `/README.md` to include `/MEDIA.md` in the required reading order and documentation system.
+- Updated `/STYLE_KEYS.md` to use the stricter media boundary.
 - Clarified that native product media returned by the Fourthwall product API can remain on Fourthwall, while all other site media used by this repo is expected to live on the Knight Witch DigitalOcean CDN unless a documented exception exists.
 
 Reason:
@@ -23,24 +24,26 @@ Reason:
 Affected files:
 - `/MEDIA.md`
 - `/README.md`
+- `/STYLE_KEYS.md`
 - `/HISTORY/CHANGELOG.md`
 
 Commit SHAs:
 - `6ffc9cd252dd5ef44cf6597881e09fe09256a8dc` — Added `/MEDIA.md`.
 - `d3c0572b5ed7b3130318d3f1370e5e6ff27190e2` — Referenced `/MEDIA.md` in `/README.md`.
 - `93273235d4609a2c475a0b22f9568ef647f0cb9a` — Clarified product API media boundary in `/MEDIA.md`.
+- `ea6b6e65ddc7668d0fefc5a01b139514873e9e86` — Updated `/STYLE_KEYS.md` media-hosting convention and product-support media wording.
 
 Rollback notes:
 - Documentation-only change. Runtime behavior should not change.
 - To rollback, revert the commits listed above and this changelog update.
 
 Risks / follow-ups:
-- `/STYLE_KEYS.md` still contains older softer wording in its media-hosting section. The authoritative media boundary is now `/MEDIA.md` until `/STYLE_KEYS.md` can be patched successfully.
 - Live Fourthwall hard-coded snippets still need a separate audit.
 
 Validation:
 - Confirmed `/README.md` now points to `/MEDIA.md` in the required reading order.
 - Confirmed `/MEDIA.md` contains the strict product API vs CDN boundary.
+- Confirmed `/STYLE_KEYS.md` now mirrors the stricter media boundary.
 - No live storefront testing performed.
 
 ## 2026-07-07 08:54 UTC — KW-DOC-MAP-002 — Deep website documentation map
