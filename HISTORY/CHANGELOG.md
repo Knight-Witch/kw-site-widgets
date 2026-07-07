@@ -4,6 +4,45 @@ This is the canonical repo-wide changelog for Knight Witch site/widgets.
 
 Module-specific changelogs may remain, but they do not replace this file.
 
+## 2026-07-07 09:12 UTC — KW-DOC-MEDIA-003 — Media boundary clarification
+
+ID: KW-DOC-MEDIA-003
+
+Date: 2026-07-07
+
+Timestamp: 09:12 UTC
+
+Summary:
+- Added `/MEDIA.md` as the explicit media-hosting boundary.
+- Updated `/README.md` to include `/MEDIA.md` in the required reading order and documentation system.
+- Clarified that native product media returned by the Fourthwall product API can remain on Fourthwall, while all other site media used by this repo is expected to live on the Knight Witch DigitalOcean CDN unless a documented exception exists.
+
+Reason:
+- The previous wording said external media should use DigitalOcean/CDN where practical. The actual project rule is stricter: non-product-API media used outside Fourthwall native product media is on the DigitalOcean CDN.
+
+Affected files:
+- `/MEDIA.md`
+- `/README.md`
+- `/HISTORY/CHANGELOG.md`
+
+Commit SHAs:
+- `6ffc9cd252dd5ef44cf6597881e09fe09256a8dc` — Added `/MEDIA.md`.
+- `d3c0572b5ed7b3130318d3f1370e5e6ff27190e2` — Referenced `/MEDIA.md` in `/README.md`.
+- `93273235d4609a2c475a0b22f9568ef647f0cb9a` — Clarified product API media boundary in `/MEDIA.md`.
+
+Rollback notes:
+- Documentation-only change. Runtime behavior should not change.
+- To rollback, revert the commits listed above and this changelog update.
+
+Risks / follow-ups:
+- `/STYLE_KEYS.md` still contains older softer wording in its media-hosting section. The authoritative media boundary is now `/MEDIA.md` until `/STYLE_KEYS.md` can be patched successfully.
+- Live Fourthwall hard-coded snippets still need a separate audit.
+
+Validation:
+- Confirmed `/README.md` now points to `/MEDIA.md` in the required reading order.
+- Confirmed `/MEDIA.md` contains the strict product API vs CDN boundary.
+- No live storefront testing performed.
+
 ## 2026-07-07 08:54 UTC — KW-DOC-MAP-002 — Deep website documentation map
 
 ID: KW-DOC-MAP-002
