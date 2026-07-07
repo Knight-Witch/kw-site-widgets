@@ -12,7 +12,7 @@
     const slowConnection = saveData || effectiveType === "slow-2g" || effectiveType === "2g";
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const mobileViewport = window.matchMedia?.("(max-width: 768px), (pointer: coarse)").matches;
-    const variants = config.variants || {};
+    const variants = mobileViewport ? (config.mobileVariants || config.variants || {}) : (config.variants || {});
     const probe = document.createElement("video");
 
     const codecs = [
@@ -45,7 +45,9 @@
       const cssWidth = Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0);
       const pixelWidth = cssWidth * Math.max(window.devicePixelRatio || 1, 1);
 
-      if (mobileViewport || slowConnection) return 720;
+      if (mobileViewport && slowConnection) return 720;
+      if (mobileViewport) return 1080;
+      if (slowConnection) return 720;
       if (pixelWidth >= 1200 || effectiveType === "" || effectiveType === "4g") return 2160;
       return 1440;
     };
