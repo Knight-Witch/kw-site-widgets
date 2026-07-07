@@ -102,13 +102,7 @@
     --kw-title-max-width:calc(100vw - 32px);
     width:calc(100vw - 32px) !important;
     max-width:calc(100vw - 32px) !important;
-  }
-
-  .kw-title-bar__title{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    width:100%;
+    min-height:58px;
   }
 
   .kw-title-bar--step{
