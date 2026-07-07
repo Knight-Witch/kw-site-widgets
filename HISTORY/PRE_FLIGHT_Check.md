@@ -2,6 +2,50 @@
 
 This file is the rolling pre-flight log for the Knight Witch site/widgets repo.
 
+## 2026-07-07 10:05 UTC — PF-20260707-006 — Global README reconciliation
+
+Requested change:
+- Reconcile `/fourthwall/global/README.md` with current root docs, current loader behavior, and current known production footer state.
+
+Docs/files reviewed:
+- `/OPERATING_CONTRACT.md`
+- `/README.md`
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MEDIA.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/README.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/CHANGELOG.md`
+- `/components/kw-title-bars/README.md`
+- `/fourthwall/global/kw-fourthwall-loader.js`
+- `/fourthwall/global/kw-global-config.js`
+- `/fourthwall/global/kw-header.js`
+- `/fourthwall/global/kw-background-video.js`
+- `/fourthwall/global/kw-cart-runtime.js`
+
+Risk notes:
+- Existing global README had stale production footer commit/cache notes.
+- `/MASTER.md` is the current production snippet source.
+- Title-bar files still float from `main` in the global loader.
+- The title-bar hotfix remains temporary.
+- Info sections still load from `kw-info-accordion-dev`.
+- Documentation-only update; no runtime behavior touched.
+
+Plan:
+- Replace stale global README content with current module documentation.
+- Update parent Fourthwall README for the stricter media boundary.
+- Update module changelog, MASTER, root changelog, pre-flight, and diff record.
+
+Validation:
+- Confirmed loader behavior from the current global loader and production-pinned ref.
+- Confirmed global config CDN/social/background assets.
+- Confirmed header/nav behavior from current runtime.
+- No runtime CSS/JS changed.
+- No live storefront testing performed.
+
 ## 2026-07-07 09:42 UTC — PF-20260707-005 — Product media folder README
 
 Requested change:
