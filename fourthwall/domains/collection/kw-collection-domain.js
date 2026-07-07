@@ -26,46 +26,8 @@
         </div>
       </div>
       ${renderButtons("kw-collection-buttons-mobile")}
-      <div class="kw-collection-video-section">
-        <div class="kw-collection-feature-video-container">
-          <video class="kw-collection-feature-video" autoplay loop playsinline muted preload="metadata">
-            <source data-src="${cdn}/domainvideos/ENTER-TCD-V2.webm" type="video/webm">
-          </video>
-          <div class="kw-collection-controls">
-            <button type="button" class="kw-collection-mute">Unmute</button>
-            <button type="button" class="kw-collection-restart" aria-label="Restart video">
-              <img src="${cdn}/restart%20svg.svg" alt="">
-            </button>
-          </div>
-        </div>
-      </div>
     </section>
   `;
-
-  const clearElementBackground = element => {
-    if (!element || element === document.documentElement) return;
-    element.classList.add("kw-collection-transparent-wrapper");
-    element.style.setProperty("background", "transparent", "important");
-    element.style.setProperty("background-color", "transparent", "important");
-    element.style.setProperty("background-image", "none", "important");
-  };
-
-  const clearPageBackgrounds = (host, root) => {
-    document.documentElement.classList.add("kw-collection-page");
-    document.body.classList.add("kw-collection-page");
-    clearElementBackground(document.body);
-
-    let element = host;
-    while (element && element !== document.documentElement) {
-      clearElementBackground(element);
-      element = element.parentElement;
-    }
-
-    document.querySelectorAll("main, #MainContent, [role='main'], section, article, [class*='section'], [class*='Section'], [class*='page'], [class*='Page'], [class*='custom'], [class*='Custom'], [class*='html'], [class*='Html']").forEach(candidate => {
-      if (root && root.contains(candidate)) return;
-      clearElementBackground(candidate);
-    });
-  };
 
   const triggerGlitch = element => {
     if (!element) return;
@@ -121,26 +83,6 @@
     });
   };
 
-  const bindFeatureControls = root => {
-    const video = root.querySelector(".kw-collection-feature-video");
-    const muteButton = root.querySelector(".kw-collection-mute");
-    const restartButton = root.querySelector(".kw-collection-restart");
-
-    if (video && muteButton) {
-      muteButton.addEventListener("click", () => {
-        video.muted = !video.muted;
-        muteButton.textContent = video.muted ? "Unmute" : "Mute";
-      });
-    }
-
-    if (video && restartButton) {
-      restartButton.addEventListener("click", () => {
-        video.currentTime = 0;
-        video.play().catch(() => {});
-      });
-    }
-  };
-
   const mount = host => {
     if (!host || host.dataset.kwCollectionMounted === "1") return;
     host.dataset.kwCollectionMounted = "1";
@@ -149,9 +91,7 @@
     const root = host.querySelector("[data-kw-collection-domain]");
     if (!root) return;
 
-    clearPageBackgrounds(host, root);
     bindButtons(root);
-    bindFeatureControls(root);
     observeVideos(root);
   };
 
