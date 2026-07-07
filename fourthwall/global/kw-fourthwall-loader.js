@@ -7,7 +7,7 @@
   const repo = m ? m[1] : "Knight-Witch/kw-site-widgets";
   const selfRef = m ? m[2] : "main";
   const base = `https://cdn.jsdelivr.net/gh/${repo}`;
-  const version = s?.dataset.version || "20260629-carousel-scroll-4";
+  const version = s?.dataset.version || "20260706-red-particles-background-1";
 
   const manifest =
     s?.dataset.productMediaManifest ||
@@ -31,6 +31,10 @@
 
   const resources = [
     { type: "css", key: "kw-fourthwall-layout-guard-css", href: url(selfRef, "fourthwall/global/kw-fourthwall-layout-guard.css", version) },
+    { type: "css", key: "kw-global-fonts-css", href: url(selfRef, "fourthwall/global/kw-global-fonts.css", version) },
+    { type: "css", key: "kw-global-foundation-css", href: url(selfRef, "fourthwall/global/kw-global-foundation.css", version) },
+    { type: "css", key: "kw-background-video-css", href: url(selfRef, "fourthwall/global/kw-background-video.css", version) },
+    { type: "css", key: "kw-social-icons-css", href: url(selfRef, "fourthwall/global/kw-social-icons.css", version) },
     { type: "css", key: "kw-header-css", href: url(selfRef, "fourthwall/global/kw-header.css", version) },
     { type: "css", key: "kw-title-bars-css", href: url("main", "components/kw-title-bars/kw-title-bars.css", version) },
     { type: "css", key: "kw-info-sections-css", href: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.css", "20260628-tight-spacing-4") },
@@ -42,8 +46,11 @@
     { type: "css", key: "kwfw-product-rules-css", href: url("db73f85d3d4b982e46fea1e57bba48863b651889", "fourthwall/kwfw-product-rules.css") },
     { type: "css", key: "kw-cart-runtime-css", href: url(selfRef, "fourthwall/global/kw-cart-runtime.css", version) },
 
+    { type: "js", key: "kw-global-config-js", src: url(selfRef, "fourthwall/global/kw-global-config.js", version) },
+    { type: "js", key: "kw-background-video-js", src: url(selfRef, "fourthwall/global/kw-background-video.js", version) },
     { type: "js", key: "kw-header-js", src: url(selfRef, "fourthwall/global/kw-header.js", version) },
     { type: "js", key: "kw-header-about-menu-patch-js", src: url(selfRef, "fourthwall/global/kw-header-about-menu-patch.js", "20260630-about-menu-cleanup-2") },
+    { type: "js", key: "kw-social-icons-js", src: url(selfRef, "fourthwall/global/kw-social-icons.js", version) },
     { type: "js", key: "kw-title-bars-js", src: url("main", "components/kw-title-bars/kw-title-bars.js", version) },
     { type: "js", key: "kw-info-sections-js", src: url("kw-info-accordion-dev", "fourthwall/info-sections/kw-info-sections.js", "20260628-info-host-spacing-1") },
     { type: "js", key: "kw-info-spacing-runtime-js", src: url(selfRef, "fourthwall/global/kw-info-spacing-runtime.js", "20260628-info-spacing-runtime-2") },
