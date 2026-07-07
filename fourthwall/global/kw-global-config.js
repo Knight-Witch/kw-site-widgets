@@ -34,6 +34,17 @@
         2160: {
           av1: `${spaces}/GLOBAL/BACKGROUND/Red_Particles_16-9-2160.av1.webm`
         }
+      },
+      mobileVariants: {
+        720: {
+          av1: `${spaces}/GLOBAL/BACKGROUND/Mobile_Red_Particles-720.av1.webm`,
+          mp4: `${spaces}/GLOBAL/BACKGROUND/Mobile_Red_Particles-720.fallback.mp4`
+        },
+        1080: {
+          av1: `${spaces}/GLOBAL/BACKGROUND/Mobile_Red_Particles-1080.av1.webm`,
+          vp9: `${spaces}/GLOBAL/BACKGROUND/Mobile_Red_Particles-1080.vp9.webm`,
+          mp4: `${spaces}/GLOBAL/BACKGROUND/Mobile_Red_Particles-1080.fallback.mp4`
+        }
       }
     },
     social: {
