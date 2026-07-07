@@ -2,6 +2,28 @@
 
 This file is the rolling pre-flight log for the Knight Witch site/widgets repo.
 
+## 2026-07-07 09:42 UTC — PF-20260707-005 — Product media folder README
+
+Requested change:
+- Create local documentation for `fourthwall/prod_card_media/`.
+
+Docs/files reviewed:
+- Root documentation files.
+- `fourthwall/prod_card_media/manifest.json`.
+
+Risk notes:
+- Documentation-only update.
+- Manifest was read, not changed.
+
+Plan:
+- Create the README.
+- Update master, changelog, pre-flight, and diff records.
+
+Validation:
+- Target README was missing before creation.
+- README was created successfully.
+- No runtime files changed.
+
 ## 2026-07-07 09:28 UTC — PF-20260707-004 — Collection feature module README
 
 Requested change:
