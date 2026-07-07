@@ -38,10 +38,10 @@ https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=
 
 ## Media-hosting convention
 
-- Product images may remain in Fourthwall when they are native product images.
-- Product support media, brand media, background videos, feature cards, banners, and standalone videos should use DigitalOcean Spaces/CDN where practical.
-- Long-term direction is to move away from Fourthwall for media hosting except where Fourthwall native product data requires it.
-- CDN asset paths used by code must be documented here or in the relevant module README.
+- Native product media returned by the Fourthwall product API can remain Fourthwall-hosted.
+- All other Knight Witch site media referenced by GitHub-hosted code is expected to live on the DigitalOcean Spaces/CDN root documented above unless an explicit exception is documented.
+- This includes product-support media, brand media, background videos, feature cards, banners, standalone page videos, icons, SVGs, fonts, logos, and global visual assets.
+- CDN asset paths used by code must be documented here, in `/MEDIA.md`, or in the relevant module README.
 - Assets added directly to this repo belong in `/ASSETS/`.
 
 ## Fonts
@@ -362,7 +362,7 @@ Current manifest asset:
 /GLOBAL/PROD_CARD_MEDIA/feature_card.webp
 ```
 
-The modal should support images and video slides. Extra product support media should be CDN-hosted where possible.
+The modal supports images and video slides. Product media returned by the Fourthwall product API may remain Fourthwall-hosted; extra product-support media is expected to be DigitalOcean CDN-hosted unless explicitly documented otherwise.
 
 ## Product size guide
 
