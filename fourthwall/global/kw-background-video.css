@@ -1,0 +1,38 @@
+.kw-background-video-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -2;
+  pointer-events: none;
+  background-color: #000;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.kw-background-video {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 100vw;
+  height: auto;
+  min-width: 100vw;
+  max-width: none;
+  transform: translateX(-50%);
+  object-fit: contain;
+  display: block;
+  opacity: 0;
+  transition: opacity 450ms ease;
+}
+
+.kw-background-video.is-ready {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kw-background-video {
+    display: none;
+  }
+}
