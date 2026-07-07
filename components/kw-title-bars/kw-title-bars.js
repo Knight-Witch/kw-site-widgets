@@ -1,12 +1,18 @@
 (() => {
   const barSelector = ".kw-title-bar";
   const fitAttribute = "data-kw-fit";
+  const mobileQuery = "(max-width:768px)";
+  const minimumFitWidth = 160;
 
   let frame = 0;
   let resizeObserver = null;
   const observed = new WeakSet();
 
   const getBars = () => [...document.querySelectorAll(barSelector)];
+
+  function isMobile(){
+    return window.matchMedia?.(mobileQuery).matches === true;
+  }
 
   function getFitElements(selector){
     if(!selector) return [];
@@ -52,10 +58,16 @@
       const fitElements = getFitElements(fitSelector);
 
       if(fitSelector){
-        const width = measureSpan(fitElements);
+        if(isMobile()){
+          bar.style.removeProperty("width");
+        }else{
+          const width = measureSpan(fitElements);
 
-        if(width !== null){
-          bar.style.width = `${width}px`;
+          if(width !== null && width >= minimumFitWidth){
+            bar.style.width = `${width}px`;
+          }else{
+            bar.style.removeProperty("width");
+          }
         }
       }
 
