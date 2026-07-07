@@ -4,6 +4,49 @@ This is the canonical repo-wide changelog for Knight Witch site/widgets.
 
 Module-specific changelogs may remain, but they do not replace this file.
 
+## 2026-07-07 09:28 UTC — KW-DOC-FEATURE-MODULE-004 — Collection feature module README
+
+ID: KW-DOC-FEATURE-MODULE-004
+
+Date: 2026-07-07
+
+Timestamp: 09:28 UTC
+
+Summary:
+- Created `/fourthwall/domains/collection/feature-video/README.md`.
+- Updated `/MASTER.md` to mark the Collection feature module README as completed and narrow the remaining module README cleanup task.
+- Added a paired diff record for this documentation-only update.
+
+Reason:
+- `/README.md` already linked to the Collection feature module README, but the file did not exist because earlier creation attempts were blocked.
+- The module now has local ownership documentation for its loader, CSS, JS, assets, boundary, and known production URL.
+
+Affected files:
+- `/fourthwall/domains/collection/feature-video/README.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/HISTORY/DIFFS/2026-07-07-collection-feature-module-readme.md`
+
+Commit SHAs:
+- `eaa6b71124229ff8384d8af9b93e7d7ee1b83d5d` — Added `/fourthwall/domains/collection/feature-video/README.md`.
+- `9ad8978d3baee5e8019756bca28c7c0571ccf14b` — Updated `/MASTER.md` for the completed module README and current media boundary.
+
+Rollback notes:
+- Documentation-only change. Runtime behavior should not change.
+- To rollback, revert the commits listed above and the follow-up changelog/pre-flight/diff commits.
+
+Risks / follow-ups:
+- `/fourthwall/prod_card_media/README.md` still needs to be created.
+- `fourthwall/global/README.md` still needs reconciliation.
+- Live Fourthwall hard-coded snippets still need a separate audit.
+
+Validation:
+- Confirmed the target README was missing before creation.
+- Created the target README successfully.
+- No runtime CSS/JS changed.
+- No live storefront testing performed.
+
 ## 2026-07-07 09:12 UTC — KW-DOC-MEDIA-003 — Media boundary clarification
 
 ID: KW-DOC-MEDIA-003
@@ -108,7 +151,6 @@ Rollback notes:
 
 Risks / follow-ups:
 - `fourthwall/global/README.md` update attempts were blocked by tool safety checks, so it remains stale relative to `/MASTER.md`.
-- Creating `/fourthwall/domains/collection/feature-video/README.md` was blocked by tool safety checks.
 - Creating `/fourthwall/prod_card_media/README.md` was blocked by tool safety checks.
 - `gallery-portfolio/index.html` references `gallery-portfolio.js`, which was not present in the audited `main` snapshot.
 - Live Fourthwall hard-coded snippets still need a separate audit.
