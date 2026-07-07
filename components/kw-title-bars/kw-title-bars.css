@@ -29,7 +29,7 @@
   width:fit-content;
   max-width:var(--kw-title-max-width);
   margin:var(--kw-title-outside-top) auto var(--kw-title-outside-bottom);
-  background:#000;
+  background:transparent;
   border:1px solid #f00;
   overflow:hidden;
 }
