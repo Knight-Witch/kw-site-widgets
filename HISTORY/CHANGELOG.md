@@ -8,7 +8,7 @@ Summary: Reconciled global runtime documentation with current root docs, current
 
 Affected files: /fourthwall/global/README.md; /fourthwall/global/CHANGELOG.md; /fourthwall/README.md; /MASTER.md; /HISTORY/CHANGELOG.md; /HISTORY/PRE_FLIGHT_Check.md; /HISTORY/DIFFS/2026-07-07-global-readme.md.
 
-Commits: 58d4c6a9dfa22f0aaaaba4af97f567f57777fae0; 605bdd283f87c8c3353c36cd9c6fdb29fb1c8e47; 4ee081dc07fbf86a8eddab10415d036fe114b920; 84850a0feb9cc454c028f659f39715a85d097aaf; 6a440708d2d708b5b4ae2a1da34db415d81b1d94; b84694c76b48af3fcea56ac36ec8fb4b7304fb27; e0cad86c8e4757671dae70b5181a97ee80a3616a.
+Commits: 58d4c6a9dfa22f0aaaaba4af97f567f57777fae0; 605bdd283f87c8c3353c36cd9c6fdb29fb1c8e47; 4ee081dc07fbf86a8eddab10415d036fe114b920; 84850a0feb9cc454c028f659f39715a85d097aaf; 6a440708d2d708b5b4ae2a1da34db415d81b1d94; b84694c76b48af3fcea56ac36ec8fb4b7304fb27; e0cad86c8e4757671dae70b5181a97ee80a3616a; 5749d85b22dee99ab6fe2f43259c73165cdfa8d5; 749cff3d8cf1ab4878bfd14f54e9c7f7a6a098ea.
 
 Reason: The global runtime README still referenced older pinned states and could mislead future global/footer work.
 
