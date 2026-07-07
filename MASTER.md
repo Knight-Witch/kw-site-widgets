@@ -270,31 +270,27 @@ Status: legacy; not documented as global-loader active.
    - Current mitigation: temporary title-bar hotfix snippet in footer.
    - Required fix: pin or self-ref title-bar assets appropriately and fold hotfix into base component.
 
-2. `fourthwall/global/README.md` contains older production state.
-   - Risk: future sessions may confuse old known-good snippets with current production footer.
-   - Required fix: update module README or mark it as subordinate to `/MASTER.md` for live snippets.
-
-3. Legacy carousel loaders and variants remain in the repo.
+2. Legacy carousel loaders and variants remain in the repo.
    - Risk: stale loaders may be mistaken for production entrypoints.
    - Required fix: audit and mark keep/remove/archive decisions.
 
-4. `kw-info-accordion-dev` is branch-loaded from the production global loader.
+3. `kw-info-accordion-dev` is branch-loaded from the production global loader.
    - Risk: production depends on a branch ref.
    - Required fix: decide whether to merge/pin/stabilize the info-section system.
 
-5. GitHub code search may be unreliable for this repo.
+4. GitHub code search may be unreliable for this repo.
    - Risk: search may return no results even when files exist.
    - Required mitigation: use direct path fetches or local ZIP audit when necessary.
 
-6. Live frontend storefront value cannot be committed into repo docs.
+5. Live frontend storefront value cannot be committed into repo docs.
    - Risk: docs snippets must use placeholders for that value.
    - Required mitigation: keep the live value in Fourthwall/project instructions, not repo files.
 
-7. `gallery-portfolio/index.html` references a missing script.
+6. `gallery-portfolio/index.html` references a missing script.
    - Risk: standalone gallery page will not function fully from current `main` files alone.
    - Required fix: find, restore, rebuild, or remove the missing script reference.
 
-8. Unknown Fourthwall hard-coded sections remain.
+7. Unknown Fourthwall hard-coded sections remain.
    - Risk: docs may not yet represent the whole live website.
    - Required mitigation: audit Fourthwall page custom HTML snippets and add them to GitHub or document them as Fourthwall-owned.
 
@@ -303,6 +299,8 @@ Status: legacy; not documented as global-loader active.
 - Created `/OPERATING_CONTRACT.md`.
 - Created the root documentation system.
 - Expanded repo architecture, style, master, changelog, pre-flight, and diff records.
+- Reconciled `/fourthwall/global/README.md` with current production/global runtime docs.
+- Clarified `/fourthwall/README.md` media boundary and current product media docs.
 - Documented current global loader, active hotfix, title-bar risk, loader order, website element inventory, and media-hosting boundary.
 - Split Collection feature video into standalone module.
 - Added `/fourthwall/domains/collection/feature-video/README.md`.
@@ -316,13 +314,12 @@ Status: legacy; not documented as global-loader active.
 
 1. Fold title-bar hotfix into base component/global loader.
 2. Stop title-bar CSS/JS from floating from `main` in the global loader.
-3. Update or deprecate stale notes in `fourthwall/global/README.md`.
-4. Audit legacy carousel files and decide keep/remove/archive status.
-5. Stabilize or document the `kw-info-accordion-dev` dependency.
-6. Resolve or document the missing `gallery-portfolio/gallery-portfolio.js`.
-7. Audit remaining Fourthwall hard-coded site sections and either migrate them into GitHub or document them as Fourthwall-owned.
-8. Continue backfilling changelog history from recent commits.
-9. Expand product media migration notes as CDN-hosted product-support media is added.
+3. Audit legacy carousel files and decide keep/remove/archive status.
+4. Stabilize or document the `kw-info-accordion-dev` dependency.
+5. Resolve or document the missing `gallery-portfolio/gallery-portfolio.js`.
+6. Audit remaining Fourthwall hard-coded site sections and either migrate them into GitHub or document them as Fourthwall-owned.
+7. Continue backfilling changelog history from recent commits.
+8. Expand product media migration notes as CDN-hosted product-support media is added.
 
 ## Planned work
 
