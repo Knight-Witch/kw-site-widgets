@@ -90,19 +90,15 @@
 
 @media (max-width:768px){
   .kw-title-bar{
-    --kw-title-outside-top:-38px;
-    --kw-title-outside-bottom:-48px;
-    --kw-title-inside-x:14px;
+    --kw-title-outside-top:-68px;
+    --kw-title-outside-bottom:-66px;
+    --kw-title-inside-x:16px;
     --kw-title-top:10px;
     --kw-title-bottom:2px;
     --kw-subtitle-bottom:10px;
-    --kw-title-font-size:clamp(1.15rem, 4.8vw, 1.7rem);
+    --kw-title-font-size:clamp(1.2rem, 5vw, 2rem);
     --kw-subtitle-font-size:clamp(.8rem, 3.5vw, 1rem);
-    --kw-title-letter-spacing:.2em;
-    --kw-title-max-width:calc(100vw - 32px);
-    width:calc(100vw - 32px) !important;
-    max-width:calc(100vw - 32px) !important;
-    min-height:58px;
+    --kw-title-letter-spacing:.12em;
   }
 
   .kw-title-bar--step{
