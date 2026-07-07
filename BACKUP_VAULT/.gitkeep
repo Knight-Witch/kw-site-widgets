@@ -1,0 +1,3 @@
+# Backup vault placeholder
+
+Major-risk repo backups go here using `REPO_BACKUP_mm-dd-yy_timestamp` naming. Never remove files from this directory.
