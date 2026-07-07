@@ -12,8 +12,9 @@ Before repo work, read:
 2. [`/ARCHITECTURE.md`](./ARCHITECTURE.md)
 3. [`/MASTER.md`](./MASTER.md)
 4. [`/STYLE_KEYS.md`](./STYLE_KEYS.md)
-5. [`/HISTORY/CHANGELOG.md`](./HISTORY/CHANGELOG.md)
-6. [`/HISTORY/PRE_FLIGHT_Check.md`](./HISTORY/PRE_FLIGHT_Check.md)
+5. [`/MEDIA.md`](./MEDIA.md)
+6. [`/HISTORY/CHANGELOG.md`](./HISTORY/CHANGELOG.md)
+7. [`/HISTORY/PRE_FLIGHT_Check.md`](./HISTORY/PRE_FLIGHT_Check.md)
 
 Then read relevant module docs:
 
@@ -33,10 +34,9 @@ GitHub owns the runtime code in this repo. Fourthwall owns snippet placement, na
 
 Media policy:
 
-- Product images may still be hosted by Fourthwall as native product media.
-- External Knight Witch media should use DigitalOcean Spaces/CDN where practical.
-- Long-term direction is to move away from Fourthwall as media host where possible, especially for non-native product media.
-- External media roots and usage rules belong in [`/STYLE_KEYS.md`](./STYLE_KEYS.md).
+- Native product media can remain on Fourthwall.
+- All other site media used by this repo is on the Knight Witch CDN unless a documented exception says otherwise.
+- External media roots and usage rules belong in [`/STYLE_KEYS.md`](./STYLE_KEYS.md), [`/MEDIA.md`](./MEDIA.md), or the relevant module README.
 
 The full process rules live in [`/OPERATING_CONTRACT.md`](./OPERATING_CONTRACT.md).
 
@@ -57,6 +57,7 @@ The current production footer state is documented in [`/MASTER.md`](./MASTER.md)
 
 - [`/ARCHITECTURE.md`](./ARCHITECTURE.md) maps structure, ownership, loaders, dependency order, file inventory, and future edit locations.
 - [`/STYLE_KEYS.md`](./STYLE_KEYS.md) maps fonts, colors, assets, CDN roots, breakpoints, spacing, title bars, carousel sizing, backgrounds, product panels, and visual conventions.
+- [`/MEDIA.md`](./MEDIA.md) records the media-hosting boundary.
 - [`/MASTER.md`](./MASTER.md) tracks live systems, tasks, bugs, risks, snippets, cleanup, hard-coded Fourthwall unknowns, and decisions against.
 - [`/HISTORY/CHANGELOG.md`](./HISTORY/CHANGELOG.md) is the canonical repo-wide changelog.
 - [`/HISTORY/PRE_FLIGHT_Check.md`](./HISTORY/PRE_FLIGHT_Check.md) is the rolling pre-flight log.
