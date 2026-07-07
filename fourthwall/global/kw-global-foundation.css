@@ -1,0 +1,42 @@
+html {
+  min-height: 100%;
+  background: #000;
+}
+
+body {
+  min-height: 100%;
+  background: transparent;
+}
+
+:root {
+  --kw-page-background: #000;
+}
+
+.site-header,
+.header,
+[data-component="Header"] {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 11000 !important;
+  margin: 0 !important;
+}
+
+.shopify-section-header-sticky-padding,
+.header__spacer,
+.header-spacer,
+[class*="header"][class*="spacer"] {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#MainContent > :is(div, section, p):empty {
+  display: none !important;
+}
+
+main,
+#MainContent {
+  min-height: 40vh;
+  background: transparent;
+}
