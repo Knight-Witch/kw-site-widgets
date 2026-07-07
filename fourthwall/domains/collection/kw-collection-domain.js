@@ -42,6 +42,17 @@
     </section>
   `;
 
+  const markAncestors = host => {
+    let element = host;
+    let depth = 0;
+
+    while (element && element !== document.body && depth < 8) {
+      element.classList.add("kw-collection-transparent-wrapper");
+      element = element.parentElement;
+      depth += 1;
+    }
+  };
+
   const triggerGlitch = element => {
     if (!element) return;
     element.classList.remove("is-glitching");
@@ -119,6 +130,7 @@
   const mount = host => {
     if (!host || host.dataset.kwCollectionMounted === "1") return;
     host.dataset.kwCollectionMounted = "1";
+    markAncestors(host);
     host.innerHTML = render();
 
     const root = host.querySelector("[data-kw-collection-domain]");
