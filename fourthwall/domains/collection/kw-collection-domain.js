@@ -42,15 +42,29 @@
     </section>
   `;
 
-  const markAncestors = host => {
-    let element = host;
-    let depth = 0;
+  const clearElementBackground = element => {
+    if (!element || element === document.documentElement) return;
+    element.classList.add("kw-collection-transparent-wrapper");
+    element.style.setProperty("background", "transparent", "important");
+    element.style.setProperty("background-color", "transparent", "important");
+    element.style.setProperty("background-image", "none", "important");
+  };
 
-    while (element && element !== document.body && depth < 8) {
-      element.classList.add("kw-collection-transparent-wrapper");
+  const clearPageBackgrounds = (host, root) => {
+    document.documentElement.classList.add("kw-collection-page");
+    document.body.classList.add("kw-collection-page");
+    clearElementBackground(document.body);
+
+    let element = host;
+    while (element && element !== document.documentElement) {
+      clearElementBackground(element);
       element = element.parentElement;
-      depth += 1;
     }
+
+    document.querySelectorAll("main, #MainContent, [role='main'], section, article, [class*='section'], [class*='Section'], [class*='page'], [class*='Page'], [class*='custom'], [class*='Custom'], [class*='html'], [class*='Html']").forEach(candidate => {
+      if (root && root.contains(candidate)) return;
+      clearElementBackground(candidate);
+    });
   };
 
   const triggerGlitch = element => {
@@ -130,12 +144,12 @@
   const mount = host => {
     if (!host || host.dataset.kwCollectionMounted === "1") return;
     host.dataset.kwCollectionMounted = "1";
-    markAncestors(host);
     host.innerHTML = render();
 
     const root = host.querySelector("[data-kw-collection-domain]");
     if (!root) return;
 
+    clearPageBackgrounds(host, root);
     bindButtons(root);
     bindFeatureControls(root);
     observeVideos(root);
