@@ -2,6 +2,36 @@
 
 This file is the rolling pre-flight log for the Knight Witch site/widgets repo.
 
+## 2026-07-07 09:28 UTC — PF-20260707-004 — Collection feature module README
+
+Requested change:
+- Create `/fourthwall/domains/collection/feature-video/README.md` to fix the broken module-doc link from `/README.md`.
+
+Docs/files reviewed:
+- `/OPERATING_CONTRACT.md`
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/README.md`
+- `/fourthwall/domains/collection/feature-video/`
+
+Risk notes:
+- Previous attempts to create this README were blocked, so the content was kept concise and module-specific.
+- Documentation-only update.
+- No runtime behavior touched.
+
+Plan:
+- Confirm the target file is missing.
+- Create the module README.
+- Update `/MASTER.md`, changelog, pre-flight, and diff records.
+
+Validation:
+- Confirmed the target file returned 404 before creation.
+- Created the README successfully.
+- No runtime CSS/JS changed.
+
 ## 2026-07-07 09:12 UTC — PF-20260707-003 — Media boundary clarification
 
 Requested change:
