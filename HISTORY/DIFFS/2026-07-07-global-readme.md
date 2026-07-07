@@ -27,6 +27,8 @@ Documentation-only reconciliation for global runtime docs.
 - `b84694c76b48af3fcea56ac36ec8fb4b7304fb27`
 - `e0cad86c8e4757671dae70b5181a97ee80a3616a`
 - `5749d85b22dee99ab6fe2f43259c73165cdfa8d5`
+- `749cff3d8cf1ab4878bfd14f54e9c7f7a6a098ea`
+- `af7bca1c062325ff6bc70aeeb332aaf1aa080814`
 
 ## Notes
 
