@@ -40,8 +40,7 @@
   transition: opacity 0.5s ease-in;
 }
 
-.kw-collection-hero-video.is-ready,
-.kw-collection-feature-video.is-ready {
+.kw-collection-hero-video.is-ready {
   opacity: 1;
 }
 
@@ -142,72 +141,6 @@
   animation: kwCollectionGlitchText 0.4s cubic-bezier(.25,.46,.45,.94) reverse both;
 }
 
-.kw-collection-video-section {
-  width: min(92vw, 1280px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 10;
-  margin: 50px auto;
-  padding: 0;
-  background: transparent;
-}
-
-.kw-collection-feature-video-container {
-  width: 100%;
-  position: relative;
-  background: transparent;
-}
-
-.kw-collection-feature-video {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  opacity: 0;
-  transition: opacity 0.5s ease-in;
-}
-
-.kw-collection-controls {
-  position: absolute;
-  top: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  z-index: 100;
-}
-
-.kw-collection-mute,
-.kw-collection-restart {
-  background: rgba(0, 0, 0, 0.3);
-  border: 0;
-  color: #fff;
-  padding: 10px 15px;
-  cursor: pointer;
-  font-family: "AgencyFB", Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1;
-  border-radius: 5px;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.kw-collection-mute:hover,
-.kw-collection-restart:hover,
-.kw-collection-mute:focus-visible,
-.kw-collection-restart:focus-visible {
-  opacity: 1;
-  outline: none;
-}
-
-.kw-collection-restart img {
-  width: 16px;
-  height: 16px;
-  display: block;
-}
-
 @keyframes kwCollectionGlitchText {
   0% { transform: translate(0); clip-path: inset(0 0 0 0); }
   20% { transform: translate(-3px, 2px); clip-path: inset(50% 0 20% 0); }
@@ -239,17 +172,6 @@
     max-width: 390px;
     min-width: 0;
     font-size: 24px;
-  }
-
-  .kw-collection-video-section {
-    width: 94vw;
-    margin: 6px auto 28px;
-    padding: 0;
-    background: transparent;
-  }
-
-  .kw-collection-controls {
-    top: 10px;
   }
 }
 
