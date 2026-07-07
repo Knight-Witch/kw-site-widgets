@@ -137,20 +137,19 @@
 }
 
 .kw-collection-video-section {
-  width: 100%;
+  width: min(92vw, 1280px);
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   z-index: 10;
   margin: 50px auto;
-  padding: 20px 0;
+  padding: 18px;
   background: rgba(0, 0, 0, 0.8);
 }
 
 .kw-collection-feature-video-container {
   width: 100%;
-  max-width: 3000px;
   position: relative;
 }
 
@@ -236,8 +235,9 @@
   }
 
   .kw-collection-video-section {
+    width: 94vw;
     margin: 6px auto 28px;
-    padding: 8px 0 12px;
+    padding: 8px;
   }
 
   .kw-collection-controls {
