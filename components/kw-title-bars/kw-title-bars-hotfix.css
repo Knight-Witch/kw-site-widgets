@@ -1,0 +1,70 @@
+.kw-title-bar {
+  box-sizing: border-box !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 20 !important;
+  width: fit-content !important;
+  max-width: 95vw !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: -38px auto -34px !important;
+  background: transparent !important;
+  border: 1px solid #f00 !important;
+  overflow: visible !important;
+  color: #fff !important;
+  font-family: "AgencyFB", Arial, sans-serif !important;
+}
+
+.kw-title-bar__title,
+.kw-title-bar__subtitle {
+  box-sizing: border-box !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0 !important;
+  font-family: "AgencyFB", Arial, sans-serif !important;
+  text-align: center !important;
+}
+
+.kw-title-bar__title {
+  padding: 12px 20px 4px !important;
+  color: #fff !important;
+  font-size: clamp(1.5rem, 3vw + .5rem, 3rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: .6em !important;
+  text-transform: uppercase !important;
+  white-space: normal !important;
+}
+
+.kw-title-bar__subtitle {
+  padding: 0 20px 12px !important;
+  color: #bbb !important;
+  font-size: clamp(.9rem, 1.2vw, 1.3rem) !important;
+  font-weight: 400 !important;
+  line-height: 1.1 !important;
+  letter-spacing: .05em !important;
+}
+
+@media (max-width: 768px) {
+  .kw-title-bar {
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+    margin: -38px auto -48px !important;
+    overflow: visible !important;
+  }
+
+  .kw-title-bar__title {
+    padding: 10px 14px 2px !important;
+    font-size: clamp(1.05rem, 4.6vw, 1.55rem) !important;
+    letter-spacing: .18em !important;
+  }
+
+  .kw-title-bar__subtitle {
+    padding: 0 14px 10px !important;
+    font-size: clamp(.8rem, 3.5vw, 1rem) !important;
+  }
+}
