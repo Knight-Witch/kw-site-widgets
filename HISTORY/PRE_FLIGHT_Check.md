@@ -2,6 +2,41 @@
 
 This file is the rolling pre-flight log for the Knight Witch site/widgets repo.
 
+## 2026-07-17 20:45 UTC — PF-20260717-007 — Product modal price and CTA fix
+
+Requested change:
+- Fix expanded carousel product modal where Add to Cart was visually too low-contrast and modal prices were missing.
+
+Docs/files reviewed:
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/README.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/CHANGELOG.md`
+- `/components/kw-title-bars/README.md`
+- `fourthwall/global/kw-fourthwall-loader.js`
+- `fourthwall/kwfw-carousel.css`
+- `fourthwall/kwfw-carousel.js`
+- `fourthwall/kwfw-product-rules.js`
+
+Risk notes:
+- Modal price rendering came from API product/variant objects and could be blank if price fields use keys not covered by the original carousel helper.
+- The modal CTA shared `.kwfw-btn` with other carousel buttons, so the visual fix needed to target only `[data-kwfw-add]` inside `.kwfw-panel`.
+- No carousel scroll changes should be included in this fix.
+
+Plan:
+- Add a modal-only CSS fix for Add to Cart visibility/glow and modal price visibility.
+- Add a modal-only JS helper that reads the live `modal._product` API object and selected variant data, then fills `.kwfw-panel-price` only when a real API-derived price can be resolved.
+- Load both helpers after product rules in the global loader.
+
+Validation:
+- Confirmed loader order and product modal ownership.
+- Confirmed the patch does not create placeholder prices.
+- No live storefront testing performed in this session.
+
 ## 2026-07-07 10:05 UTC — PF-20260707-006 — Global README reconciliation
 
 Requested change:
