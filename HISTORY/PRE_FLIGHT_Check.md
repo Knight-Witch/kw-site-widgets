@@ -2,6 +2,52 @@
 
 This file is the rolling pre-flight log for the Knight Witch site/widgets repo.
 
+## 2026-07-17 23:38 UTC — PF-20260717-009 — Variant-specific product modal galleries
+
+Requested change:
+- Update both the standard `kwfw` product modal and the Step 3 `kwpj` jacket modal so selecting a product variant switches the gallery to that variant's assigned Fourthwall images.
+- Preserve product-wide gallery fallback when a variant has no dedicated images.
+
+Docs/files reviewed:
+- `/OPERATING_CONTRACT.md`
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/README.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/CHANGELOG.md`
+- `fourthwall/global/kw-fourthwall-loader.js`
+- `fourthwall/kwfw-carousel.js`
+- `fourthwall/kwfw-universal-media.js`
+- `fourthwall/kwfw-product-rules.js`
+- `fourthwall/kwfw-modal-product-fix.js`
+- `components/kw-plain-jackets/kw-plain-jackets-v2.js` on `kw-product-carousel-refactor`
+- Official Fourthwall Storefront API collection/product documentation.
+
+Risk notes:
+- The two modal systems use separate gallery, dot, and option-selector namespaces.
+- The standard modal also receives shared support media from `kwfw-universal-media.js`; variant filtering must preserve those common slides without restoring unrelated product images.
+- The Cyberpunk collar selector can set the active variant through `data-kwfw-rule-variant-id` rather than only through visible native selects.
+- Rebuilding gallery children can trigger existing MutationObservers, so the runtime needs an idempotent gallery key to prevent loops.
+- No carousel rail, wheel, layout, or scroll code should change.
+
+Plan:
+- Extend the existing shared modal compatibility runtime rather than add another observer/runtime.
+- Resolve the active variant from each modal's current selectors or rule-selected variant ID.
+- Read the official Fourthwall `variant.images` array, rebuild the existing gallery and dots, and reset to slide zero.
+- Fall back to product-level media only when the selected variant has no dedicated media.
+- Fetch the official product-by-slug endpoint once per modal opening so full variant media is available when the collection payload is incomplete.
+- Preserve standard-modal universal support slides.
+
+Validation:
+- Confirmed Fourthwall's official Storefront API schema exposes an `images` array on each product variant.
+- JavaScript passed `node --check` before commit.
+- Confirmed selectors cover both `.kwfw-*` and `.kwpj-*` modal systems.
+- Confirmed no scroll, rail, grid, or card-layout files were changed.
+- Live storefront verification remains required.
+
 ## 2026-07-17 21:19 UTC — PF-20260717-008 — Dual-carousel product modal audit
 
 Requested change:
@@ -121,7 +167,7 @@ Risk notes:
 Plan:
 - Replace stale global README content with current module documentation.
 - Update parent Fourthwall README for the stricter media boundary.
-- Update module changelog, MASTER, root changelog, pre-flight, and diff record.
+- Update module changelog, MASTER, pre-flight, and diff record.
 
 Validation:
 - Confirmed loader behavior from the current global loader and production-pinned ref.
