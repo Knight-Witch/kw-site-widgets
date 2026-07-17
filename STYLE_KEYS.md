@@ -1,8 +1,8 @@
 # Style Keys
 
-This document records reusable visual rules, assets, CDN roots, fonts, breakpoints, media-hosting conventions, and layout patterns for Knight Witch site widgets.
+This document records reusable visual rules, assets, CDN roots, fonts, breakpoints, media-hosting conventions, layout footprints, and shared UI behavior for Knight Witch site widgets.
 
-Read `/OPERATING_CONTRACT.md` and `/ARCHITECTURE.md` before changing shared styles.
+Read `/OPERATING_CONTRACT.md` and `/ARCHITECTURE.md` before changing shared styles or reusable interaction behavior.
 
 ## CDN and external roots
 
@@ -18,19 +18,19 @@ GitHub/jsDelivr runtime root:
 https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets
 ```
 
-Fourthwall Storefront API root used by product/cart systems:
+Fourthwall Storefront API root:
 
 ```text
 https://storefront-api.fourthwall.com/v1
 ```
 
-Font Awesome CDN used by social icons:
+Font Awesome social-icon CDN:
 
 ```text
 https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css
 ```
 
-Google Fonts Open Sans is used in the legacy `widgets/` carousel:
+Legacy `widgets/` carousel font CDN:
 
 ```text
 https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap
@@ -38,18 +38,18 @@ https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=
 
 ## Media-hosting convention
 
-- Native product media returned by the Fourthwall product API can remain Fourthwall-hosted.
-- All other Knight Witch site media referenced by GitHub-hosted code is expected to live on the DigitalOcean Spaces/CDN root documented above unless an explicit exception is documented.
-- This includes product-support media, brand media, background videos, feature cards, banners, standalone page videos, icons, SVGs, fonts, logos, and global visual assets.
-- CDN asset paths used by code must be documented here, in `/MEDIA.md`, or in the relevant module README.
-- Assets added directly to this repo belong in `/ASSETS/`.
+- Native product and variant media returned by the Fourthwall Storefront API can remain Fourthwall-hosted.
+- All non-native Knight Witch site media referenced by GitHub-hosted code is expected to live on the DigitalOcean Spaces/CDN root unless an explicit exception is documented.
+- This includes product-support media, brand media, background videos, feature cards, banners, page videos, icons, SVGs, fonts, and logos.
+- CDN asset paths must be documented here, in `/MEDIA.md`, or in the relevant module README.
+- Assets committed directly to the repo belong in `/ASSETS/`.
 
 ## Fonts
 
 Primary brand display font:
 
 ```css
-font-family: "AgencyFB", Arial, sans-serif;
+font-family: "AgencyFB", "Agency FB", Arial, sans-serif;
 ```
 
 Current AgencyFB assets:
@@ -59,59 +59,58 @@ Current AgencyFB assets:
 /FONTS/AgencyFB-CY.woff
 ```
 
-Older/alternate AgencyFB files appear in product-widget CSS:
+Older product-widget AgencyFB assets:
 
 ```text
 /FONTS/agencyfb-webfont.woff2
 /FONTS/agencyfb-webfont.woff
 ```
 
-Legacy `widgets/` carousel uses Open Sans for older product-card UI.
-
-Do not add new font files unless needed. If new font assets are added directly to the repo, place them in `/ASSETS/` and document them here.
+Legacy `widgets/` carousel uses Open Sans.
 
 ## Core colors
 
-Common colors found across current styles:
-
 ```css
 #fff                  primary white text
-#000                  black overlays/backgrounds
-#f00 / #ff0000        Knight Witch red borders and emphasis
-#ff1717               vivid red product-rule swatch
-#ff7a00               orange accent/glow
+#000                  black backgrounds/overlays
+#050505 / #111        near-black panels
+#f00 / #ff0000        Knight Witch red borders/emphasis
+#8a0000               dark red accent
+#ff1717               vivid red swatch
+#ff4b4b               product price red
+#ff7a00               primary orange CTA/glow
 #ff9800               gold/orange swatch
-#ff6b13               orange swatch
+#ff6b13               alternate orange swatch
+#b35300               dark orange CTA border
+#140a00               dark CTA text
 #d8b6ff               holographic crystal swatch
 #76fff3               holographic swatch
 #1598f5               sky/blue swatch
 #009b12               green swatch
 #7b16ff               purple swatch
 #ffd18a               brass swatch
-#aaa                  muted support text / silver swatch
-#bbb                  muted subtitle text
-#111 / #050505        near-black panels
-#8a0000               dark red accent
+#aaa / #bbb           muted support text and silver swatch
 ```
 
-Common overlay patterns:
+Common overlay values:
 
 ```css
-rgba(0, 0, 0, 0.72)
-rgba(0, 0, 0, 0.7)
-rgba(0, 0, 0, 0.3)
 rgba(0,0,0,.55)
+rgba(0,0,0,.62)
 rgba(0,0,0,.68)
+rgba(0,0,0,.72)
+rgba(0,0,0,.78)
 rgba(0,0,0,.9)
 rgba(255,255,255,.12)
+rgba(255,255,255,.22)
 rgba(255,255,255,.28)
 ```
 
-Use the red/black/white visual system unless a module has a documented reason to diverge.
+Default shared visual system: black backgrounds, white typography, red framing/emphasis, orange interactive CTA states.
 
 ## Breakpoints
 
-Primary mobile breakpoint used across global and module code:
+Primary shared mobile breakpoint:
 
 ```css
 @media (max-width: 768px)
@@ -124,7 +123,7 @@ Carousel desktop/mobile split:
 @media (max-width: 760px)
 ```
 
-When changing responsive behavior, do not change desktop behavior for a mobile-only request or mobile behavior for a desktop-only request unless necessary and stated first.
+Do not change desktop behavior for a mobile-only request or mobile behavior for a desktop-only request unless necessary and stated before editing.
 
 ## Global foundation
 
@@ -139,7 +138,7 @@ Rules:
 
 - Global foundation should not bury module-specific visuals.
 - Layout guard owns Fourthwall page/footer correction.
-- Background transparency must allow the global video background to show through.
+- Page backgrounds must remain transparent where the global video background should remain visible.
 - Module containers should generally use transparent backgrounds unless a panel/overlay is intentional.
 
 ## Global background video
@@ -181,12 +180,12 @@ Mobile variants:
 /GLOBAL/BACKGROUND/Mobile_Red_Particles-1080.fallback.mp4
 ```
 
-Behavior notes:
+Behavior:
 
-- Runtime respects reduced motion and save-data conditions.
-- Runtime chooses codec by browser support.
-- Mobile viewport uses mobile variants.
-- Desktop upgrade is enabled in config.
+- Respect reduced motion and save-data conditions.
+- Select codec by browser support.
+- Use mobile variants on mobile viewports.
+- Desktop staged quality upgrade is enabled in config.
 
 ## Header/nav
 
@@ -202,11 +201,11 @@ Visual conventions:
 - Black/white glitch effect on desktop nav hover and link activation.
 - Red drawer titles while a desktop drawer is expanded.
 - Fade/slide drawer opening.
-- Decode/reveal subtitle effect.
+- Decode/reveal subtitles.
 - Mobile drilldown panels.
-- Decor drawer must support long lists without running off-screen.
+- Decor drawer supports long lists without extending beyond the viewport.
 
-Current nav label set is documented in `/ARCHITECTURE.md`.
+The current nav tree is documented in `/ARCHITECTURE.md`.
 
 ## Social icons
 
@@ -218,46 +217,17 @@ fourthwall/global/kw-social-icons.js
 fourthwall/global/kw-global-config.js
 ```
 
-Current social links in config:
-
-```text
-Instagram  https://instagram.com/knightwitchapparel
-TikTok     https://tiktok.com/@knightwitchapparel
-YouTube    https://youtube.com/@knightwitchapparel
-Discord    https://discord.com/users/579968778360848395
-Facebook   https://facebook.com/knightwitchapparel
-```
+Current configured channels include Instagram, TikTok, YouTube, Discord, and Facebook. Link values are owned by `kw-global-config.js`.
 
 ## Title bars
 
 Owned by:
 
 ```text
-/components/kw-title-bars/
+components/kw-title-bars/
 ```
 
-Base title-bar class:
-
-```html
-<div class="kw-title-bar" data-kw-fit=".featured-prebuilds-nav .featured-prebuilds-btn">
-  <div class="kw-title-bar__title">FEATURED SPELLWEAVES</div>
-  <div class="kw-title-bar__subtitle">Ready-to-buy in just one click.</div>
-</div>
-```
-
-Base conventions:
-
-- Transparent background.
-- Red `1px` border.
-- AgencyFB uppercase title text.
-- White title text.
-- Muted gray subtitle.
-- Desktop title letter spacing: `.6em`.
-- Base max width: `95vw`.
-- Base title bar uses negative outside margins to tighten layout around product sections.
-- `data-kw-fit` should target repeated child buttons/tiles, not just the parent wrapper.
-
-Current title-bar variants:
+Base classes:
 
 ```text
 .kw-title-bar
@@ -265,16 +235,28 @@ Current title-bar variants:
 .kw-title-bar--compact
 ```
 
-Temporary hotfix conventions:
+Conventions:
 
-- `components/kw-title-bars/kw-title-bars-hotfix.css` currently forces visibility and restores mobile width.
+- Transparent background.
+- Red `1px` border.
+- AgencyFB uppercase typography.
+- White title text.
+- Muted gray subtitle.
+- Desktop title letter spacing: `.6em`.
+- Base max width: `95vw`.
+- Negative outside margins are used to tighten title-to-product spacing.
+- `data-kw-fit` should target repeated child buttons or tiles, not only a parent wrapper.
+
+Temporary hotfix:
+
+- `components/kw-title-bars/kw-title-bars-hotfix.css` forces visibility and restores mobile width.
 - Mobile hotfix width: `calc(100vw - 32px)`.
 - Mobile hotfix title letter spacing: `.18em`.
-- Hotfix is temporary and must be folded into the base component/global loader.
+- The hotfix must be folded into the base component and removed from the footer after verification.
 
 ## Product carousel
 
-Current global carousel files include:
+Current global carousel files:
 
 ```text
 fourthwall/kwfw-carousel.css
@@ -282,9 +264,11 @@ fourthwall/kwfw-carousel.js
 fourthwall/kwfw-carousel-desktop-grid.css
 fourthwall/kwfw-carousel-wheel-bridge.js
 fourthwall/kwfw-font-agencyfb.css
+fourthwall/kwfw-modal-product-fix.css
+fourthwall/kwfw-modal-product-fix.js
 ```
 
-Desktop grid footprint:
+Desktop footprint:
 
 ```css
 width: min(984px, calc(100vw - 32px));
@@ -305,7 +289,7 @@ html body .kwfw-root {
 }
 ```
 
-Mobile carousel spacing override:
+Mobile spacing override:
 
 ```css
 @media (max-width: 760px) {
@@ -316,7 +300,7 @@ Mobile carousel spacing override:
 }
 ```
 
-Carousel UI classes include:
+Primary standard-carousel classes:
 
 ```text
 .kwfw-root
@@ -340,21 +324,60 @@ Carousel UI classes include:
 .kwfw-gallery
 ```
 
-Carousel scroll behavior is split across base carousel CSS, desktop grid overrides, and the wheel bridge. Do not assume `kwfw-carousel-wheel-bridge.js` is only a wheel listener.
+Carousel scroll behavior is split across base carousel CSS, desktop-grid overrides, and the wheel bridge. `kwfw-carousel-wheel-bridge.js` is not only a wheel listener; do not modify or remove it casually.
 
-## Product modal / universal media
+## Product modal behavior
+
+Shared modal compatibility owner:
+
+```text
+fourthwall/kwfw-modal-product-fix.css
+fourthwall/kwfw-modal-product-fix.js
+```
+
+Supported modal namespaces:
+
+```text
+.kwfw-modal / .kwfw-panel
+.kwpj-modal / .kwpj-panel
+```
+
+CTA conventions:
+
+- Expanded Add to Cart buttons use explicit orange values rather than relying on a carousel-scoped custom property.
+- Background: `#ff7a00`.
+- Text: `#140a00`.
+- Border: `#ffb04a` or dark-orange equivalent.
+- Orange glow/pulse remains visible in both modal systems.
+- View Details remains visually secondary and dark.
+
+Price behavior:
+
+- Modal prices come from Fourthwall's actual selected variant `unitPrice` data.
+- Do not insert placeholder or estimated prices.
+- Price color: `#ff4b4b`.
+
+Selected-variant gallery behavior:
+
+- When a user changes a product variant, the existing modal gallery switches to that selected variant's Fourthwall `variant.images` array.
+- The gallery resets to its first matching slide after selection changes.
+- A selected variant with no dedicated images falls back to the product-wide gallery.
+- The standard `kwfw` modal preserves universal support-media slides after variant-specific images.
+- The Step 3 `kwpj` modal uses the same behavior through the shared runtime.
+- Product and variant media remain Fourthwall-hosted native media.
+- This behavior must not alter carousel rail, card grid, or wheel/page-scroll handling.
+
+## Universal product media
 
 Owned by:
 
 ```text
-fourthwall/kwfw-carousel.css
-fourthwall/kwfw-carousel.js
 fourthwall/kwfw-universal-media.css
 fourthwall/kwfw-universal-media.js
 fourthwall/prod_card_media/manifest.json
 ```
 
-Universal media adds product-support media into modal galleries from config, DOM attributes, or manifest.
+Universal media adds product-support images or videos from config, DOM attributes, or the manifest.
 
 Current manifest asset:
 
@@ -362,7 +385,7 @@ Current manifest asset:
 /GLOBAL/PROD_CARD_MEDIA/feature_card.webp
 ```
 
-The modal supports images and video slides. Product media returned by the Fourthwall product API may remain Fourthwall-hosted; extra product-support media is expected to be DigitalOcean CDN-hosted unless explicitly documented otherwise.
+Modal galleries support image and video slides. Extra product-support media is expected to be DigitalOcean CDN-hosted unless explicitly documented otherwise.
 
 ## Product size guide
 
@@ -373,7 +396,7 @@ fourthwall/kwfw-size-guide.css
 fourthwall/kwfw-size-guide.js
 ```
 
-Current modal/classes:
+Primary classes:
 
 ```text
 .kw-size-guide-btn
@@ -421,7 +444,9 @@ System Type
 Text / Logo
 ```
 
-Swatch colors are inferred from option text. Existing swatch names include holographic, holographic crystal, red, gold, silver, brass, green, purple, sky/blue, orange, and black.
+Swatch colors are inferred from option text. Known names include holographic, holographic crystal, red, gold, silver, brass, green, purple, sky/blue, orange, and black.
+
+The modal compatibility runtime must honor `data-kwfw-rule-variant-id` so custom rule selection updates both price and gallery media.
 
 ## Empty-cart modal
 
@@ -432,7 +457,7 @@ fourthwall/global/kw-cart-runtime.css
 fourthwall/global/kw-cart-runtime.js
 ```
 
-Classes:
+Primary classes:
 
 ```text
 .kw-cart-empty-modal
@@ -451,31 +476,21 @@ Owned by:
 fourthwall/domains/collection/
 ```
 
-Collection banner video:
+Banner video:
 
 ```text
 /BANNERS/Collection.webm
 ```
 
-Category button links:
+Category links include Edgerunners, Starchild, Basscraft, Black Mass, Astral Plane, and Wicked Hearts.
 
-```text
-Edgerunners    /pages/edgerunners
-Starchild      /pages/starchild
-Basscraft      /pages/basscraft
-Black Mass     /pages/black-mass
-Astral Plane   /pages/astral-plane
-Wicked Hearts  /pages/wicked-hearts
-```
+Conventions:
 
-Visual behavior:
-
-- Desktop category buttons sit over the banner video at `top: 70%`.
+- Desktop category buttons sit over the banner video near `top: 70%`.
 - Desktop buttons use `2px` red borders and black overlays.
 - Mobile category buttons render as a separate stack.
 - Mobile button width: `80%`, max `390px`.
 - Buttons use nav-style glitch conventions.
-- Legacy Fourthwall hard-coded blocks hidden by this module include `.desktop-banner-container`, `.banner-buttons-mobile`, and `.standalone-video-section`.
 
 ## Collection feature video
 
@@ -497,7 +512,7 @@ Restart icon:
 /restart%20svg.svg
 ```
 
-Current module spacing:
+Desktop footprint:
 
 ```css
 .kw-collection-feature-module {
@@ -506,20 +521,13 @@ Current module spacing:
 }
 ```
 
-Mobile:
+Mobile footprint:
 
 ```css
 .kw-collection-feature-module {
   width: 94vw;
   margin: 4px auto 24px;
 }
-```
-
-Controls:
-
-```text
-.kw-collection-feature-mute
-.kw-collection-feature-restart
 ```
 
 ## Gallery portfolio
@@ -530,28 +538,14 @@ Owned by:
 gallery-portfolio/
 ```
 
-Primary classes:
-
-```text
-.kw-gallery-portfolio
-.kwgp-shell
-.kwgp-header
-.kwgp-nav
-.kwgp-stage
-.kwgp-video-card
-.kwgp-image-grid
-.kwgp-image-card
-.kwgp-lightbox
-```
-
 Visual system:
 
 - AgencyFB display font.
 - Black/red/white palette.
-- Card-based gallery layout.
+- Card-based layout.
 - Video preview, featured image, detail image, and lightbox areas.
 
-Current risk: `index.html` references `gallery-portfolio.js`, which is not present in the audited `main` snapshot.
+Known risk: `gallery-portfolio/index.html` references `gallery-portfolio.js`, which is not present in the audited `main` snapshot.
 
 ## Logo banner
 
@@ -565,15 +559,6 @@ Media asset:
 
 ```text
 /BANNERS/Knight%20Witch%20Redux%202.webm
-```
-
-Injected classes:
-
-```text
-.kw-logo-banner-wrapper
-.kw-logo-banner
-.kw-logo-banner-video-container
-.kw-logo-banner-video
 ```
 
 ## Legacy `widgets/` carousel
@@ -591,10 +576,8 @@ Visual prefix:
 .fpx-
 ```
 
-This is an older jQuery-based product carousel using Open Sans, local product cards, flip-card behavior, drag scroll, variant selects, and add-to-cart behavior.
+This is an older jQuery-based product carousel using Open Sans, flip-card behavior, drag scroll, variant selects, and add-to-cart behavior. Treat it as legacy unless explicitly reactivated.
 
-Treat as legacy unless explicitly reactivated.
+## Style and shared-behavior update rule
 
-## Style change rule
-
-If a change alters fonts, colors, layout footprint, breakpoints, reusable UI behavior, visual assets, CDN paths, title-bar conventions, carousel sizing, button styles, or background behavior, update this file in the same work session.
+Update this file in the same work session whenever a change alters fonts, colors, reusable UI behavior, layout footprint, breakpoints, spacing, borders, buttons, carousel sizing, modal gallery behavior, visual assets, CDN paths, title-bar conventions, or background behavior.
