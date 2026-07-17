@@ -2,6 +2,55 @@
 
 This file is the rolling pre-flight log for the Knight Witch site/widgets repo.
 
+## 2026-07-17 21:19 UTC — PF-20260717-008 — Dual-carousel product modal audit
+
+Requested change:
+- Fix missing expanded-modal prices in both the standard `kwfw` carousel and the Step 3 `kwpj` base-jacket carousel.
+- Restore the visible orange glowing Add to Cart CTA specifically in the Step 3 jacket modal.
+
+Docs/files reviewed:
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/README.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/CHANGELOG.md`
+- `/components/kw-title-bars/README.md`
+- `fourthwall/global/kw-fourthwall-loader.js`
+- `fourthwall/kwfw-carousel.css`
+- `fourthwall/kwfw-carousel.js`
+- `fourthwall/kwfw-modal-product-fix.css`
+- `fourthwall/kwfw-modal-product-fix.js`
+- `components/kw-plain-jackets/kw-plain-jackets.css`
+- `components/kw-plain-jackets/kw-plain-jackets-v2.js`
+- `components/kw-plain-jackets/kw-plain-jackets-polish.css`
+- `components/kw-plain-jackets/kw-plain-jackets-polish.js`
+- Fourthwall official Storefront API collection/product documentation.
+
+Risk notes:
+- The two carousel systems use separate modal class namespaces and separate option selectors.
+- The Step 3 modal is appended to `body`, outside `.kwpj-carousel`, so carousel-scoped CSS custom properties do not inherit into the modal.
+- Both original carousel price helpers omit Fourthwall's documented `variant.unitPrice` field.
+- The previous compatibility runtime only scanned descendants and therefore missed an added node when that node was itself the modal panel.
+- No carousel rail, wheel, layout, or scroll behavior should be touched.
+
+Plan:
+- Expand the existing modal compatibility CSS to target both `[data-kwfw-add]` and `[data-kwpj-add]` with explicit values rather than inherited jacket-carousel variables.
+- Replace the modal compatibility runtime with a dual-system implementation that reads `unitPrice.value` and `unitPrice.currency` directly from the Fourthwall API product/variant object.
+- Update prices on initial modal render and variant-selection changes.
+- Request the official product-by-slug endpoint only when the collection product object lacks a usable price.
+- Do not insert a placeholder price.
+
+Validation:
+- JavaScript passed `node --check`.
+- Confirmed the official Fourthwall collection schema exposes variant selling prices as `unitPrice: { value, currency }`.
+- Confirmed both modal implementations assign the active product object to `modal._product`.
+- Confirmed the CSS selectors affect only modal Add to Cart buttons and price elements.
+- No scroll files were changed.
+- Live storefront verification remains required.
+
 ## 2026-07-17 20:45 UTC — PF-20260717-007 — Product modal price and CTA fix
 
 Requested change:
