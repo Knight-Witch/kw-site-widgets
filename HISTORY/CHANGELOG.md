@@ -2,6 +2,24 @@
 
 Canonical repo-wide changelog. Module changelogs may remain, but they do not replace this file.
 
+## 2026-07-17 23:58 UTC — KW-RUNTIME-VARIANT-GALLERIES-010
+
+Summary: Corrected variant gallery switching after live verification showed every dropdown selection still resolved to the default variant. The modal compatibility runtime now preserves the original collection-product object used to build the dropdown, keeps product-detail data separate, resolves selected variants with normalized exact and value-based matching, and matches detail media by stable variant ID.
+
+Affected files: /fourthwall/kwfw-modal-product-fix.js; /fourthwall/global/kw-fourthwall-loader.js; /HISTORY/CHANGELOG.md; /HISTORY/PRE_FLIGHT_Check.md; /HISTORY/DIFFS/2026-07-17-variant-gallery-2.md; /MASTER.md; /fourthwall/global/CHANGELOG.md.
+
+Commits: `8c10091152888eb446b4d215cc837507354e6c91`; `8ef32a18b59ef932c9b5364ca3e37c72183d5c3e`.
+
+Reason: The previous runtime replaced `modal._product` with the product-detail response after the dropdown had been rendered from the collection response. When those two payloads represented option names or values differently, the exact matcher failed and returned the first variant, so the gallery remained on the default images.
+
+Rollback: Restore global loader commit `26760b14a2676316be45e76df034638ae0990379` with cache key `20260717-variant-gallery-1`.
+
+Production candidate: Global loader commit `8ef32a18b59ef932c9b5364ca3e37c72183d5c3e` with cache key `20260717-variant-gallery-2`.
+
+Validation: Updated JavaScript passed `node --check`. A focused matcher test covered ladies, mens/no-collar, and mens/detachable-collar values, including mismatched option-key casing and description-only variants. Confirmed the runtime no longer overwrites `modal._product`. No carousel rail, wheel, grid, card-size, or scroll files changed. Live storefront verification remains required.
+
+Risks and follow-up: If a product uses an option representation not covered by exact-key, attribute-value, description, or variant-name matching, inspect that live variant payload before extending the matcher.
+
 ## 2026-07-17 23:38 UTC — KW-RUNTIME-VARIANT-GALLERIES-009
 
 Summary: Added selected-variant gallery switching to both the standard `kwfw` featured-product modal and the Step 3 `kwpj` base-jacket modal. When a user changes a variant, the modal now rebuilds its gallery from that variant's real Fourthwall `images` payload, resets to slide zero, and falls back to product-wide media only when the variant has no dedicated images. Standard-modal universal support slides remain preserved.
