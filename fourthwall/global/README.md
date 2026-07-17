@@ -29,6 +29,7 @@ The global loader coordinates the site-wide runtime for:
 - Info sections.
 - Product carousel.
 - Desktop carousel grid/wheel bridge.
+- Product modal pricing, CTA, and selected-variant gallery behavior.
 - Size guide.
 - Universal product media.
 - Product rules.
@@ -36,39 +37,33 @@ The global loader coordinates the site-wide runtime for:
 
 The Fourthwall footer should not include separate global component CSS/JS tags when the global loader already owns them, except for documented temporary hotfixes.
 
-## Current production footer state
+## Current production candidate
 
 Current production state is tracked in `/MASTER.md`.
 
-Known current global loader state:
-
 ```text
-Commit: b7672d41f8a011f47675ef2394b7d99028c90158
-Cache key: 20260706-title-carousel-spacing-2
+Commit: 26760b14a2676316be45e76df034638ae0990379
+Cache key: 20260717-variant-gallery-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
-Known current global loader URL:
-
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@b7672d41f8a011f47675ef2394b7d99028c90158/fourthwall/global/kw-fourthwall-loader.js?v=20260706-title-carousel-spacing-2
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@26760b14a2676316be45e76df034638ae0990379/fourthwall/global/kw-fourthwall-loader.js?v=20260717-variant-gallery-1
 ```
 
 The live storefront token is intentionally not committed into repo docs. Keep the actual token in Fourthwall/project instructions.
 
 ## Temporary production hotfix
 
-The current production footer also includes the title-bar hotfix loader after the global loader.
+The production footer also includes the title-bar hotfix loader after the global loader.
 
 ```text
 Commit: 663b046d1dcb77b86a06ee1af427af2a5b0821dc
 Cache key: 20260706-titlebar-hotfix-1
 Entrypoint: components/kw-title-bars/kw-title-bars-hotfix-loader.js
 ```
-
-Known hotfix URL:
 
 ```text
 https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@663b046d1dcb77b86a06ee1af427af2a5b0821dc/components/kw-title-bars/kw-title-bars-hotfix-loader.js?v=20260706-titlebar-hotfix-1
@@ -104,6 +99,8 @@ kw-fourthwall-loader-carousel-v7.js  Legacy/compatibility loader.
 kw-fourthwall-loader-stable-carousel.js Legacy/compatibility loader.
 ```
 
+The global loader also owns `fourthwall/kwfw-modal-product-fix.css` and `fourthwall/kwfw-modal-product-fix.js` through its dependency list. That shared modal runtime supports both the standard `kwfw` modal and the Step 3 branch-loaded `kwpj` jacket modal. It reads official Fourthwall variant pricing and `variant.images`, updates the gallery when selection changes, and preserves standard-modal universal support slides.
+
 ## Current loader behavior
 
 `kw-fourthwall-loader.js`:
@@ -120,12 +117,11 @@ Full dependency order is documented in `/ARCHITECTURE.md`.
 
 ## Current dependency risks
 
-Known risks that must stay visible until resolved:
-
 1. Title-bar CSS/JS are loaded from floating `main` by the global loader. This can mismatch a pinned global loader and is the reason the temporary title-bar hotfix remains production-active.
 2. Info-section CSS/JS are loaded from the `kw-info-accordion-dev` branch. Inspect that branch before editing info sections.
 3. Product carousel, size guide, universal media, and product rules are pinned to separate commits. Treat those pins as intentional until a dedicated dependency audit says otherwise.
 4. Legacy global loaders remain in this directory. Do not use them as production entrypoints unless revalidated and documented.
+5. Selected-variant gallery behavior depends on Fourthwall's documented variant `images` payload. Products without assigned variant media intentionally fall back to product-wide media.
 
 ## Header/nav ownership
 
@@ -136,18 +132,7 @@ kw-header.css
 kw-header.js
 ```
 
-Current header/nav behavior includes:
-
-- Injected global nav with Home, Gallery, Shop The Collection, Shop The Cauldron, Shop Decor, About, and View Cart.
-- Desktop drawer title swap.
-- Desktop subtitle decode/reveal.
-- Desktop glitch-before-navigation behavior.
-- Desktop long-drawer max-height calculation and wheel/hover scroll controls.
-- Mobile hamburger drilldown panels.
-- Mobile panel width calculation.
-- Mobile glitch-before-navigation behavior.
-
-The full current nav tree is documented in `/ARCHITECTURE.md`.
+Current header/nav behavior includes injected global navigation, desktop drawers, subtitle reveal, long-menu scrolling, mobile drilldown panels, responsive panel sizing, and glitch-before-navigation behavior.
 
 Do not edit `kw-header-lab.css` or `kw-header-lab.js` for production work unless the task explicitly targets the lab variant.
 
@@ -165,7 +150,7 @@ Media assets come from the Knight Witch DigitalOcean CDN. The runtime respects r
 
 ## Media boundary
 
-Native product media returned by the Fourthwall product API can remain Fourthwall-hosted.
+Native product and variant media returned by the Fourthwall product API can remain Fourthwall-hosted.
 
 All other site media used by this repo is expected to live on the Knight Witch DigitalOcean CDN unless a documented exception exists.
 
@@ -180,7 +165,7 @@ kw-cart-runtime.js
 
 The cart runtime guards `/cart` navigation when local cart state is empty and shows the empty-cart modal.
 
-Cart state keys used by the product/cart runtime:
+Cart state keys:
 
 ```text
 kwfw_cart_id
@@ -205,12 +190,6 @@ kw-fourthwall-loader-stable-carousel.js
 
 Do not point production Fourthwall snippets at these files unless they are revalidated and the root docs are updated.
 
-## Historical notes
-
-Older notes in this folder's changelog reference earlier known-good states such as `20260629-carousel-scroll-4` and `20260630-nav-phase-2-title-hold-red`. Those are historical. Current production state belongs in `/MASTER.md` and supersedes older module README notes.
-
-The old mutation-loop warning still applies: do not reintroduce a MutationObserver that removes and recreates the same style element it observes.
-
 ## Update protocol
 
 1. Make changes in the owning GitHub file, not directly in the Fourthwall footer, unless the task is snippet placement.
@@ -218,8 +197,8 @@ The old mutation-loop warning still applies: do not reintroduce a MutationObserv
 3. If changing global media/CDN config, edit `kw-global-config.js` and update `/STYLE_KEYS.md` and `/MEDIA.md` if needed.
 4. If changing layout behavior around the native Fourthwall page/footer, edit `kw-fourthwall-layout-guard.css`.
 5. If changing header/nav behavior, edit `kw-header.js` and/or `kw-header.css`.
-6. If changing title bars, inspect `components/kw-title-bars/README.md`, the base title-bar files, the hotfix files, and the global loader title-bar refs.
-7. If changing carousel behavior, inspect `kwfw-carousel.css`, `kwfw-carousel-desktop-grid.css`, `kwfw-carousel-wheel-bridge.js`, and the loader entries.
+6. If changing product modal pricing, CTA visibility, or variant-media selection, edit `fourthwall/kwfw-modal-product-fix.css` and/or `fourthwall/kwfw-modal-product-fix.js`.
+7. If changing carousel rail behavior, inspect `kwfw-carousel.css`, `kwfw-carousel-desktop-grid.css`, `kwfw-carousel-wheel-bridge.js`, and the loader entries.
 8. Use pinned commits for production snippets. Do not use `@main` for live production unless explicitly testing.
 9. When cache invalidation is needed, bump both jsDelivr `?v=` and relevant `data-version` values.
 10. Update `/MASTER.md`, `/HISTORY/CHANGELOG.md`, `/HISTORY/PRE_FLIGHT_Check.md`, and `/HISTORY/DIFFS/` for repo updates.
