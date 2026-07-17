@@ -7,7 +7,7 @@
   const repo = m ? m[1] : "Knight-Witch/kw-site-widgets";
   const selfRef = m ? m[2] : "main";
   const base = `https://cdn.jsdelivr.net/gh/${repo}`;
-  const version = s?.dataset.version || "20260706-red-particles-background-1";
+  const version = s?.dataset.version || "20260717-modal-product-fix-1";
 
   const manifest =
     s?.dataset.productMediaManifest ||
@@ -44,6 +44,7 @@
     { type: "css", key: "kwfw-size-guide-css", href: url("03e30bd4c28f5de3fc956ea39a874e6e447583d0", "fourthwall/kwfw-size-guide.css") },
     { type: "css", key: "kwfw-universal-media-css", href: url("579c6124748dec87d5957716eabf0563dfc9401c", "fourthwall/kwfw-universal-media.css") },
     { type: "css", key: "kwfw-product-rules-css", href: url("db73f85d3d4b982e46fea1e57bba48863b651889", "fourthwall/kwfw-product-rules.css") },
+    { type: "css", key: "kwfw-modal-product-fix-css", href: url(selfRef, "fourthwall/kwfw-modal-product-fix.css", version) },
     { type: "css", key: "kw-cart-runtime-css", href: url(selfRef, "fourthwall/global/kw-cart-runtime.css", version) },
 
     { type: "js", key: "kw-global-config-js", src: url(selfRef, "fourthwall/global/kw-global-config.js", version) },
@@ -59,6 +60,7 @@
     { type: "js", key: "kwfw-size-guide-js", src: url("f00c8dd64c573dd0c782036cf3df3a7dca53482c", "fourthwall/kwfw-size-guide.js") },
     { type: "js", key: "kwfw-universal-media-js", src: url("4327ad13c67468e6b260dbc44758cd9b90574f6d", "fourthwall/kwfw-universal-media.js") },
     { type: "js", key: "kwfw-product-rules-js", src: url("ef9f1ec0947d4144803c46c45c331e93b09dc9d3", "fourthwall/kwfw-product-rules.js") },
+    { type: "js", key: "kwfw-modal-product-fix-js", src: url(selfRef, "fourthwall/kwfw-modal-product-fix.js", version) },
     { type: "js", key: "kw-cart-runtime-js", src: url(selfRef, "fourthwall/global/kw-cart-runtime.js", version) },
   ];
 
