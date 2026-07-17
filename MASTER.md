@@ -22,8 +22,8 @@ Media direction:
 
 Production-facing footer currently uses:
 
-- Global loader commit: `b7672d41f8a011f47675ef2394b7d99028c90158`
-- Global loader cache key: `20260706-title-carousel-spacing-2`
+- Global loader commit: `7db18a8ddae88d5c6dd0880014f1a07b54277761`
+- Global loader cache key: `20260717-modal-product-fix-1`
 - Entrypoint: `fourthwall/global/kw-fourthwall-loader.js`
 - Shop domain: `knightwitchapparel.com`
 - Currency: `USD`
@@ -32,7 +32,7 @@ Production-facing footer currently uses:
 Current global loader URL:
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@b7672d41f8a011f47675ef2394b7d99028c90158/fourthwall/global/kw-fourthwall-loader.js?v=20260706-title-carousel-spacing-2
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@7db18a8ddae88d5c6dd0880014f1a07b54277761/fourthwall/global/kw-fourthwall-loader.js?v=20260717-modal-product-fix-1
 ```
 
 ### Temporary title-bar hotfix
@@ -125,9 +125,13 @@ fourthwall/kwfw-carousel.js
 fourthwall/kwfw-carousel-desktop-grid.css
 fourthwall/kwfw-carousel-wheel-bridge.js
 fourthwall/kwfw-font-agencyfb.css
+fourthwall/kwfw-modal-product-fix.css
+fourthwall/kwfw-modal-product-fix.js
 ```
 
 Status: active via the global loader.
+
+Current modal product fix restores expanded-modal API-derived pricing and forces the expanded Add to Cart CTA back to the orange glowing/pulsing button style. The helper does not insert placeholder prices; it only writes a price when the live product or selected variant object exposes one.
 
 Current spacing work changed the desktop/mobile carousel pull-up to `-35px` and preserved a tighter title-to-carousel layout.
 
@@ -294,6 +298,10 @@ Status: legacy; not documented as global-loader active.
    - Risk: docs may not yet represent the whole live website.
    - Required mitigation: audit Fourthwall page custom HTML snippets and add them to GitHub or document them as Fourthwall-owned.
 
+8. Product modal price extraction depends on live Fourthwall product/variant field shapes.
+   - Risk: an undocumented API field may still need to be added if any product modal price remains blank.
+   - Required mitigation: inspect `document.querySelector('.kwfw-modal.is-open')._product` for any affected product and add the missing price path to `kwfw-modal-product-fix.js`.
+
 ## Completed items
 
 - Created `/OPERATING_CONTRACT.md`.
@@ -309,6 +317,7 @@ Status: legacy; not documented as global-loader active.
 - Tightened carousel/title-bar spacing.
 - Added temporary title-bar hotfix loader and stylesheet.
 - Established current production footer as global loader plus hotfix loader.
+- Added expanded product modal price and Add to Cart CTA fix.
 
 ## Pending cleanup tasks
 
@@ -320,6 +329,7 @@ Status: legacy; not documented as global-loader active.
 6. Audit remaining Fourthwall hard-coded site sections and either migrate them into GitHub or document them as Fourthwall-owned.
 7. Continue backfilling changelog history from recent commits.
 8. Expand product media migration notes as CDN-hosted product-support media is added.
+9. Verify expanded product modal prices live and add any missing Fourthwall price field paths if needed.
 
 ## Planned work
 
@@ -335,7 +345,7 @@ Status: legacy; not documented as global-loader active.
 Global loader URL:
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@b7672d41f8a011f47675ef2394b7d99028c90158/fourthwall/global/kw-fourthwall-loader.js?v=20260706-title-carousel-spacing-2
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@7db18a8ddae88d5c6dd0880014f1a07b54277761/fourthwall/global/kw-fourthwall-loader.js?v=20260717-modal-product-fix-1
 ```
 
 Temporary title-bar hotfix URL:
