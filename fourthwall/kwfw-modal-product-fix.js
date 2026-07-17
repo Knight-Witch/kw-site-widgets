@@ -1,167 +1,219 @@
 (() => {
   const d = document;
-  const currency = () => window.KWFW_SETTINGS?.currency || "USD";
+  const api = "https://storefront-api.fourthwall.com/v1";
+  const systems = [
+    {
+      modal: ".kwfw-modal",
+      panel: ".kwfw-panel",
+      price: ".kwfw-panel-price",
+      option: "[data-kwfw-option]",
+      optionKey: "kwfwOption",
+      ruleVariantKey: "kwfwRuleVariantId"
+    },
+    {
+      modal: ".kwpj-modal",
+      panel: ".kwpj-panel",
+      price: ".kwpj-panel-price",
+      option: "[data-kwpj-option]",
+      optionKey: "kwpjOption"
+    }
+  ];
+  const detailCache = new Map();
   const q = (selector, root = d) => root.querySelector(selector);
   const qa = (selector, root = d) => Array.from(root.querySelectorAll(selector));
-  const variantId = variant => variant?.id || variant?.variantId || variant?.uuid || variant?.externalId || variant?.external_id || "";
+  const settings = () => window.KWFW_SETTINGS || {};
   const variants = product => product?.variants || product?.productVariants || product?.product_variants || product?.options?.variants || [];
-  const available = variant => variant && variant.available !== false && variant.isAvailable !== false && variant.inStock !== false && variant.stock !== 0 && variant.inventory !== 0;
+  const variantId = variant => variant?.id || variant?.variantId || variant?.uuid || variant?.externalId || variant?.external_id || "";
+  const slug = product => product?.slug || product?.handle || product?.productSlug || product?.product_slug || "";
+  const systemForPanel = panel => systems.find(system => panel.matches(system.panel));
+  const currencyCode = value => value?.currency || value?.currencyCode || value?.currency_code || settings().currency || "USD";
+  const formatNumber = (value, currency) => {
+    const amount = Number(value);
+    if(!Number.isFinite(amount)) return "";
+    try{
+      return new Intl.NumberFormat("en-US",{
+        style:"currency",
+        currency:currency || settings().currency || "USD"
+      }).format(amount);
+    }catch{
+      return `$${amount.toFixed(2)}`;
+    }
+  };
   const formatMoney = value => {
     if(value == null || value === "") return "";
+    if(typeof value === "number") return formatNumber(value,settings().currency || "USD");
     if(typeof value === "string"){
       const text = value.trim();
       if(!text || /^(null|undefined|nan)$/i.test(text)) return "";
       if(/[$€£¥]|\b[A-Z]{3}\b/.test(text) && /\d/.test(text)) return text;
       const numeric = Number(text.replace(/[^0-9.-]/g,""));
-      if(!Number.isFinite(numeric)) return "";
-      return formatMoney(numeric);
-    }
-    if(typeof value === "number"){
-      if(!Number.isFinite(value)) return "";
-      const amount = Number.isInteger(value) && Math.abs(value) >= 1000 ? value / 100 : value;
-      try{return new Intl.NumberFormat("en-US",{style:"currency",currency:currency()}).format(amount)}catch{return `$${amount.toFixed(2)}`}
+      return Number.isFinite(numeric) ? formatNumber(numeric,settings().currency || "USD") : "";
     }
     if(typeof value === "object"){
       for(const key of ["formatted","display","displayAmount","display_amount","localized","label","text"]){
         const found = formatMoney(value[key]);
         if(found) return found;
       }
-      for(const key of ["amount","value","price","min","minimum","current","sale","regular","cents","centAmount","cent_amount","unitAmount","unit_amount"]){
+      if(value.value != null) return formatNumber(value.value,currencyCode(value));
+      if(value.amount != null) return formatNumber(value.amount,currencyCode(value));
+      for(const key of ["price","current","sale","regular","minimum","min"]){
         const found = formatMoney(value[key]);
         if(found) return found;
       }
     }
     return "";
   };
-  const productPrice = product => {
-    const paths = [
-      product?.price,
-      product?.displayPrice,
-      product?.display_price,
-      product?.currentPrice,
-      product?.current_price,
-      product?.salePrice,
-      product?.sale_price,
-      product?.basePrice,
-      product?.base_price,
-      product?.defaultPrice,
-      product?.default_price,
-      product?.minPrice,
-      product?.min_price,
-      product?.minimumPrice,
-      product?.minimum_price,
-      product?.priceRange?.min,
-      product?.priceRange?.minimum,
-      product?.priceRange?.from,
-      product?.price_range?.min,
-      product?.price_range?.minimum,
-      product?.price_range?.from,
-      product?.pricing?.price,
-      product?.pricing?.min,
-      product?.pricing?.minimum
-    ];
-    for(const path of paths){
-      const found = formatMoney(path);
+  const variantPrice = variant => {
+    if(!variant) return "";
+    for(const value of [
+      variant.unitPrice,
+      variant.unit_price,
+      variant.price,
+      variant.currentPrice,
+      variant.current_price,
+      variant.salePrice,
+      variant.sale_price
+    ]){
+      const found = formatMoney(value);
       if(found) return found;
     }
     return "";
   };
-  const optMap = variant => {
+  const productPrice = product => {
+    if(!product) return "";
+    for(const variant of variants(product)){
+      const found = variantPrice(variant);
+      if(found) return found;
+    }
+    for(const value of [
+      product.price,
+      product.currentPrice,
+      product.current_price,
+      product.salePrice,
+      product.sale_price,
+      product.priceRange?.min,
+      product.priceRange?.minimum,
+      product.price_range?.min,
+      product.price_range?.minimum
+    ]){
+      const found = formatMoney(value);
+      if(found) return found;
+    }
+    return "";
+  };
+  const optionMap = variant => {
     const result = {};
     const options = variant?.options || variant?.attributes || variant?.optionValues || variant?.selectedOptions || {};
     if(Array.isArray(options)){
       options.forEach(option => {
-        const name = option.name || option.optionName || option.key || option.type;
-        const value = option.value || option.optionValue || option.label || option.name;
-        if(name && value) result[name] = value;
+        const name = option?.optionName || option?.key || option?.type || option?.name;
+        const raw = option?.optionValue ?? option?.value ?? option?.label;
+        const value = raw && typeof raw === "object" ? raw.name ?? raw.value ?? raw.label : raw;
+        if(name && value != null && !/^description$/i.test(name)) result[name] = value;
       });
     }else{
-      Object.keys(options).forEach(key => {
-        if(options[key] != null && typeof options[key] !== "object") result[key] = options[key];
+      Object.keys(options).forEach(name => {
+        if(/^description$/i.test(name)) return;
+        const raw = options[name];
+        const value = raw && typeof raw === "object" ? raw.name ?? raw.value ?? raw.label ?? raw.optionValue : raw;
+        if(value != null) result[name] = value;
       });
     }
-    ["style","Style","size","Size","color","Color","colour","Colour"].forEach(key => {
-      if(variant?.[key] && !result[key]) result[key] = variant[key];
+    ["style","Style","size","Size","color","Color","colour","Colour"].forEach(name => {
+      if(variant?.[name] != null && result[name] == null) result[name] = variant[name];
     });
     if(!Object.keys(result).length && (variant?.name || variant?.title)) result.Option = variant.name || variant.title;
     return result;
   };
-  const selectedVariant = (panel, product) => {
-    const list = variants(product).filter(available);
-    const ruleId = panel.dataset.kwfwRuleVariantId;
+  const selectedVariant = (panel, product, system) => {
+    const list = variants(product);
+    if(!list.length) return null;
+    const ruleId = system.ruleVariantKey ? panel.dataset[system.ruleVariantKey] : "";
     if(ruleId){
-      const found = list.find(variant => String(variantId(variant)) === String(ruleId));
-      if(found) return found;
+      const match = list.find(variant => String(variantId(variant)) === String(ruleId));
+      if(match) return match;
     }
-    const selects = qa("[data-kwfw-option]", panel);
+    const selects = qa(system.option,panel);
     if(selects.length){
       const selected = {};
-      selects.forEach(select => selected[select.dataset.kwfwOption] = select.value);
-      const found = list.find(variant => {
-        const mapped = optMap(variant);
-        return Object.keys(selected).every(key => String(mapped[key] ?? "") === String(selected[key] ?? ""));
+      selects.forEach(select => {
+        const name = select.dataset[system.optionKey];
+        if(name) selected[name] = select.value;
       });
-      if(found) return found;
+      const match = list.find(variant => {
+        const mapped = optionMap(variant);
+        return Object.keys(selected).every(name => String(mapped[name] ?? "") === String(selected[name] ?? ""));
+      });
+      if(match) return match;
     }
-    return list[0] || variants(product)[0] || null;
+    return list[0];
   };
-  const variantPrice = variant => {
-    if(!variant) return "";
-    const paths = [
-      variant.price,
-      variant.displayPrice,
-      variant.display_price,
-      variant.currentPrice,
-      variant.current_price,
-      variant.salePrice,
-      variant.sale_price,
-      variant.basePrice,
-      variant.base_price,
-      variant.defaultPrice,
-      variant.default_price,
-      variant.unitPrice,
-      variant.unit_price,
-      variant.priceRange?.min,
-      variant.priceRange?.minimum,
-      variant.price_range?.min,
-      variant.price_range?.minimum,
-      variant.pricing?.price,
-      variant.pricing?.min
-    ];
-    for(const path of paths){
-      const found = formatMoney(path);
-      if(found) return found;
-    }
-    return "";
+  const fetchProduct = product => {
+    const productSlug = slug(product);
+    const token = settings().storefrontToken || settings().token || "";
+    if(!productSlug || !token) return Promise.resolve(null);
+    if(detailCache.has(productSlug)) return detailCache.get(productSlug);
+    const params = new URLSearchParams({storefront_token:token,currency:settings().currency || "USD"});
+    const request = fetch(`${api}/products/${encodeURIComponent(productSlug)}?${params.toString()}`)
+      .then(response => {
+        if(!response.ok) throw new Error(`Fourthwall product request failed ${response.status}`);
+        return response.json();
+      })
+      .then(data => data?.product || data?.data || data)
+      .catch(() => null);
+    detailCache.set(productSlug,request);
+    return request;
   };
-  const syncPanel = panel => {
-    const modal = panel.closest(".kwfw-modal");
-    const product = modal?._product;
-    if(!product) return;
-    const priceElement = q(".kwfw-panel-price", panel);
-    if(!priceElement) return;
-    const price = variantPrice(selectedVariant(panel, product)) || productPrice(product);
+  const renderPrice = (panel, product, system) => {
+    const element = q(system.price,panel);
+    if(!element) return "";
+    const selected = selectedVariant(panel,product,system);
+    const price = variantPrice(selected) || productPrice(product);
     if(price){
-      priceElement.textContent = price;
-      priceElement.removeAttribute("hidden");
-      priceElement.dataset.kwfwPriceSource = "product-api";
-    }else{
-      priceElement.dataset.kwfwPriceSource = "missing";
+      element.textContent = price;
+      element.hidden = false;
+      element.dataset.kwPriceSource = "fourthwall-product-api";
     }
+    return price;
   };
-  const syncAll = (root = d) => qa(".kwfw-panel", root).forEach(syncPanel);
-  d.addEventListener("change", event => {
-    const panel = event.target.closest?.(".kwfw-panel");
-    if(panel) setTimeout(() => syncPanel(panel), 0);
-  }, true);
-  d.addEventListener("click", event => {
-    const panel = event.target.closest?.(".kwfw-panel");
-    if(panel) setTimeout(() => syncPanel(panel), 0);
-  }, true);
+  const syncPanel = async panel => {
+    const system = systemForPanel(panel);
+    if(!system) return;
+    const modal = panel.closest(system.modal);
+    const product = modal?._product;
+    if(!modal || !product) return;
+    if(renderPrice(panel,product,system)) return;
+    if(modal._kwPriceRequest) return modal._kwPriceRequest;
+    modal._kwPriceRequest = fetchProduct(product).then(detail => {
+      if(detail){
+        modal._product = {...product,...detail};
+        renderPrice(panel,modal._product,system);
+      }
+    }).finally(() => {
+      modal._kwPriceRequest = null;
+    });
+    return modal._kwPriceRequest;
+  };
+  const scan = root => {
+    if(root?.nodeType !== 1 && root !== d) return;
+    systems.forEach(system => {
+      if(root.matches?.(system.panel)) syncPanel(root);
+      qa(system.panel,root).forEach(syncPanel);
+    });
+  };
+  d.addEventListener("change",event => {
+    const panel = systems.map(system => event.target.closest?.(system.panel)).find(Boolean);
+    if(panel) setTimeout(() => syncPanel(panel),0);
+  },true);
+  d.addEventListener("click",event => {
+    const panel = systems.map(system => event.target.closest?.(system.panel)).find(Boolean);
+    if(panel) setTimeout(() => syncPanel(panel),0);
+    if(event.target.closest?.("[data-kwfw-open],[data-kwpj-open]")){
+      [0,50,160].forEach(delay => setTimeout(() => scan(d),delay));
+    }
+  },true);
   new MutationObserver(mutations => {
-    mutations.forEach(mutation => mutation.addedNodes.forEach(node => {
-      if(node.nodeType === 1) setTimeout(() => syncAll(node), 30);
-    }));
+    mutations.forEach(mutation => mutation.addedNodes.forEach(node => scan(node)));
   }).observe(d.documentElement,{childList:true,subtree:true});
-  d.readyState === "loading" ? d.addEventListener("DOMContentLoaded",() => syncAll()) : syncAll();
+  d.readyState === "loading" ? d.addEventListener("DOMContentLoaded",() => scan(d)) : scan(d);
 })();
