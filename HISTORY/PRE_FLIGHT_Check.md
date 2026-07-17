@@ -2,6 +2,49 @@
 
 This file is the rolling pre-flight log for the Knight Witch site/widgets repo.
 
+## 2026-07-17 23:58 UTC — PF-20260717-010 — Variant gallery selection correction
+
+Requested change:
+- Fix variant-specific modal galleries that narrowed correctly on initial open but continued showing the default variant after the dropdown changed.
+
+Docs/files reviewed:
+- `/OPERATING_CONTRACT.md`
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/README.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/CHANGELOG.md`
+- `fourthwall/global/kw-fourthwall-loader.js`
+- `fourthwall/kwfw-carousel.js`
+- `fourthwall/kwfw-modal-product-fix.js`
+- `components/kw-plain-jackets/kw-plain-jackets-v2.js` on `kw-product-carousel-refactor`
+- Official Fourthwall Storefront API variant schema.
+
+Risk notes:
+- The dropdowns are created from collection-product variants, but the previous compatibility runtime later replaced `modal._product` with a product-detail response.
+- Exact option matching can fail when collection and detail payloads use different option-key casing, naming, or description-only representations.
+- Replacing `modal._product` also risks changing the source used by the original Add to Cart variant resolver.
+- No carousel rail, wheel, grid, card-size, or scroll code should change.
+
+Plan:
+- Preserve the original collection-product object on `modal._product`.
+- Store product-detail data separately.
+- Resolve the selected variant against the original variant set that built the dropdown.
+- Match detailed variant media back by stable variant ID.
+- Add normalized exact-key matching plus attribute-value, description, and variant-name fallback matching.
+- Bump the global loader cache key.
+
+Validation:
+- JavaScript passed `node --check`.
+- Focused matcher tests resolved ladies, mens/no-collar, and mens/detachable-collar variants.
+- Tests covered mismatched option-key casing and description-only variants.
+- Confirmed `modal._product` is no longer overwritten.
+- No scroll or layout files changed.
+- Live storefront verification remains required.
+
 ## 2026-07-17 23:38 UTC — PF-20260717-009 — Variant-specific product modal galleries
 
 Requested change:
@@ -167,7 +210,7 @@ Risk notes:
 Plan:
 - Replace stale global README content with current module documentation.
 - Update parent Fourthwall README for the stricter media boundary.
-- Update module changelog, MASTER, pre-flight, and diff record.
+- Update module changelog, MASTER, root changelog, pre-flight, and diff record.
 
 Validation:
 - Confirmed loader behavior from the current global loader and production-pinned ref.
@@ -300,7 +343,7 @@ Risk notes:
 
 Plan:
 - Create root docs and placeholder directories.
-- Backfill architecture, style keys, master log, changelog, pre-flight, and diff records.
+- Backfill architecture, style, master log, changelog, pre-flight, and diff records.
 - Make no runtime changes.
 
 Validation:
