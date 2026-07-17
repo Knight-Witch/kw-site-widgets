@@ -2,6 +2,24 @@
 
 Canonical repo-wide changelog. Module changelogs may remain, but they do not replace this file.
 
+## 2026-07-17 20:45 UTC — KW-RUNTIME-MODAL-PRODUCT-007
+
+Summary: Added a modal-only product fix for expanded carousel product listings. The fix restores visible API-derived modal prices and forces the expanded modal Add to Cart button back to the orange glowing/pulsing CTA style without touching carousel scroll behavior.
+
+Affected files: /fourthwall/kwfw-modal-product-fix.css; /fourthwall/kwfw-modal-product-fix.js; /fourthwall/global/kw-fourthwall-loader.js; /HISTORY/PRE_FLIGHT_Check.md; /HISTORY/CHANGELOG.md; /HISTORY/DIFFS/2026-07-17-modal-product-fix.md.
+
+Commits: 335a0f92ea0d5b1302ddef7336745aee0f38b10e; 0ec1c1c6d59f348781ff78b889ce8678dec12f10; 7db18a8ddae88d5c6dd0880014f1a07b54277761; 24384bc7dffe9c780b43f89d5ac93ac22692d8ca.
+
+Reason: Expanded product modal prices were blank because the existing modal price helper did not cover all live Fourthwall product/variant price field shapes. The modal Add to Cart button was too low contrast in expanded view.
+
+Rollback: Revert the listed runtime commits or remove `kwfw-modal-product-fix.css` and `kwfw-modal-product-fix.js` from the global loader. Use the previous production footer if immediate rollback is needed.
+
+Production snippet: Use global loader commit `7db18a8ddae88d5c6dd0880014f1a07b54277761` with cache key `20260717-modal-product-fix-1`.
+
+Validation: Inspected global loader order, carousel CSS/JS, product rules JS, and modal ownership. The JS helper only writes a price when it resolves one from the live `modal._product` API object or selected variant. No placeholder price is inserted. No live storefront testing performed in this session.
+
+Risks: Product data shape may still expose an undocumented field not covered by the helper. If a modal still has no price, inspect `modal._product` in DevTools and add that field path.
+
 ## 2026-07-07 10:05 UTC — KW-DOC-GLOBAL-README-006
 
 Summary: Reconciled global runtime documentation with current root docs, current loader behavior, current production footer state, and current temporary title-bar hotfix state. Updated the parent Fourthwall README media boundary and inventory, the global module changelog, MASTER, pre-flight, and diff record.
