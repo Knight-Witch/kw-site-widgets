@@ -2,13 +2,40 @@
 
 This module changelog records global-runtime-specific notes. `/HISTORY/CHANGELOG.md` remains the canonical repo-wide changelog.
 
+## 2026-07-17 — selected-variant modal galleries
+
+Production candidate:
+
+- Global loader commit: `26760b14a2676316be45e76df034638ae0990379`
+- Cache key: `20260717-variant-gallery-1`
+- Entrypoint: `fourthwall/global/kw-fourthwall-loader.js`
+
+### Added
+
+- The shared `fourthwall/kwfw-modal-product-fix.js` runtime now updates both standard `kwfw` and Step 3 `kwpj` product modal galleries when variant selection changes.
+- Gallery media comes from Fourthwall's official `variant.images` payload.
+- Product-wide media remains the fallback when a variant has no dedicated images.
+- The standard `kwfw` modal keeps universal product-support slides when its product images are filtered.
+- Product detail requests are cached and used to obtain complete variant media when a collection payload is incomplete.
+
+### Scope
+
+- No carousel rail, wheel, card sizing, or scroll files changed.
+- Existing real Fourthwall price resolution and modal CTA styling remain in the same shared runtime/CSS pair.
+
+### Validation
+
+- Confirmed Fourthwall's official Storefront API collection schema exposes `images` on each variant.
+- JavaScript passed `node --check`.
+- Live storefront verification remains required.
+
 ## 2026-07-07 — global README reconciliation
 
 Documentation-only update.
 
 Reconciled `fourthwall/global/README.md` with the current root documentation state.
 
-Current documented production state now points to:
+Current documented production state at that time pointed to:
 
 - Global loader commit: `b7672d41f8a011f47675ef2394b7d99028c90158`
 - Global loader cache key: `20260706-title-carousel-spacing-2`
@@ -25,23 +52,23 @@ Verified live storefront fix:
 - Cache key: `20260629-carousel-scroll-4`
 - Entrypoint: `fourthwall/global/kw-fourthwall-loader.js`
 
-Use the pinned commit above for the live Fourthwall footer. Do not use `@main` for the live storefront after this fix unless actively testing a new change.
+Use the pinned commit above for that historical live Fourthwall footer state. Do not use `@main` for live production unless actively testing a new change.
 
 ### Fixed
 
-- Carousel desktop scroll now works through `fourthwall/kwfw-carousel-wheel-bridge.js`.
+- Carousel desktop scroll works through `fourthwall/kwfw-carousel-wheel-bridge.js`.
 - The wheel bridge injects the final desktop carousel CSS override so `fourthwall/kwfw-carousel.css` cannot win the cascade with older scroll rules.
 - Wheel interception is limited to visible card bounds plus a 20px side buffer.
 - Page scroll resumes when the carousel cannot scroll in the wheel direction.
 - Incomplete rows are centered through the final flex-wrap override.
-- The global loader now replaces same-key resources when the target URL changes. This prevents stale desktop-grid CSS or controller JS from remaining active after a version bump.
+- The global loader replaces same-key resources when the target URL changes.
 
 ### Failed intermediate states to avoid
 
 - `3f0582046c6c0f31aedefa5e9d4805ec9eedddf3` must not be used. It included a MutationObserver loop that could freeze the browser/Fourthwall editor.
-- `20260629-carousel-scroll-3` should be considered superseded by `20260629-carousel-scroll-4`.
+- `20260629-carousel-scroll-3` is superseded by `20260629-carousel-scroll-4`.
 - Removing `kwfw-carousel-wheel-bridge.js` alone is not a valid no-scroll revert because base `kwfw-carousel.css` also contains carousel scroll rules.
-- The old desktop grid refs, including `a4f56c6eab3ca9793c7ea1009c1a69318fd1d73c`, should not be treated as the current carousel runtime.
+- Old desktop grid refs, including `a4f56c6eab3ca9793c7ea1009c1a69318fd1d73c`, are not the current carousel runtime.
 
 ### Files involved
 
@@ -50,7 +77,7 @@ Use the pinned commit above for the live Fourthwall footer. Do not use `@main` f
 - `fourthwall/kwfw-carousel-wheel-bridge.js`
 - `fourthwall/kwfw-carousel.css`
 
-### Handoff notes for future GPT sessions
+### Handoff notes
 
 Before editing nav/header/footer/carousel behavior, read:
 
