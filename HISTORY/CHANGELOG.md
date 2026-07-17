@@ -2,6 +2,24 @@
 
 Canonical repo-wide changelog. Module changelogs may remain, but they do not replace this file.
 
+## 2026-07-17 21:19 UTC — KW-RUNTIME-PRODUCT-MODALS-008
+
+Summary: Corrected expanded product modal pricing for both the standard `kwfw` carousel and the Step 3 `kwpj` base-jacket carousel. The shared modal runtime now reads Fourthwall Storefront API `variant.unitPrice.value` and its currency without inventing or scaling placeholder values. It also restores the orange glowing Add to Cart CTA in the Step 3 jacket modal.
+
+Affected files: /fourthwall/kwfw-modal-product-fix.css; /fourthwall/kwfw-modal-product-fix.js; /fourthwall/global/kw-fourthwall-loader.js; /HISTORY/PRE_FLIGHT_Check.md; /HISTORY/CHANGELOG.md; /HISTORY/DIFFS/2026-07-17-product-modal-prices-2.md.
+
+Commits: e4cb9d63a9c5e91d0acf006ab7a2acaad637a5a2; 05945c729bca2dec9e03bd76b583278dd8252185; 63ef5483c10dd2fc803be180faec584d84dbecc6.
+
+Reason: Both carousel implementations were reading `variant.price`, while Fourthwall documents the live selling price on collection/product variants as `unitPrice.value`. The earlier compatibility runtime only targeted `kwfw` panels and did not initialize when the added DOM node was itself the modal panel. The Step 3 modal also lived outside `.kwpj-carousel`, so its inherited orange CSS variables were unavailable.
+
+Rollback: Revert the listed runtime commits and restore loader commit `7db18a8ddae88d5c6dd0880014f1a07b54277761` with cache key `20260717-modal-product-fix-1`.
+
+Production candidate: Global loader commit `63ef5483c10dd2fc803be180faec584d84dbecc6` with cache key `20260717-product-modal-prices-2`.
+
+Validation: JavaScript passed `node --check`. Reviewed both modal implementations, their actual modal/product object ownership, Fourthwall’s official Storefront API product schema, the global loader order, and scoped CTA selectors. No carousel scroll files were changed. Live storefront verification remains required.
+
+Risks: The compatibility runtime performs a single cached official product-by-slug request only when the collection product object does not already expose a usable `unitPrice`. It does not fabricate a fallback price.
+
 ## 2026-07-17 20:45 UTC — KW-RUNTIME-MODAL-PRODUCT-007
 
 Summary: Added a modal-only product fix for expanded carousel product listings. The fix restores visible API-derived modal prices and forces the expanded modal Add to Cart button back to the orange glowing/pulsing CTA style without touching carousel scroll behavior.
