@@ -2,6 +2,32 @@
 
 This module changelog records global-runtime-specific notes. `/HISTORY/CHANGELOG.md` remains the canonical repo-wide changelog.
 
+## 2026-07-17 — variant gallery selection correction
+
+Production candidate:
+
+- Global loader commit: `8ef32a18b59ef932c9b5364ca3e37c72183d5c3e`
+- Cache key: `20260717-variant-gallery-2`
+- Entrypoint: `fourthwall/global/kw-fourthwall-loader.js`
+
+### Fixed
+
+- The modal runtime no longer replaces `modal._product` with a differently shaped product-detail payload.
+- Variant selection is resolved from the original collection-product variants that built the dropdown.
+- Product-detail media is matched back to the selected variant by variant ID.
+- Option matching now tolerates key casing/format differences and description/name-only variant representations.
+
+### Scope
+
+- No carousel rail, wheel, card sizing, grid, or scroll files changed.
+- Existing real Fourthwall price resolution, CTA styling, product-wide media fallback, and universal support slides remain active.
+
+### Validation
+
+- JavaScript passed `node --check`.
+- Focused matcher tests covered ladies, mens/no-collar, and mens/detachable-collar selections.
+- Live storefront verification remains required.
+
 ## 2026-07-17 — selected-variant modal galleries
 
 Production candidate:
