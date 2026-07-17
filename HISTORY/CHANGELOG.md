@@ -2,6 +2,24 @@
 
 Canonical repo-wide changelog. Module changelogs may remain, but they do not replace this file.
 
+## 2026-07-17 23:38 UTC — KW-RUNTIME-VARIANT-GALLERIES-009
+
+Summary: Added selected-variant gallery switching to both the standard `kwfw` featured-product modal and the Step 3 `kwpj` base-jacket modal. When a user changes a variant, the modal now rebuilds its gallery from that variant's real Fourthwall `images` payload, resets to slide zero, and falls back to product-wide media only when the variant has no dedicated images. Standard-modal universal support slides remain preserved.
+
+Affected files: /fourthwall/kwfw-modal-product-fix.js; /fourthwall/global/kw-fourthwall-loader.js; /ARCHITECTURE.md; /STYLE_KEYS.md; /MASTER.md; /fourthwall/README.md; /fourthwall/global/README.md; /fourthwall/global/CHANGELOG.md; /HISTORY/PRE_FLIGHT_Check.md; /HISTORY/CHANGELOG.md; /HISTORY/DIFFS/2026-07-17-variant-gallery-1.md.
+
+Commits: `114b4de424a1de30fbaa46501a03c91a6d10fbd9`; `26760b14a2676316be45e76df034638ae0990379`; `12be83185f41430c3d96fd4f49b8098d7e7f5c8e`; `db62fcef42fd7a717cfb84bbee65902ab1a8dab7`; `baac3b3255b99a6af58f84e3b25a75c8533e6639`; `994a0932da32900cf5b81109b92a621ea4f3cee8`; `2e13d7bc302a7d8bcd1a8f85b77be8ab63fb2216`; `e6b8a9c99a58a44cc4ad7dbb5627dd48b1b31d52`; `e0937ff6d227d4bce321ecfb7c130ff9d8c955c9`; `af026509d37c94b627e7e42425c01332b26ce589`.
+
+Reason: Both existing modal implementations initially rendered the product-wide media bucket and never changed it when a selected variant changed. Fourthwall's official Storefront API exposes dedicated media on each variant through `variant.images`, so the modal can use the same assignments configured in the Fourthwall product editor.
+
+Rollback: Restore global loader commit `63ef5483c10dd2fc803be180faec584d84dbecc6` with cache key `20260717-product-modal-prices-2`. That preserves the real-price and modal CTA fixes but removes variant-specific gallery filtering.
+
+Production candidate: Global loader commit `26760b14a2676316be45e76df034638ae0990379` with cache key `20260717-variant-gallery-1`.
+
+Validation: Confirmed the official Fourthwall Storefront API collection schema exposes `images` on each variant. Updated JavaScript passed `node --check`. Reviewed both modal namespaces, option selectors, custom product-rule variant IDs, gallery/dot markup, universal-media interaction, loader order, cache versioning, and observer-loop prevention. No carousel rail, wheel, grid, card-size, or scroll files changed. Live storefront verification remains required.
+
+Risks and follow-up: Verify the Samurai vest's ladies/mens and collar/no-collar variants plus representative Step 3 jacket products. Products without assigned variant media intentionally retain the product-wide gallery. Extend media-key support only if a live Fourthwall payload confirms another field.
+
 ## 2026-07-17 21:19 UTC — KW-RUNTIME-PRODUCT-MODALS-008
 
 Summary: Corrected expanded product modal pricing for both the standard `kwfw` carousel and the Step 3 `kwpj` base-jacket carousel. The shared modal runtime now reads Fourthwall Storefront API `variant.unitPrice.value` and its currency without inventing or scaling placeholder values. It also restores the orange glowing Add to Cart CTA in the Step 3 jacket modal.
