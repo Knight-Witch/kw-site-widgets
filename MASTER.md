@@ -20,10 +20,10 @@ Media direction:
 
 ### Global Fourthwall loader
 
-Production-facing footer currently uses:
+Production candidate footer uses:
 
-- Global loader commit: `7db18a8ddae88d5c6dd0880014f1a07b54277761`
-- Global loader cache key: `20260717-modal-product-fix-1`
+- Global loader commit: `26760b14a2676316be45e76df034638ae0990379`
+- Global loader cache key: `20260717-variant-gallery-1`
 - Entrypoint: `fourthwall/global/kw-fourthwall-loader.js`
 - Shop domain: `knightwitchapparel.com`
 - Currency: `USD`
@@ -32,7 +32,7 @@ Production-facing footer currently uses:
 Current global loader URL:
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@7db18a8ddae88d5c6dd0880014f1a07b54277761/fourthwall/global/kw-fourthwall-loader.js?v=20260717-modal-product-fix-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@26760b14a2676316be45e76df034638ae0990379/fourthwall/global/kw-fourthwall-loader.js?v=20260717-variant-gallery-1
 ```
 
 ### Temporary title-bar hotfix
@@ -131,7 +131,7 @@ fourthwall/kwfw-modal-product-fix.js
 
 Status: active via the global loader.
 
-Current modal product fix restores expanded-modal API-derived pricing and forces the expanded Add to Cart CTA back to the orange glowing/pulsing button style. The helper does not insert placeholder prices; it only writes a price when the live product or selected variant object exposes one.
+The shared modal compatibility runtime covers both the standard `kwfw` modal and the Step 3 `kwpj` base-jacket modal. It reads real Fourthwall `variant.unitPrice` values, restores the modal Add to Cart CTA, and switches the modal gallery to the selected variant's official `variant.images` array. If a selected variant has no dedicated media, the product-wide gallery remains the fallback. The standard modal preserves universal support-media slides.
 
 Current spacing work changed the desktop/mobile carousel pull-up to `-35px` and preserved a tighter title-to-carousel layout.
 
@@ -298,9 +298,9 @@ Status: legacy; not documented as global-loader active.
    - Risk: docs may not yet represent the whole live website.
    - Required mitigation: audit Fourthwall page custom HTML snippets and add them to GitHub or document them as Fourthwall-owned.
 
-8. Product modal price extraction depends on live Fourthwall product/variant field shapes.
-   - Risk: an undocumented API field may still need to be added if any product modal price remains blank.
-   - Required mitigation: inspect `document.querySelector('.kwfw-modal.is-open')._product` for any affected product and add the missing price path to `kwfw-modal-product-fix.js`.
+8. Variant-specific modal galleries require live verification against products with and without assigned variant images.
+   - Risk: a product with an undocumented media field may fall back to the product-wide gallery.
+   - Required mitigation: inspect the affected Fourthwall variant object and extend `ownerMedia()` in `kwfw-modal-product-fix.js` only when an actual field is confirmed.
 
 ## Completed items
 
@@ -317,7 +317,8 @@ Status: legacy; not documented as global-loader active.
 - Tightened carousel/title-bar spacing.
 - Added temporary title-bar hotfix loader and stylesheet.
 - Established current production footer as global loader plus hotfix loader.
-- Added expanded product modal price and Add to Cart CTA fix.
+- Added expanded product modal price and Add to Cart CTA fix for both modal systems.
+- Added selected-variant gallery switching for both standard and Step 3 product modals.
 
 ## Pending cleanup tasks
 
@@ -329,7 +330,7 @@ Status: legacy; not documented as global-loader active.
 6. Audit remaining Fourthwall hard-coded site sections and either migrate them into GitHub or document them as Fourthwall-owned.
 7. Continue backfilling changelog history from recent commits.
 8. Expand product media migration notes as CDN-hosted product-support media is added.
-9. Verify expanded product modal prices live and add any missing Fourthwall price field paths if needed.
+9. Verify variant-specific galleries live for the Samurai vest and representative Step 3 jacket products.
 
 ## Planned work
 
@@ -345,7 +346,7 @@ Status: legacy; not documented as global-loader active.
 Global loader URL:
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@7db18a8ddae88d5c6dd0880014f1a07b54277761/fourthwall/global/kw-fourthwall-loader.js?v=20260717-modal-product-fix-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@26760b14a2676316be45e76df034638ae0990379/fourthwall/global/kw-fourthwall-loader.js?v=20260717-variant-gallery-1
 ```
 
 Temporary title-bar hotfix URL:
