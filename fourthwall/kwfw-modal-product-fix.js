@@ -39,6 +39,8 @@
   const variantId = variant => variant?.id || variant?.variantId || variant?.uuid || variant?.externalId || variant?.external_id || "";
   const slug = product => product?.slug || product?.handle || product?.productSlug || product?.product_slug || "";
   const systemForPanel = panel => systems.find(system => panel.matches(system.panel));
+  const normalizeKey = value => String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  const normalizeValue = value => String(value ?? "").toLowerCase().replace(/[’']/g, "").replace(/[^a-z0-9]+/g, " ").trim();
   const currencyCode = value => value?.currency || value?.currencyCode || value?.currency_code || settings().currency || "USD";
   const formatNumber = (value, currency) => {
     const amount = Number(value);
@@ -114,29 +116,62 @@
     }
     return "";
   };
+  const optionValue = value => {
+    if(value == null) return "";
+    if(typeof value !== "object") return value;
+    return value.name ?? value.value ?? value.label ?? value.optionValue ?? value.option_value ?? value.title ?? "";
+  };
   const optionMap = variant => {
     const result = {};
     const options = variant?.options || variant?.attributes || variant?.optionValues || variant?.selectedOptions || {};
     if(Array.isArray(options)){
       options.forEach(option => {
         const name = option?.optionName || option?.key || option?.type || option?.name;
-        const raw = option?.optionValue ?? option?.value ?? option?.label;
-        const value = raw && typeof raw === "object" ? raw.name ?? raw.value ?? raw.label : raw;
-        if(name && value != null && !/^description$/i.test(name)) result[name] = value;
+        const value = optionValue(option?.optionValue ?? option?.value ?? option?.label);
+        if(name && value !== "" && !/^description$/i.test(name)) result[name] = value;
       });
     }else{
       Object.keys(options).forEach(name => {
         if(/^description$/i.test(name)) return;
-        const raw = options[name];
-        const value = raw && typeof raw === "object" ? raw.name ?? raw.value ?? raw.label ?? raw.optionValue : raw;
-        if(value != null) result[name] = value;
+        const value = optionValue(options[name]);
+        if(value !== "") result[name] = value;
       });
     }
     ["style","Style","size","Size","color","Color","colour","Colour"].forEach(name => {
-      if(variant?.[name] != null && result[name] == null) result[name] = variant[name];
+      if(variant?.[name] != null && result[name] == null) result[name] = optionValue(variant[name]);
     });
     if(!Object.keys(result).length && (variant?.name || variant?.title)) result.Option = variant.name || variant.title;
     return result;
+  };
+  const selectionMap = (panel, system) => {
+    const selected = {};
+    qa(system.option,panel).forEach(select => {
+      const name = select.dataset[system.optionKey];
+      if(name) selected[name] = select.value;
+    });
+    return selected;
+  };
+  const variantSearchValues = variant => {
+    const values = [...Object.values(optionMap(variant))];
+    const attributes = variant?.attributes || {};
+    if(attributes?.description) values.push(optionValue(attributes.description));
+    values.push(variant?.name,variant?.title,variant?.label,variant?.sku);
+    return values.filter(value => value != null && value !== "").map(normalizeValue).filter(Boolean);
+  };
+  const exactSelectionMatch = (variant, selected) => {
+    const mapped = optionMap(variant);
+    const normalized = new Map(Object.entries(mapped).map(([key,value]) => [normalizeKey(key),normalizeValue(value)]));
+    return Object.entries(selected).every(([name,value]) => normalized.get(normalizeKey(name)) === normalizeValue(value));
+  };
+  const broadSelectionMatch = (variant, selected) => {
+    const values = variantSearchValues(variant);
+    return Object.values(selected).every(raw => {
+      const target = normalizeValue(raw);
+      if(!target) return true;
+      if(values.includes(target)) return true;
+      if(target.length <= 2) return values.some(value => value.split(" ").includes(target));
+      return values.some(value => value.includes(target));
+    });
   };
   const selectedVariant = (panel, product, system) => {
     const list = variants(product);
@@ -146,20 +181,25 @@
       const match = list.find(variant => String(variantId(variant)) === String(ruleId));
       if(match) return match;
     }
-    const selects = qa(system.option,panel);
-    if(selects.length){
-      const selected = {};
-      selects.forEach(select => {
-        const name = select.dataset[system.optionKey];
-        if(name) selected[name] = select.value;
-      });
-      const match = list.find(variant => {
-        const mapped = optionMap(variant);
-        return Object.keys(selected).every(name => String(mapped[name] ?? "") === String(selected[name] ?? ""));
-      });
-      if(match) return match;
+    const selected = selectionMap(panel,system);
+    if(Object.keys(selected).length){
+      const exact = list.find(variant => exactSelectionMatch(variant,selected));
+      if(exact) return exact;
+      const broad = list.find(variant => broadSelectionMatch(variant,selected));
+      if(broad) return broad;
     }
     return list[0];
+  };
+  const matchingDetailVariant = (detailProduct, selected) => {
+    if(!detailProduct || !selected) return null;
+    const list = variants(detailProduct);
+    const id = variantId(selected);
+    if(id){
+      const byId = list.find(variant => String(variantId(variant)) === String(id));
+      if(byId) return byId;
+    }
+    const selectedName = normalizeValue(selected.name || selected.title || selected.label);
+    return selectedName ? list.find(variant => normalizeValue(variant.name || variant.title || variant.label) === selectedName) || null : null;
   };
   const mediaSource = media => {
     if(typeof media === "string") return media;
@@ -223,11 +263,12 @@
     detailCache.set(productSlug,request);
     return request;
   };
-  const renderPrice = (panel, product, system) => {
+  const renderPrice = (panel, product, detailProduct, system) => {
     const element = q(system.price,panel);
     if(!element) return "";
     const selected = selectedVariant(panel,product,system);
-    const price = variantPrice(selected) || productPrice(product);
+    const detailed = matchingDetailVariant(detailProduct,selected);
+    const price = variantPrice(selected) || variantPrice(detailed) || productPrice(product) || productPrice(detailProduct);
     if(price){
       element.textContent = price;
       element.hidden = false;
@@ -267,17 +308,23 @@
       dots.appendChild(dot);
     }
   };
-  const renderGallery = (panel, product, system) => {
+  const renderGallery = (panel, product, detailProduct, system) => {
     const modal = panel.closest(system.modal);
     const gallery = q(system.gallery,panel);
     const track = gallery && q(system.track,gallery);
     const dots = gallery && q(system.dots,gallery);
     if(!modal || !gallery || !track || !dots) return false;
     const selected = selectedVariant(panel,product,system);
-    const dedicated = ownerMedia(selected);
-    const media = dedicated.length ? dedicated : ownerMedia(product);
+    const detailed = matchingDetailVariant(detailProduct,selected);
+    const detailMedia = ownerMedia(detailed);
+    const selectedMedia = ownerMedia(selected);
+    const dedicated = detailMedia.length ? detailMedia : selectedMedia;
+    const baseMedia = ownerMedia(product);
+    const detailProductMedia = ownerMedia(detailProduct);
+    const productMedia = baseMedia.length ? baseMedia : detailProductMedia;
+    const media = dedicated.length ? dedicated : productMedia;
     if(!media.length) return false;
-    const key = `${system.key}:${variantId(selected) || "product"}:${dedicated.length ? "variant" : "product"}:${media.map(item => item.src).join("|")}`;
+    const key = `${system.key}:${variantId(selected) || normalizeValue(selected?.name || selected?.title) || "product"}:${dedicated.length ? "variant" : "product"}:${media.map(item => item.src).join("|")}`;
     if(modal.dataset.kwVariantGalleryKey === key) return true;
     modal.dataset.kwVariantGalleryKey = key;
     const preserved = system.preserveSlide ? qa(system.preserveSlide,track) : [];
@@ -296,9 +343,9 @@
     }
     return true;
   };
-  const renderPanel = (panel, product, system) => {
-    renderPrice(panel,product,system);
-    renderGallery(panel,product,system);
+  const renderPanel = (panel, product, detailProduct, system) => {
+    renderPrice(panel,product,detailProduct,system);
+    renderGallery(panel,product,detailProduct,system);
   };
   const syncPanel = panel => {
     const system = systemForPanel(panel);
@@ -306,15 +353,22 @@
     const modal = panel.closest(system.modal);
     const product = modal?._product;
     if(!modal || !product) return;
-    renderPanel(panel,product,system);
     const productSlug = slug(product);
-    if(!productSlug || panel.dataset.kwDetailAppliedSlug === productSlug) return;
-    panel.dataset.kwDetailAppliedSlug = productSlug;
-    fetchProduct(product).then(detail => {
-      if(!detail || !panel.isConnected) return;
-      modal._product = {...product,...detail};
+    if(modal._kwProductDetailSlug !== productSlug){
+      modal._kwProductDetailSlug = productSlug;
+      modal._kwProductDetail = null;
+      modal._kwProductDetailRequest = null;
       modal.removeAttribute("data-kw-variant-gallery-key");
-      renderPanel(panel,modal._product,system);
+    }
+    renderPanel(panel,product,modal._kwProductDetail,system);
+    if(!productSlug || modal._kwProductDetail || modal._kwProductDetailRequest) return;
+    modal._kwProductDetailRequest = fetchProduct(product).then(detail => {
+      if(!detail || !panel.isConnected || modal._product !== product) return;
+      modal._kwProductDetail = detail;
+      modal.removeAttribute("data-kw-variant-gallery-key");
+      renderPanel(panel,product,detail,system);
+    }).finally(() => {
+      modal._kwProductDetailRequest = null;
     });
   };
   const scan = root => {
