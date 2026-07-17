@@ -12,7 +12,7 @@ If a visible website element is not mapped in this document, assume it may still
 
 Media boundary:
 
-- Product images may still come from Fourthwall native product media.
+- Product and variant images may remain Fourthwall native product media.
 - GitHub-hosted code can reference external Knight Witch CDN media.
 - Long-term direction is to move non-native/product-support media to DigitalOcean Spaces/CDN rather than Fourthwall-hosting it.
 - CDN roots and media assets are documented in `/STYLE_KEYS.md`.
@@ -56,6 +56,7 @@ Media boundary:
 - Global empty-cart modal/runtime.
 - Product carousel runtime and styles.
 - Product modal/gallery runtime.
+- Shared standard/Step 3 modal price, CTA, and selected-variant gallery compatibility.
 - Universal product media injection.
 - Product size guide modal.
 - Product option rules for Cyberpunk collar variants.
@@ -78,7 +79,7 @@ Media boundary:
 
 - Raw placement snippets for modules.
 - Native product grids/details not replaced by custom widgets.
-- Native product images.
+- Native product and variant images.
 - Remaining custom HTML sections not represented by GitHub files.
 - Per-page hard-coded title bar blocks.
 - Any live page section not listed above.
@@ -123,7 +124,8 @@ CSS order in the current loader:
 12. `fourthwall/kwfw-size-guide.css` from pinned commit `03e30bd4c28f5de3fc956ea39a874e6e447583d0`
 13. `fourthwall/kwfw-universal-media.css` from pinned commit `579c6124748dec87d5957716eabf0563dfc9401c`
 14. `fourthwall/kwfw-product-rules.css` from pinned commit `db73f85d3d4b982e46fea1e57bba48863b651889`
-15. `fourthwall/global/kw-cart-runtime.css` from `selfRef`
+15. `fourthwall/kwfw-modal-product-fix.css` from `selfRef`
+16. `fourthwall/global/kw-cart-runtime.css` from `selfRef`
 
 JS order in the current loader:
 
@@ -140,13 +142,15 @@ JS order in the current loader:
 11. `fourthwall/kwfw-size-guide.js` from pinned commit `f00c8dd64c573dd0c782036cf3df3a7dca53482c`
 12. `fourthwall/kwfw-universal-media.js` from pinned commit `4327ad13c67468e6b260dbc44758cd9b90574f6d`
 13. `fourthwall/kwfw-product-rules.js` from pinned commit `ef9f1ec0947d4144803c46c45c331e93b09dc9d3`
-14. `fourthwall/global/kw-cart-runtime.js` from `selfRef`
+14. `fourthwall/kwfw-modal-product-fix.js` from `selfRef`
+15. `fourthwall/global/kw-cart-runtime.js` from `selfRef`
 
 ## Important loader risks
 
 1. The current global loader loads title-bar CSS/JS from floating `main` while most other live assets are pinned or loaded from `selfRef`. This caused inconsistent title-bar behavior when the footer used a pinned global-loader URL but title-bar files continued to float.
 2. The loader references `kw-info-accordion-dev` for info-section CSS/JS. This means production behavior depends on a branch ref unless later stabilized.
 3. Product carousel, size guide, universal media, and product rules are each pinned to different commits. This may be intentional stabilization, but dependency ownership must be checked before upgrades.
+4. `kwfw-modal-product-fix.js` is intentionally loaded after universal media and product rules because it must preserve support slides and honor rule-selected variant IDs.
 
 Current title-bar mitigation: the Fourthwall footer includes `components/kw-title-bars/kw-title-bars-hotfix-loader.js` after the global loader. This is temporary.
 
@@ -289,6 +293,8 @@ This module renders the `ENTER-TCD-V2.webm` feature video and mute/restart contr
 - `kwfw-carousel-desktop-grid.css` — desktop grid/scroll layout overrides and current title-to-carousel spacing.
 - `kwfw-carousel-wheel-bridge.js` — desktop wheel routing and final injected scroll/grid override. Do not treat it as only a wheel listener.
 - `kwfw-font-agencyfb.css` — legacy product-widget AgencyFB face and product-widget font assignments.
+- `kwfw-modal-product-fix.css` — shared expanded-modal price and Add to Cart visibility styling for both `kwfw` and `kwpj` modal namespaces.
+- `kwfw-modal-product-fix.js` — shared expanded-modal runtime for real Fourthwall prices and selected-variant gallery filtering across both modal systems.
 
 Expected holder selectors:
 
@@ -312,6 +318,28 @@ kwfw_cart_id
 kwfw_cart_count
 kwfw_cart_items
 ```
+
+### Shared modal compatibility
+
+`kwfw-modal-product-fix.js` operates on:
+
+```text
+.kwfw-modal .kwfw-panel
+.kwpj-modal .kwpj-panel
+```
+
+Responsibilities:
+
+- Resolve the selected variant from native option selects.
+- Honor `data-kwfw-rule-variant-id` when a product-rule UI owns selection.
+- Render official Fourthwall `variant.unitPrice` values.
+- Use official Fourthwall `variant.images` for the selected variant.
+- Reset the gallery to slide zero after selection changes.
+- Fall back to product-wide media when the variant has no assigned images.
+- Preserve `.kwfw-universal-media-slide` support media in the standard modal.
+- Cache product-by-slug requests and prevent observer rebuild loops with a gallery-state key.
+
+This runtime does not own carousel rail, card grid, wheel routing, or page-scroll behavior.
 
 ### Universal media
 
@@ -431,7 +459,9 @@ The current loader references `kw-info-accordion-dev` for info sections. Branch-
 Known branch systems from prior repo state:
 
 - `kw-info-accordion-dev` — reusable info sections accordion.
-- `kw-product-carousel-refactor` — product carousel refactor branch.
+- `kw-product-carousel-refactor` — product carousel refactor branch containing the Step 3 `kwpj` base-jacket carousel.
+
+The global `kwfw-modal-product-fix.js` runtime intentionally supports the branch-loaded `kwpj` modal because both modal systems share the same Fourthwall product/variant data contract.
 
 Before editing branch systems, inspect the branch docs and do not assume `main` has the authoritative files.
 
@@ -443,7 +473,7 @@ Use pinned commits for production snippets. Avoid `@main` for live production un
 
 When cache invalidation is needed, bump both:
 
-- jsDelivr query string, such as `?v=20260706-title-carousel-spacing-2`
+- jsDelivr query string, such as `?v=20260717-variant-gallery-1`
 - any matching `data-version` value
 
 Document current snippets in `/MASTER.md`.
@@ -467,6 +497,7 @@ Document current snippets in `/MASTER.md`.
 - Product carousel base UI/runtime: `fourthwall/kwfw-carousel.css` and `fourthwall/kwfw-carousel.js`
 - Product carousel visual footprint: `fourthwall/kwfw-carousel-desktop-grid.css`
 - Product carousel wheel/scroll behavior: `fourthwall/kwfw-carousel-wheel-bridge.js`
+- Product modal price/CTA/variant gallery behavior: `fourthwall/kwfw-modal-product-fix.css` and `fourthwall/kwfw-modal-product-fix.js`
 - Product extra media: `fourthwall/kwfw-universal-media.css`, `fourthwall/kwfw-universal-media.js`, and `fourthwall/prod_card_media/manifest.json`
 - Product size guide: `fourthwall/kwfw-size-guide.css` and `fourthwall/kwfw-size-guide.js`
 - Product option rules: `fourthwall/kwfw-product-rules.css` and `fourthwall/kwfw-product-rules.js`
@@ -480,8 +511,8 @@ Document current snippets in `/MASTER.md`.
 
 - Fold title-bar hotfix into the base title-bar/global-loader architecture.
 - Stop floating title-bar dependencies from `main` in the production global loader.
-- Reconcile stale production notes in `fourthwall/global/README.md` with `/MASTER.md`.
 - Review legacy carousel loaders and variants, then document keep/remove decisions.
 - Resolve the missing `gallery-portfolio/gallery-portfolio.js` reference or document why it is intentionally absent.
 - Stabilize or explicitly document the `kw-info-accordion-dev` dependency.
 - Audit which remaining Fourthwall hard-coded sections still exist outside GitHub.
+- Verify selected-variant galleries against representative live standard and Step 3 products.
