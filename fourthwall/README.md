@@ -11,7 +11,7 @@ fourthwall/global/                         Global Fourthwall runtime and product
 fourthwall/domains/collection/             Collection banner/category page module.
 fourthwall/domains/collection/feature-video/ Collection feature video module.
 fourthwall/prod_card_media/                Product-card media manifest.
-fourthwall/kwfw-*                          Product carousel, size guide, universal media, product rules, and legacy variants.
+fourthwall/kwfw-*                          Product carousel, modal compatibility, size guide, universal media, product rules, and legacy variants.
 ```
 
 ## Global runtime
@@ -30,6 +30,8 @@ kwfw-carousel.js
 kwfw-carousel-desktop-grid.css
 kwfw-carousel-wheel-bridge.js
 kwfw-font-agencyfb.css
+kwfw-modal-product-fix.css
+kwfw-modal-product-fix.js
 kwfw-size-guide.css
 kwfw-size-guide.js
 kwfw-universal-media.css
@@ -39,6 +41,8 @@ kwfw-product-rules.js
 prod_card_media/manifest.json
 prod_card_media/README.md
 ```
+
+`kwfw-modal-product-fix.js` is the shared expanded-modal compatibility owner for both the standard `kwfw` carousel and the Step 3 branch-loaded `kwpj` jacket carousel. It handles live Fourthwall variant pricing and selected-variant gallery filtering without owning rail or scroll behavior.
 
 Legacy/experimental carousel variants are present in this folder. Do not use or edit them unless the task explicitly targets them or they are revalidated.
 
@@ -59,7 +63,7 @@ Fourthwall may still contain custom sections that are not represented in this re
 
 ## Media boundary
 
-Native product media returned by the Fourthwall product API can remain Fourthwall-hosted. All other site media used by this repo should be on the Knight Witch DigitalOcean CDN unless a documented exception exists.
+Native product and variant media returned by the Fourthwall product API can remain Fourthwall-hosted. All other site media used by this repo should be on the Knight Witch DigitalOcean CDN unless a documented exception exists.
 
 ## Update protocol
 
