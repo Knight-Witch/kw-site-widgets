@@ -2,6 +2,48 @@
 
 This file is the rolling pre-flight log for the Knight Witch site/widgets repository. Older entries before the active July 2026 runtime work remain available in Git history and paired diff records.
 
+## 2026-07-18 00:45 UTC — PF-20260718-012 — Size Guide modal placement and typography
+
+Requested change:
+
+- Return the Size Guide button to the quantity-control row in both carousel modal systems.
+- Match the carousel/display AgencyFB typography.
+- Preserve native product-page injection.
+
+Docs reviewed:
+
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/CHANGELOG.md`
+
+Files/modules inspected:
+
+- `fourthwall/kwfw-size-guide.js`
+- `fourthwall/kwfw-size-guide.css`
+- Standard `kwfw` modal quantity markup in `fourthwall/kwfw-carousel.js`
+- Step 3 `kwpj` modal quantity markup in `components/kw-plain-jackets/kw-plain-jackets-v2.js`
+- `fourthwall/global/kw-fourthwall-loader.js`
+
+Risk and conflict notes:
+
+- The current injector inserts directly before Add to Cart, which produces a full-width row.
+- Both modal systems have equivalent quantity-field structures but different namespace prefixes.
+- Repeated MutationObserver refreshes must not create duplicate wrappers or buttons.
+- Native Fourthwall product pages should retain their existing full-width placement because their markup differs from carousel modals.
+
+Plan:
+
+- Wrap each modal's existing quantity field and Size Guide button in one idempotent `.kw-size-qty-size-row`.
+- Keep native-page buttons outside that wrapper.
+- Use the AgencyFB carousel font stack for the button.
+- Keep chart resolution, product data, prices, galleries, Add to Cart, and scrolling unchanged.
+
+User input required: none.
+
 ## 2026-07-18 00:25 UTC — PF-20260718-011 — Global product size-guide registry
 
 Requested change:
