@@ -2,6 +2,40 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
+## 2026-07-18 04:40 UTC — PF-20260718-016 — Featured Size Guide vertical alignment
+
+Requested change:
+
+- Leave the now-correct Step 3 `kwpj` quantity row untouched.
+- Raise the featured Spellweave `kwfw` Size Guide button so it aligns exactly with the quantity controls.
+
+Files reviewed:
+
+- `fourthwall/kwfw-size-guide.css`
+- `fourthwall/kwfw-size-guide.js`
+- Base `fourthwall/kwfw-carousel.css`
+- Live featured-modal screenshot
+
+Risk/conflict notes:
+
+- The standard quantity label and controls live inside one `.kwfw-field`, so aligning the button against the field can align it against the combined label-plus-control height rather than the control row.
+- Applying another shared `kwpj` rule would risk regressing the Step 3 fix.
+
+Plan/result:
+
+- Add `kwfw`-only grid rows.
+- Flatten only the standard `.kwfw-field` with `display: contents`.
+- Place the Qty label in row 1.
+- Place both `.kwfw-qty` and Size Guide in row 2.
+- Leave all `.kwpj-*` geometry unchanged.
+- Bump the global loader cache key.
+
+Validation:
+
+- CSS-only namespace-specific change.
+- No JavaScript, chart data, prices, cart, gallery, carousel card, rail, or wheel behavior changed.
+- Live visual verification remains required after replacing the pinned footer.
+
 ## 2026-07-18 04:25 UTC — PF-20260718-015 — Namespace-specific quantity-row correction
 
 Requested change:
