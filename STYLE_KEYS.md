@@ -2,99 +2,68 @@
 
 This file records reusable visual rules, assets, CDN roots, breakpoints, layout footprints, and shared UI conventions. Read `/OPERATING_CONTRACT.md` and `/ARCHITECTURE.md` before changing shared styles.
 
-## CDN and external roots
+## CDN roots
 
 ```text
-Knight Witch media CDN
+Knight Witch media
 https://knightwitch.nyc3.cdn.digitaloceanspaces.com
 
-GitHub/jsDelivr runtime
+GitHub/jsDelivr
 https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets
 
 Fourthwall Storefront API
 https://storefront-api.fourthwall.com/v1
-
-Font Awesome
-https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css
 ```
 
-Native product and variant media may remain Fourthwall-hosted. Non-native site media referenced by GitHub code belongs on the Knight Witch CDN unless documented otherwise. Repo-local assets belong in `/ASSETS/`.
+Native product and variant media may remain Fourthwall-hosted. Other site media should use the Knight Witch CDN unless documented otherwise. Repo-local assets belong in `/ASSETS/`.
 
 ## Fonts
 
-Primary brand display stack:
+Primary display stack:
 
 ```css
-font-family: "AgencyFB", "Agency FB", Arial, sans-serif;
+font-family: "AgencyFB", "Agency FB", AgencyFB, Arial, sans-serif;
 ```
 
-Current assets:
-
-```text
-/FONTS/AgencyFB-CY.woff2
-/FONTS/AgencyFB-CY.woff
-/FONTS/agencyfb-webfont.woff2
-/FONTS/agencyfb-webfont.woff
-```
-
-Readable utility content, product descriptions, forms, and size-chart tables use Arial/Helvetica rather than AgencyFB.
+Current font assets live under `/FONTS/`. Product descriptions, forms, and size-chart tables use Arial/Helvetica for readability.
 
 ## Core palette
 
 ```css
 #fff       primary white text
-#000       black backgrounds and overlays
-#050505    modal/panel black
+#000       black backgrounds
+#050505    modal panel black
 #111       controls and secondary surfaces
 #f00       Knight Witch red
 #8a0000    dark red borders
 #ff4b4b    product price red
-#ff7a00    primary orange CTA and active unit control
+#ff7a00    orange CTA / active control
 #ffb04a    bright orange CTA border
-#140a00    dark text on orange CTA
-#aaa       muted support text
+#140a00    dark CTA text
+#aaa       muted text
 ```
-
-Default visual language: black backgrounds, white typography, red framing/emphasis, and orange primary actions.
 
 ## Breakpoints
 
 ```css
 @media (max-width: 768px)  shared mobile breakpoint
-@media (max-width: 760px)  product carousel/mobile split
-@media (min-width: 761px)  product carousel/desktop split
+@media (max-width: 760px)  carousel mobile split
+@media (min-width: 761px)  carousel desktop split
 ```
 
-Do not alter desktop behavior for a mobile-only task or mobile behavior for a desktop-only task unless the dependency requires it and the risk is stated first.
-
-## Global foundation
+## Global foundation and background
 
 Owned by:
 
 ```text
 fourthwall/global/kw-global-foundation.css
 fourthwall/global/kw-fourthwall-layout-guard.css
-```
-
-Page and module wrappers remain transparent where the global video background should show through. Intentional panels and overlays may use near-black surfaces.
-
-## Global background video
-
-Owned by:
-
-```text
 fourthwall/global/kw-global-config.js
 fourthwall/global/kw-background-video.css
 fourthwall/global/kw-background-video.js
 ```
 
-Primary poster:
-
-```text
-/GLOBAL/BACKGROUND/Red_Particles_16-9-poster.webp
-```
-
-Desktop and mobile AV1/VP9/MP4 variants live under `/GLOBAL/BACKGROUND/`. The runtime respects reduced motion, save-data, codec support, viewport class, and staged desktop quality upgrades.
+The global page background uses transparent page/module wrappers where the video should remain visible. Intentional panels use black or near-black surfaces.
 
 ## Header and navigation
 
@@ -105,31 +74,11 @@ fourthwall/global/kw-header.css
 fourthwall/global/kw-header.js
 ```
 
-Conventions:
-
-- Black/white glitch behavior on desktop interaction.
-- Red drawer titles.
-- Fade/slide drawer transitions.
-- Mobile drilldown panels.
-- Long desktop drawers stay inside the viewport and scroll internally.
-
-## Social icons
-
-Owned by:
-
-```text
-fourthwall/global/kw-social-icons.css
-fourthwall/global/kw-social-icons.js
-fourthwall/global/kw-global-config.js
-```
-
-Configured channels currently include Instagram, TikTok, YouTube, Discord, and Facebook.
+Conventions: black/white glitch behavior, red drawer titles, fade/slide transitions, mobile drilldown, and internally scrolling desktop drawers.
 
 ## Title bars
 
 Owned by `components/kw-title-bars/`.
-
-Base classes:
 
 ```text
 .kw-title-bar
@@ -137,18 +86,7 @@ Base classes:
 .kw-title-bar--compact
 ```
 
-Conventions:
-
-- Transparent background.
-- Red `1px` border.
-- AgencyFB uppercase title.
-- White title text and muted gray subtitle.
-- Desktop title tracking may reach `.6em`.
-- Base max width is `95vw`.
-- Negative outside margins may tighten title-to-product spacing.
-- `data-kw-fit` targets the repeated visual children, not only a parent wrapper.
-
-The separate title-bar hotfix remains temporary.
+Transparent background, red 1px border, AgencyFB uppercase title, white title text, muted subtitle, and responsive fitting. The separate title-bar hotfix remains temporary.
 
 ## Product carousel
 
@@ -164,23 +102,14 @@ fourthwall/kwfw-font-agencyfb.css
 
 Desktop footprint:
 
-```css
-width: min(984px, calc(100vw - 32px));
-card width: 320px;
-card height: 426px;
-gap: 12px;
+```text
+rail width: min(984px, calc(100vw - 32px))
+card width: 320px
+card height: 426px
+gap: 12px
 ```
 
-Current title-to-carousel spacing:
-
-```css
-margin-top: -35px;
-margin-bottom: -24px;
-```
-
-Mobile bottom spacing uses `-20px`.
-
-Carousel scroll behavior is split across base CSS, desktop grid overrides, and the wheel bridge. Do not remove one layer in isolation.
+Carousel scroll behavior is shared across base CSS, desktop overrides, and the wheel bridge. Do not change one layer in isolation.
 
 ## Product modal
 
@@ -206,9 +135,7 @@ color: #140a00;
 border-color: #ffb04a;
 ```
 
-The expanded Add to Cart action uses an orange glow/pulse. View Details remains dark and secondary. Modal prices use `#ff4b4b` and must come from real Fourthwall variant data.
-
-Selected variants switch the gallery to the corresponding Fourthwall `variant.images` media. Product-wide media is the fallback when a variant has no dedicated images. Standard `kwfw` modals preserve universal support slides.
+The expanded Add to Cart button uses an orange glow/pulse. View Details remains dark. Prices use `#ff4b4b` and must come from real Fourthwall variant data. Selected variants switch to their assigned `variant.images` media with product-wide fallback.
 
 ## Global size guide
 
@@ -242,22 +169,23 @@ Primary classes:
 
 Visual rules:
 
-- Size Guide buttons use the carousel AgencyFB stack, white uppercase text, a black background, a subtle white border, and an orange hover/focus state.
-- Standard and Step 3 modal buttons sit beside the existing quantity controls inside `.kw-size-qty-size-row`.
-- The modal button height is `46px`, matching the quantity controls.
-- The modal row uses `display:flex`, `align-items:flex-end`, a `10px` desktop gap, and an `8px` mobile gap.
+- Size Guide buttons use AgencyFB, white uppercase text, black background, a subtle white border, and orange hover/focus state.
+- Standard and Step 3 modal buttons sit beside the quantity controls.
+- `.kw-size-qty-size-row` is a two-column grid, not an auto-width flex row.
+- Quantity column: fixed `170px`, matching the native `- / input / +` control footprint.
+- Size Guide column: `max-content` with a `138px` desktop minimum button width.
+- Desktop column gap: `14px`; mobile gap: `8px`.
+- The quantity field and `.kwfw-qty`/`.kwpj-qty` are fixed to `170px` so the Size Guide button cannot cover the input or plus control.
+- Modal control height is `46px`.
 - Native product-page buttons remain full width before Add to Cart.
-- The overlay uses `rgba(0,0,0,.82)`.
-- Panel width is `min(980px, 96vw)` with `max-height: 92vh`.
-- Panel background is `#050505` with a subtle red shadow.
-- Header controls are sticky.
-- US/Metric toggle uses `#ff7a00` for the active unit.
-- Chart title is red, uppercase, and uses readable Arial/Helvetica.
-- Tables use regular Arial/Helvetica, black cells, red headers/borders, and horizontal overflow on narrow screens.
-- Mobile modal padding is `10px`; mobile table minimum width is `560px`.
-- The runtime locks body scroll while open and restores focus on close.
+- Overlay: `rgba(0,0,0,.82)`.
+- Panel: `min(980px,96vw)`, `max-height:92vh`, near-black background, subtle red shadow.
+- Header controls remain sticky.
+- US/Metric active state uses `#ff7a00`.
+- Chart tables use Arial/Helvetica, black cells, red headers/borders, and horizontal overflow on narrow screens.
+- Body scroll locks while the popup is open and focus returns on close.
 
-Chart resolution is exact and registry-driven. Do not add a broad generic jacket/vest fallback that can show the wrong manufacturer's measurements.
+Chart resolution is exact and registry-driven. Do not add broad generic jacket/vest matching.
 
 ## Universal product media
 
@@ -269,13 +197,7 @@ fourthwall/kwfw-universal-media.js
 fourthwall/prod_card_media/manifest.json
 ```
 
-Current manifest asset:
-
-```text
-/GLOBAL/PROD_CARD_MEDIA/feature_card.webp
-```
-
-Shared support media should use the Knight Witch CDN.
+Shared support media uses the Knight Witch CDN.
 
 ## Product rules
 
@@ -286,17 +208,9 @@ fourthwall/kwfw-product-rules.css
 fourthwall/kwfw-product-rules.js
 ```
 
-Current specialized fields:
+Current specialized fields include Logo Colour, System Type, and Text / Logo.
 
-```text
-Logo Colour
-System Type
-Text / Logo
-```
-
-Known swatch names include holographic, holographic crystal, red, gold, silver, brass, green, purple, sky/blue, orange, and black.
-
-## Empty-cart modal
+## Cart modal
 
 Owned by:
 
@@ -305,45 +219,13 @@ fourthwall/global/kw-cart-runtime.css
 fourthwall/global/kw-cart-runtime.js
 ```
 
-Primary classes:
-
-```text
-.kw-cart-empty-modal
-.kw-cart-empty-panel
-.kw-cart-empty-title
-.kw-cart-empty-copy
-.kw-cart-empty-actions
-.kw-cart-empty-btn
-```
-
 ## Collection domain
 
-Owned by `fourthwall/domains/collection/`.
+Owned by `fourthwall/domains/collection/`. The collection feature video has its own module under `fourthwall/domains/collection/feature-video/`.
 
-Banner asset:
+## Legacy warnings
 
-```text
-/BANNERS/Collection.webm
-```
-
-Desktop buttons overlay the banner; mobile buttons render as a separate stack. Mobile width is `80%`, max `390px`.
-
-## Collection feature video
-
-Owned by `fourthwall/domains/collection/feature-video/`.
-
-```text
-/domainvideos/ENTER-TCD-V2.webm
-/restart%20svg.svg
-```
-
-Desktop module width is `min(92vw, 1280px)`. Mobile width is `94vw`.
-
-## Legacy systems
-
-`widgets/` uses the `.fpx-` prefix, Open Sans, jQuery, flip cards, and drag scrolling. Treat it as legacy unless explicitly reactivated.
-
-`gallery-portfolio/` uses AgencyFB and the black/red/white card system but references a missing JavaScript file in the audited main branch.
+`widgets/` is a legacy jQuery carousel. `gallery-portfolio/` references a missing runtime in the audited main branch. Experimental carousel loaders must not be used in production without revalidation.
 
 ## Update rule
 
