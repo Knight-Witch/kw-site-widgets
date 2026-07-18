@@ -127,6 +127,21 @@
     });
   };
 
+  const resetLink = (link, collection, signature) => {
+    clearCycle(link);
+    clearTimer(swapTimers,link);
+    clearTimer(glitchTimers,link);
+    link.dataset.kwCollectionSignature = signature;
+    link.dataset.kwPrimary = collection.primary;
+    link.dataset.kwAlternate = collection.alternate;
+    link.dataset.kwText = collection.primary;
+    link.dataset.kwCollectionState = "primary";
+    delete link.dataset.kwCollectionMode;
+    link.href = collection.href;
+    link.textContent = collection.primary;
+    link.setAttribute("aria-label",`Open ${collection.alternate}`);
+  };
+
   const formatPanelTitle = (panel, system) => {
     const modal = panel.closest(system.modal);
     const title = q(system.title,panel);
@@ -136,7 +151,7 @@
     if(!raw) return;
     const parsed = splitTitle(raw);
     title.dataset.kwProductRawTitle = raw;
-    title.textContent = parsed.main;
+    if(normalizeTitle(title.textContent) !== parsed.main) title.textContent = parsed.main;
     let link = q(".kw-product-collection-link",panel);
     if(!parsed.collection){
       if(link){
@@ -153,12 +168,8 @@
       title.insertAdjacentElement("afterend",link);
     }
     const collection = parsed.collection;
-    link.href = collection.href;
-    link.dataset.kwPrimary = collection.primary;
-    link.dataset.kwAlternate = collection.alternate;
-    link.dataset.kwText = collection.primary;
-    link.textContent = collection.primary;
-    link.setAttribute("aria-label",`Open ${collection.alternate}`);
+    const signature = `${raw}|${collection.href}|${collection.primary}|${collection.alternate}`;
+    if(link.dataset.kwCollectionSignature !== signature) resetLink(link,collection,signature);
     bindLink(link);
     syncCycle(link);
   };
