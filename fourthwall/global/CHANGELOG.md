@@ -2,6 +2,36 @@
 
 This module changelog records global-runtime-specific changes. `/HISTORY/CHANGELOG.md` remains canonical.
 
+## 2026-07-18 — featured Size Guide vertical alignment
+
+Production candidate:
+
+```text
+Global loader commit: 2a3d96c115de79cc6a22eb85181350cb4c76b465
+Cache key: 20260717-featured-size-guide-align-1
+Entrypoint: fourthwall/global/kw-fourthwall-loader.js
+```
+
+Changed:
+
+- Standard `kwfw` quantity rows now use separate label and control grid rows.
+- Qty label occupies row 1.
+- Quantity controls and Size Guide occupy row 2.
+- The standard `.kwfw-field` is flattened only inside the injected row.
+- Step 3 `.kwpj-*` rules remain unchanged.
+
+Scope:
+
+- CSS-only alignment correction plus loader cache-key bump.
+- No chart data, price, cart, gallery, carousel rail, grid, or scroll behavior changed.
+
+Rollback:
+
+```text
+Global loader commit: 0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462
+Cache key: 20260717-size-guide-row-fix-2
+```
+
 ## 2026-07-18 — exact ladies size-guide mappings
 
 Production candidate:
