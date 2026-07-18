@@ -1,14 +1,12 @@
 # Pre-Flight Check Log
 
-This file is the rolling pre-flight log for the Knight Witch site/widgets repository. Older entries before the active July 2026 runtime work remain available in Git history and paired diff records.
+This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
-## 2026-07-18 03:25 UTC — PF-20260718-013 — Correct ladies garment chart identities
+## 2026-07-18 04:05 UTC — PF-20260718-014 — Size Guide quantity-control spacing
 
 Requested change:
 
-- Replace the incorrect generic ladies chart names/mappings.
-- Add the exact Ladies Goth Merc Vest, Ladies Punkass Vest, Ladies Biker Vest, and snakeskin/crop-top chart data.
-- Make the snakeskin garment share the Ladies Crop-Top Rocker Jacket chart.
+- Move the carousel Size Guide button away from the quantity input so it no longer covers the quantity area or plus control.
 
 Docs/files reviewed:
 
@@ -17,213 +15,55 @@ Docs/files reviewed:
 - `/MASTER.md`
 - `/HISTORY/CHANGELOG.md`
 - `/HISTORY/PRE_FLIGHT_Check.md`
-- `/fourthwall/global/README.md`
-- `/fourthwall/global/CHANGELOG.md`
-- `fourthwall/kwfw-size-guide-data.js`
+- `fourthwall/kwfw-size-guide.css`
 - `fourthwall/kwfw-size-guide.js`
-- `fourthwall/global/kw-fourthwall-loader.js`
-- Four supplied ladies size-chart images
+- Standard `kwfw` quantity CSS
+- Step 3 `kwpj` quantity CSS
+- Supplied screenshot showing the overlap
 
 Risk/conflict notes:
 
-- The previous `ladies-rocker-vest` and `ladies-moto-vest` keys were generic labels inherited from an older five-chart system, not verified current product identities.
-- Broad ladies vest/moto aliases can display the wrong manufacturer's measurements.
-- Featured Spellweave options still use `Ladies Rocker Vest`, so that selected-option alias must remain connected to the actual shared Crop-Top Rocker/Snakeskin chart.
-- The user explicitly stated that the snakeskin garment and Ladies Crop-Top Rocker Jacket share one chart.
+- Both carousel modal systems use a native 170px three-control quantity grid.
+- The previous wrapper used auto-sized flex children; the wrapped `.kwfw-field`/`.kwpj-field` could claim the available row width, allowing the Size Guide button to visually cover the input/plus area.
+- The fix must not change button injection, chart resolution, modal JavaScript, or carousel behavior.
 
 Plan/result:
 
-- Replace the generic ladies rocker entry with `ladies-crop-top-rocker-jacket`.
-- Add `ladies-snakeskin-crop-top-vest` as a product slug/alias on the same chart.
-- Preserve `Ladies Rocker Vest` only as a selected-variant alias for featured Spellweaves.
-- Add exact Goth Merc, Punkass, and Biker vest charts.
-- Remove the unverified generic `ladies-moto-vest` chart rather than continue exposing potentially wrong sizing.
+- Convert `.kw-size-qty-size-row` to a two-column grid.
+- Reserve exactly 170px for the quantity field/control.
+- Place Size Guide in a separate max-content column with a 14px desktop gap and 8px mobile gap.
 - Bump the global loader cache key.
 
 Validation:
 
-- Registry passed `node --check` before commit.
-- No modal placement, chart UI, price, gallery, cart, carousel layout, or scroll code changed.
+- Reviewed both native quantity control footprints.
+- No JavaScript changed.
+- No chart data, price, cart, gallery, rail, grid, or wheel behavior changed.
 
 User input required:
 
-- Additional exact product names/charts as the remaining ladies jackets are supplied.
+- None. Live visual verification remains required after the footer update.
+
+## 2026-07-18 03:25 UTC — PF-20260718-013 — Correct ladies garment chart identities
+
+Replaced generic ladies chart names with exact Crop-Top Rocker/Snakeskin, Goth Merc, Punkass, and Biker mappings. Removed the unverified generic ladies moto mapping. Registry passed syntax validation; no modal UI or carousel behavior changed.
 
 ## 2026-07-18 02:45 UTC — PF-20260718-012 — Size Guide modal placement and typography
 
-Requested change:
-
-- Restore the Size Guide button to the quantity-control row in both carousel modal systems.
-- Match the carousel display typography.
-- Confirm native product-page injection remains active.
-
-Risk notes:
-
-- Standard and Step 3 modal quantity controls use separate namespaces.
-- Native product pages use unrelated Fourthwall markup and should retain full-width placement.
-
-Plan/result:
-
-- Wrap the modal quantity field and Size Guide button in an idempotent shared row.
-- Use AgencyFB for injected controls.
-- Keep native product-page placement before Add to Cart.
-- No chart data, gallery, price, or scroll behavior changed.
+Moved Size Guide into the quantity row for both modal systems, matched AgencyFB typography, and retained full-width native product-page placement.
 
 ## 2026-07-18 00:25 UTC — PF-20260718-011 — Global product size-guide registry
 
-Requested change:
-
-- Avoid product-by-product Fourthwall backend size-guide HTML.
-- Add one targeted size-guide system for featured Spellweaves, Step 3 base jackets, and qualifying native product pages.
-- Follow the currently selected garment variant.
-- Import the supplied mens vest charts without inventing unreadable rows.
-
-Docs reviewed:
-
-- `/OPERATING_CONTRACT.md`
-- `/ARCHITECTURE.md`
-- `/STYLE_KEYS.md`
-- `/MASTER.md`
-- `/HISTORY/CHANGELOG.md`
-- `/HISTORY/PRE_FLIGHT_Check.md`
-- `/fourthwall/README.md`
-- `/fourthwall/global/README.md`
-- `/fourthwall/global/CHANGELOG.md`
-
-Files/modules inspected:
-
-- `fourthwall/global/kw-fourthwall-loader.js`
-- `fourthwall/kwfw-size-guide.js`
-- `fourthwall/kwfw-size-guide.css`
-- `fourthwall/kwfw-modal-product-fix.js`
-- Standard `.kwfw-*` product modal structure
-- Step 3 `.kwpj-*` product modal structure
-- Current native Fourthwall product pages and product slugs
-- Eight uploaded mens vest size-chart images
-
-Risk and conflict notes:
-
-- The old size-guide runtime used broad terms such as `vest` and `mens`, which can show the wrong manufacturer's chart.
-- The Step 3 modal uses a different namespace and is appended to `body`.
-- Native Fourthwall product markup is platform-rendered and may change; injection must use resolved chart context and a tolerant Add to Cart lookup.
-- Registry data must load before the runtime.
-- A MutationObserver must be idempotent and must not recreate its own button continuously.
-- The Punkass 8X row and Black & Red Moto rows below brand size 42 were obscured in the supplied images.
-
-Plan:
-
-- Create `fourthwall/kwfw-size-guide-data.js` as the sole chart registry.
-- Replace broad matching with exact variant aliases, product slugs, and controlled title aliases.
-- Inject one Size Guide button before Add to Cart in `kwfw`, `kwpj`, and native product contexts only when a registered chart resolves.
-- Preserve US/Metric preference and normal modal dismissal/focus behavior.
-- Load registry data before runtime from the global loader.
-- Leave carousel scrolling, grid, prices, CTA behavior, and variant-gallery code untouched.
-
-Validation:
-
-- Both size-guide JavaScript files passed `node --check`.
-- Loader order was reviewed.
-- The runtime is idempotent under child-list mutations.
-- Unreadable chart rows were omitted rather than inferred.
-- Live verification remains required for native product-page button placement and exact title/slug aliases.
-
-User input required:
-
-- None for the initial registry.
-- Unobscured images are required later to add the omitted Punkass 8X and smaller Black & Red Moto rows.
+Created the exact chart registry and targeted injector for standard modals, Step 3 modals, and qualifying native product pages. Added US/Metric conversion and normal modal dismissal/focus behavior.
 
 ## 2026-07-17 23:58 UTC — PF-20260717-010 — Variant gallery selection correction
 
-Requested change:
-
-- Fix variant-specific modal galleries that narrowed correctly on initial open but continued showing the default variant after the dropdown changed.
-
-Docs/files reviewed:
-
-- Root architecture, style, master, changelog, and pre-flight docs.
-- `fourthwall/kwfw-modal-product-fix.js`.
-- Both carousel option builders and modal product-object ownership.
-
-Risk notes:
-
-- The previous runtime replaced `modal._product` with a differently shaped detail payload.
-- The dropdown and detail response could expose different option keys/representations.
-
-Plan and result:
-
-- Preserve the original collection-product object.
-- Store detail data separately.
-- Resolve the selected variant with normalized exact/value matching and map detail media by variant ID.
-- No scroll/layout files changed.
-
-Validation:
-
-- JavaScript passed `node --check`.
-- Focused matching tests covered ladies, mens/no-collar, and mens/detachable-collar values.
-- Live storefront verification remained required.
+Preserved the collection-product object, separated detail data, and corrected selected-variant matching without changing carousel layout or scroll.
 
 ## 2026-07-17 23:38 UTC — PF-20260717-009 — Variant-specific product modal galleries
 
-Requested change:
-
-- Switch standard and Step 3 product modal galleries to the currently selected variant's assigned Fourthwall images.
-
-Files reviewed:
-
-- Global loader.
-- Standard carousel/modal runtime.
-- Step 3 jacket modal runtime.
-- Universal product media.
-- Product rules.
-- Shared modal compatibility runtime.
-- Fourthwall Storefront API variant-media schema.
-
-Risk notes:
-
-- Separate modal namespaces and option selectors.
-- Universal support slides must remain in the standard modal.
-- Product-rule variant IDs must be honored.
-- Gallery rebuilds must be idempotent.
-
-Plan and result:
-
-- Extend the shared modal runtime.
-- Use official variant media, product-wide fallback, and slide-zero reset.
-- Preserve universal support slides.
-- No carousel rail, wheel, grid, or card-size changes.
+Added selected-variant media switching with product-wide fallback and preserved universal support slides.
 
 ## 2026-07-17 21:19 UTC — PF-20260717-008 — Dual-carousel product modal audit
 
-Requested change:
-
-- Restore actual prices in both expanded product modals.
-- Restore the Step 3 orange Add to Cart CTA.
-
-Risk notes:
-
-- The two modal systems use different selectors.
-- The Step 3 modal does not inherit carousel-scoped CSS variables.
-- Fourthwall selling price is exposed through `variant.unitPrice`.
-
-Plan and result:
-
-- Support both modal namespaces.
-- Read real Fourthwall price fields without placeholders.
-- Use explicit modal CTA values.
-- No scroll files changed.
-
-## 2026-07-17 20:45 UTC — PF-20260717-007 — Product modal price and CTA fix
-
-Requested change:
-
-- Fix blank expanded-modal prices and low-contrast Add to Cart styling.
-
-Risk notes:
-
-- The initial helper only targeted the standard modal and did not cover all live price shapes.
-
-Plan and result:
-
-- Add modal-only price and CTA compatibility resources after product rules.
-- Do not insert estimated or placeholder prices.
-- No live storefront verification was available during the initial pass.
+Restored real Fourthwall modal prices and the Step 3 orange Add to Cart CTA.
