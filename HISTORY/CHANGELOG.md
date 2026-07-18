@@ -2,6 +2,54 @@
 
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records under `/HISTORY/DIFFS/`.
 
+## 2026-07-18 05:30 UTC — KW-RUNTIME-SIZE-GUIDES-018
+
+Summary: Restored the Featured Spellweave Size Guide to the original quantity-box injection model, preserved the verified Step 3 field-level grid, corrected Samurai vest chart routing, and added separate unisex Vegan and Genuine Leather Samurai Moto charts.
+
+Affected files:
+
+```text
+fourthwall/kwfw-size-guide.js
+fourthwall/kwfw-size-guide.css
+fourthwall/kwfw-size-guide-data.js
+fourthwall/global/kw-fourthwall-loader.js
+ARCHITECTURE.md
+STYLE_KEYS.md
+MASTER.md
+fourthwall/global/README.md
+fourthwall/global/CHANGELOG.md
+HISTORY/PRE_FLIGHT_Check.md
+HISTORY/CHANGELOG.md
+HISTORY/DIFFS/2026-07-18-samurai-size-guides-and-featured-row-1.md
+```
+
+Runtime commits:
+
+```text
+e04c39dd4dafcf7f33ff10cfb2e792e32a972623
+32c872f7d081e095133301132743f7c4498b23d3
+68e06910b03a489fe3a61820b5fc2b07b79494be
+8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0
+```
+
+Reason: Featured Spellweaves were still misaligned because recent fixes wrapped the entire `.kwfw-field`. The historical working implementation wrapped only `.kwfw-qty`, leaving the Qty label in place. Samurai vest aliases also pointed to generic rocker charts, and the unisex Samurai Moto product needed material-specific measurements.
+
+Behavior:
+
+- Featured `kwfw` Size Guide now shares a row directly with `.kwfw-qty` inside the existing field.
+- Step 3 `kwpj` remains on its verified field-level grid.
+- Ladies Samurai vest resolves to `Ladies Crop-Top Vest Size Chart`.
+- Mens Samurai vest resolves to `Men's Hooded Vest Size Chart`.
+- Samurai Moto `Vegan Leather` resolves to `Vegan Moto Jacket - Unisex`.
+- Samurai Moto `Genuine Leather` resolves to `Genuine Leather Moto Jacket - Unisex`.
+- Material rules are product-scoped so unrelated Vegan/Genuine products are not affected.
+
+Rollback: Restore loader commit `94a92c443658086ee2a3c5b822ba68a873c3f3ef` with cache key `20260717-featured-size-guide-restore-1`.
+
+Production candidate: Loader commit `8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0`, cache key `20260718-samurai-size-guides-1`.
+
+Validation: Replacement JavaScript and registry passed `node --check`. The live Samurai vest and Samurai Moto product titles, slug, and material labels were checked. No price, Add to Cart, gallery, carousel grid, rail, or wheel code changed.
+
 ## 2026-07-18 04:55 UTC — KW-RUNTIME-SIZE-GUIDES-017
 
 Summary: Restored the Featured Spellweave `kwfw` Size Guide quantity-row layout to the last known-good flex behavior from before the July 18 spacing experiments, while preserving the corrected fixed-grid Step 3 `kwpj` layout.
