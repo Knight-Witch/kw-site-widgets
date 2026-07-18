@@ -7,7 +7,7 @@
   const repo = m ? m[1] : "Knight-Witch/kw-site-widgets";
   const selfRef = m ? m[2] : "main";
   const base = `https://cdn.jsdelivr.net/gh/${repo}`;
-  const version = s?.dataset.version || "20260717-variant-gallery-2";
+  const version = s?.dataset.version || "20260717-size-guide-registry-1";
 
   const manifest =
     s?.dataset.productMediaManifest ||
@@ -41,7 +41,7 @@
     { type: "css", key: "kwfw-carousel-css", href: url("69e95f9562e165299897b793103949bfba0ab6e3", "fourthwall/kwfw-carousel.css") },
     { type: "css", key: "kwfw-font-agencyfb-css", href: url("988f5aa2bb75880d43ccfc58a751b73e20d9e1aa", "fourthwall/kwfw-font-agencyfb.css") },
     { type: "css", key: "kwfw-carousel-desktop-grid-css", href: url(selfRef, "fourthwall/kwfw-carousel-desktop-grid.css", version) },
-    { type: "css", key: "kwfw-size-guide-css", href: url("03e30bd4c28f5de3fc956ea39a874e6e447583d0", "fourthwall/kwfw-size-guide.css") },
+    { type: "css", key: "kwfw-size-guide-css", href: url(selfRef, "fourthwall/kwfw-size-guide.css", version) },
     { type: "css", key: "kwfw-universal-media-css", href: url("579c6124748dec87d5957716eabf0563dfc9401c", "fourthwall/kwfw-universal-media.css") },
     { type: "css", key: "kwfw-product-rules-css", href: url("db73f85d3d4b982e46fea1e57bba48863b651889", "fourthwall/kwfw-product-rules.css") },
     { type: "css", key: "kwfw-modal-product-fix-css", href: url(selfRef, "fourthwall/kwfw-modal-product-fix.css", version) },
@@ -57,7 +57,8 @@
     { type: "js", key: "kw-info-spacing-runtime-js", src: url(selfRef, "fourthwall/global/kw-info-spacing-runtime.js", "20260628-info-spacing-runtime-2") },
     { type: "js", key: "kwfw-carousel-js", src: url("1dd6c66c60d54694a177e6f663c060c322154826", "fourthwall/kwfw-carousel.js") },
     { type: "js", key: "kwfw-carousel-wheel-bridge-js", src: url(selfRef, "fourthwall/kwfw-carousel-wheel-bridge.js", version) },
-    { type: "js", key: "kwfw-size-guide-js", src: url("f00c8dd64c573dd0c782036cf3df3a7dca53482c", "fourthwall/kwfw-size-guide.js") },
+    { type: "js", key: "kwfw-size-guide-data-js", src: url(selfRef, "fourthwall/kwfw-size-guide-data.js", version) },
+    { type: "js", key: "kwfw-size-guide-js", src: url(selfRef, "fourthwall/kwfw-size-guide.js", version) },
     { type: "js", key: "kwfw-universal-media-js", src: url("4327ad13c67468e6b260dbc44758cd9b90574f6d", "fourthwall/kwfw-universal-media.js") },
     { type: "js", key: "kwfw-product-rules-js", src: url("ef9f1ec0947d4144803c46c45c331e93b09dc9d3", "fourthwall/kwfw-product-rules.js") },
     { type: "js", key: "kwfw-modal-product-fix-js", src: url(selfRef, "fourthwall/kwfw-modal-product-fix.js", version) },
@@ -70,7 +71,7 @@
 
   const loadCss = r => {
     const matches = existing(r.key);
-    if (matches.some(element => sameUrl(element, r.href))) return;
+    if(matches.some(element => sameUrl(element, r.href))) return;
     matches.forEach(element => element.remove());
     const link = d.createElement("link");
     link.rel = "stylesheet";
@@ -82,7 +83,7 @@
   const loadScript = r =>
     new Promise((resolve, reject) => {
       const matches = existing(r.key);
-      if (matches.some(element => sameUrl(element, r.src))) {
+      if(matches.some(element => sameUrl(element, r.src))){
         resolve();
         return;
       }
