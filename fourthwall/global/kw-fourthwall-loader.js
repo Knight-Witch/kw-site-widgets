@@ -7,7 +7,7 @@
   const repo = m ? m[1] : "Knight-Witch/kw-site-widgets";
   const selfRef = m ? m[2] : "main";
   const base = `https://cdn.jsdelivr.net/gh/${repo}`;
-  const version = s?.dataset.version || "20260717-featured-size-guide-restore-1";
+  const version = s?.dataset.version || "20260718-samurai-size-guides-1";
 
   const manifest =
     s?.dataset.productMediaManifest ||
