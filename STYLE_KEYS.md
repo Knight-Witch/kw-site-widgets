@@ -153,6 +153,8 @@ Primary classes:
 .kw-size-guide-btn
 .kw-size-guide-native-btn
 .kw-size-qty-size-row
+.kw-size-qty-size-row--kwfw
+.kw-size-qty-size-row--kwpj
 .kw-size-modal
 .kw-size-panel
 .kw-size-top
@@ -167,16 +169,16 @@ Primary classes:
 .kw-size-choice
 ```
 
-Visual rules:
+Visual and layout rules:
 
 - Size Guide buttons use AgencyFB, white uppercase text, black background, a subtle white border, and orange hover/focus state.
-- Standard and Step 3 modal buttons sit beside the quantity controls.
-- Standard `kwfw` uses its native 170px quantity control inside a flex row with `align-items:flex-end` and a 10px gap.
-- Standard `kwfw` does not use `display:contents`, explicit grid rows, or the Step 3 fixed input track geometry.
-- Step 3 `kwpj` uses a two-column grid with a fixed 170px quantity column and a separate `max-content` Size Guide column.
-- Step 3 quantity controls use explicit `48px 58px 48px` tracks with two 8px gaps.
-- Step 3 Size Guide has a 148px desktop minimum width and a 16px desktop gap.
-- Modal control height is 46px.
+- Modal control height is `46px`.
+- Standard `kwfw` and Step 3 `kwpj` use different quantity-row ownership.
+- Featured Spellweaves keep `.kwfw-label` directly inside `.kwfw-field`; only `.kwfw-qty` and the Size Guide button are moved into `.kw-size-qty-size-row--kwfw`.
+- The featured row uses `display:flex`, `align-items:center`, a `10px` desktop gap, and no independent bottom margin.
+- Featured quantity controls use explicit `48px 58px 48px` tracks with two `8px` gaps.
+- Step 3 retains a field-level `.kw-size-qty-size-row` grid with a `170px` quantity column, separate Size Guide column, and `16px` desktop gap.
+- Do not reintroduce one shared field-wrapper rule for both namespaces.
 - Native product-page buttons remain full width before Add to Cart.
 - Overlay: `rgba(0,0,0,.82)`.
 - Panel: `min(980px,96vw)`, `max-height:92vh`, near-black background, subtle red shadow.
@@ -185,7 +187,7 @@ Visual rules:
 - Chart tables use Arial/Helvetica, black cells, red headers/borders, and horizontal overflow on narrow screens.
 - Body scroll locks while the popup is open and focus returns on close.
 
-Chart resolution is exact and registry-driven. Do not add broad generic jacket/vest matching.
+Chart resolution is registry-driven. Product-scoped material rules must be used for generic values such as `Vegan Leather` and `Genuine Leather`; never route those values globally.
 
 ## Universal product media
 
