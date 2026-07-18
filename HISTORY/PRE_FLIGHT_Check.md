@@ -2,6 +2,50 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
+## 2026-07-18 05:30 UTC — PF-20260718-018 — Samurai routing and original Featured row ownership
+
+Requested change:
+
+- Fix the still-crooked Featured Spellweave Size Guide without changing the verified Step 3 layout.
+- Correct Samurai vest chart titles/routing.
+- Add separate unisex Vegan and Genuine Leather Samurai Moto charts.
+
+Files reviewed:
+
+- Historical `fourthwall/kwfw-size-guide.js` at commit `f00c8dd64c573dd0c782036cf3df3a7dca53482c`.
+- Current `fourthwall/kwfw-size-guide.js` and `kwfw-size-guide.css`.
+- Current size-guide registry.
+- Standard `.kwfw-field`, `.kwfw-label`, and `.kwfw-qty` ownership.
+- Step 3 `.kwpj-field` and `.kwpj-qty` ownership.
+- Live Samurai vest and Samurai Moto product pages/variant labels.
+- Supplied Vegan and Genuine Leather chart screenshots.
+
+Risk/conflict notes:
+
+- The historical working Featured implementation wrapped only `.kwfw-qty`; recent implementations wrapped the entire field, which includes the Qty label and causes vertical misalignment or row wrapping.
+- Step 3 requires the opposite ownership: the full field remains inside its fixed two-column grid.
+- `Vegan Leather` and `Genuine Leather` are generic values used by unrelated products, so material-only global aliases would route incorrect charts.
+- The Samurai Moto genuine chart contains regular, tall, big, and big-tall rows and requires horizontal table scrolling on narrow viewports.
+
+Plan/result:
+
+- Restore standard-modal injection inside `.kwfw-field` around `.kwfw-qty` only.
+- Preserve Step 3 field-level wrapping and fixed geometry.
+- Add namespace-specific row classes and cleanup for legacy hot-reloaded wrappers.
+- Add product-scoped variant rules before generic aliases in resolver priority.
+- Route Ladies Rocker Vest to Ladies Crop-Top Vest.
+- Route Mens Rocker Vest and mens vest-only/collar variants to Men's Hooded Vest.
+- Add separate Vegan and Genuine Leather unisex Samurai Moto charts.
+- Bump the pinned loader cache key.
+
+Validation:
+
+- Replacement JavaScript and registry passed `node --check`.
+- Live product title, slug, and material labels were checked.
+- Step 3 CSS selectors and geometry were preserved.
+- No price, cart, variant-gallery, carousel card, rail, grid, or wheel code changed.
+- Live visual verification remains required after replacing the footer.
+
 ## 2026-07-18 04:55 UTC — PF-20260718-017 — Restore Featured Spellweave quantity row
 
 Requested change:
@@ -35,7 +79,7 @@ Validation:
 
 - Compared the old and current size-guide CSS directly.
 - No JavaScript, chart data, prices, cart, gallery, carousel card, rail, or wheel behavior changed.
-- Live visual verification remains required after replacing the pinned footer.
+- Live visual verification failed; the full field remained the wrong ownership boundary and this state was superseded by PF-20260718-018.
 
 ## 2026-07-18 04:40 UTC — PF-20260718-016 — Featured Size Guide vertical alignment
 
@@ -69,7 +113,7 @@ Validation:
 
 - CSS-only namespace-specific change.
 - No JavaScript, chart data, prices, cart, gallery, carousel card, rail, or wheel behavior changed.
-- Live visual verification failed; the button moved onto its own lower row and this state was replaced by PF-20260718-017.
+- Live visual verification failed; the button moved onto its own lower row and this state was replaced by later entries.
 
 ## 2026-07-18 04:25 UTC — PF-20260718-015 — Namespace-specific quantity-row correction
 
@@ -151,7 +195,7 @@ Replaced generic ladies chart names with exact Crop-Top Rocker/Snakeskin, Goth M
 
 ## 2026-07-18 02:45 UTC — PF-20260718-012 — Size Guide modal placement and typography
 
-Moved Size Guide into the quantity row for both modal systems, matched AgencyFB typography, and retained full-width native product-page placement.
+Moved Size Guide into the quantity row in both modal systems, matched AgencyFB typography, and retained full-width native product-page placement.
 
 ## 2026-07-18 00:25 UTC — PF-20260718-011 — Global product size-guide registry
 
