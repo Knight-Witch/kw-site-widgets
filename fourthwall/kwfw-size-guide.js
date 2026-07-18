@@ -12,6 +12,13 @@
     .trim();
   const slugify = value => normalize(value).replace(/\s+/g, "-");
   const unique = values => [...new Set(values.filter(Boolean))];
+  const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;"
+  })[character]);
 
   let unit = localStorage.getItem("kw_size_unit") || "us";
   let returnFocus = null;
@@ -30,6 +37,14 @@
       return target && normalizedValues.some(value => value === target || value.includes(target));
     });
   };
+  const contextMatchesRule = (context, rule) => {
+    const slug = slugify(context.slug || "");
+    const ruleSlugs = (rule.productSlugs || []).map(slugify);
+    if(slug && ruleSlugs.includes(slug)) return true;
+
+    const titles = unique([context.title, context.name, context.product, context.token]);
+    return exactMatch(titles, rule.productAliases || []) || phraseMatch(titles, rule.productAliases || []);
+  };
   const resolve = input => {
     const context = typeof input === "string" ? { token: input } : input || {};
     if(context.token && charts()[context.token]) return context.token;
@@ -43,6 +58,16 @@
     ]);
 
     for(const [key, chart] of chartEntries()){
+      for(const rule of chart.variantRules || []){
+        if(contextMatchesRule(context, rule) && exactMatch(selectedValues, rule.values || [])) return key;
+      }
+    }
+    for(const [key, chart] of chartEntries()){
+      for(const rule of chart.variantRules || []){
+        if(contextMatchesRule(context, rule) && phraseMatch(selectedValues, rule.values || [])) return key;
+      }
+    }
+    for(const [key, chart] of chartEntries()){
       if(exactMatch(selectedValues, chart.variantAliases || [])) return key;
     }
     for(const [key, chart] of chartEntries()){
@@ -52,15 +77,18 @@
     const slug = slugify(context.slug || "");
     if(slug){
       for(const [key, chart] of chartEntries()){
+        if((chart.variantRules || []).length) continue;
         if((chart.productSlugs || []).map(slugify).includes(slug)) return key;
       }
     }
 
     const titles = unique([context.title, context.name, context.product, context.token]);
     for(const [key, chart] of chartEntries()){
+      if((chart.variantRules || []).length) continue;
       if(exactMatch(titles, chart.aliases || [])) return key;
     }
     for(const [key, chart] of chartEntries()){
+      if((chart.variantRules || []).length) continue;
       if(phraseMatch(titles, chart.aliases || [])) return key;
     }
 
@@ -107,10 +135,10 @@
       button.classList.toggle("is-active", button.dataset.kwSizeUnit === unit);
     });
 
-    const head = chart.columns.map(column => `<th>${columnLabel(column)}</th>`).join("");
-    const rows = chart.rows.map(row => `<tr>${row.map((value, index) => `<td>${convertCell(value, chart.columns[index])}</td>`).join("")}</tr>`).join("");
+    const head = chart.columns.map(column => `<th>${escapeHtml(columnLabel(column))}</th>`).join("");
+    const rows = chart.rows.map(row => `<tr>${row.map((value, index) => `<td>${escapeHtml(convertCell(value, chart.columns[index]))}</td>`).join("")}</tr>`).join("");
     const notes = chart.notes?.length
-      ? `<ul class="kw-size-notes">${chart.notes.map(note => `<li>${note}</li>`).join("")}</ul>`
+      ? `<ul class="kw-size-notes">${chart.notes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>`
       : "";
 
     q(".kw-size-body", element).innerHTML = `<div class="kw-size-table-wrap"><table class="kw-size-table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>${notes}`;
@@ -123,7 +151,7 @@
     qa("[data-kw-size-unit]", element).forEach(button => {
       button.classList.toggle("is-active", button.dataset.kwSizeUnit === unit);
     });
-    q(".kw-size-body", element).innerHTML = `<div class="kw-size-picker">${chartEntries().map(([key, chart]) => `<button type="button" class="kw-size-choice" data-kw-size-chart="${key}">${chart.title}</button>`).join("")}</div>`;
+    q(".kw-size-body", element).innerHTML = `<div class="kw-size-picker">${chartEntries().map(([key, chart]) => `<button type="button" class="kw-size-choice" data-kw-size-chart="${escapeHtml(key)}">${escapeHtml(chart.title)}</button>`).join("")}</div>`;
   };
   const open = (context, trigger = d.activeElement) => {
     const key = resolve(context);
@@ -211,12 +239,34 @@
     button.setAttribute("aria-haspopup", "dialog");
     return button;
   };
-  const ensureQuantityRow = (panel, quantityField) => {
+  const ensureStandardQuantityRow = quantityField => {
+    const legacyRow = quantityField.parentElement?.classList.contains("kw-size-qty-size-row")
+      ? quantityField.parentElement
+      : null;
+
+    if(legacyRow){
+      legacyRow.parentNode.insertBefore(quantityField, legacyRow);
+      legacyRow.remove();
+    }
+
+    const quantityBox = q(".kwfw-qty", quantityField);
+    if(!quantityBox) return null;
+
+    let row = quantityBox.closest(".kw-size-qty-size-row");
+    if(row) return row;
+
+    row = d.createElement("div");
+    row.className = "kw-size-qty-size-row kw-size-qty-size-row--kwfw";
+    quantityBox.parentNode.insertBefore(row, quantityBox);
+    row.appendChild(quantityBox);
+    return row;
+  };
+  const ensureStep3QuantityRow = quantityField => {
     let row = quantityField.closest(".kw-size-qty-size-row");
     if(row) return row;
 
     row = d.createElement("div");
-    row.className = "kw-size-qty-size-row";
+    row.className = "kw-size-qty-size-row kw-size-qty-size-row--kwpj";
     quantityField.parentNode.insertBefore(row, quantityField);
     row.appendChild(quantityField);
     return row;
@@ -232,8 +282,10 @@
     const quantityField = quantityInput?.closest(`.${namespace}-field`);
 
     if(quantityField){
-      const row = ensureQuantityRow(panel, quantityField);
-      if(button.parentNode !== row) row.appendChild(button);
+      const row = namespace === "kwfw"
+        ? ensureStandardQuantityRow(quantityField)
+        : ensureStep3QuantityRow(quantityField);
+      if(row && button.parentNode !== row) row.appendChild(button);
     }else if(button.nextElementSibling !== add){
       add.parentNode.insertBefore(button, add);
     }
