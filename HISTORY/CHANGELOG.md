@@ -2,6 +2,44 @@
 
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records under `/HISTORY/DIFFS/`.
 
+## 2026-07-18 04:25 UTC — KW-RUNTIME-SIZE-GUIDES-015
+
+Summary: Corrected the remaining live quantity-row failures in both carousel modal namespaces. The standard `kwfw` Size Guide button now bottom-aligns with the quantity controls, and the Step 3 `kwpj` quantity control can no longer expand underneath the Size Guide button.
+
+Affected files:
+
+```text
+fourthwall/kwfw-size-guide.css
+fourthwall/global/kw-fourthwall-loader.js
+MASTER.md
+HISTORY/PRE_FLIGHT_Check.md
+HISTORY/CHANGELOG.md
+HISTORY/DIFFS/2026-07-18-size-guide-row-fix-2.md
+```
+
+Runtime commits:
+
+```text
+18cd5ac5c38921c29c8bac80de870b8c29914c92
+0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462
+```
+
+Reason: Live screenshots showed the earlier two-column grid still inherited conflicting internal quantity widths. In `kwfw`, the button sat below the control line; in `kwpj`, the input expanded beyond the nominal 170px field and rendered below the Size Guide column.
+
+Change:
+
+- Forced the shared row to an explicit two-column grid using `!important`.
+- Forced both `kwfw` and `kwpj` quantity controls to `48px 58px 48px` plus two 8px gaps.
+- Forced the input and buttons to remain inside those columns.
+- Removed quantity-field bottom margins and bottom-aligned the Size Guide button.
+- Increased the desktop column gap to 16px and mobile gap to 10px.
+
+Rollback: Restore loader commit `698f65f6d87caa4d32b3839fbdfde205b09a022f` with cache key `20260717-size-guide-qty-spacing-1`.
+
+Production candidate: Loader commit `0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462`, cache key `20260717-size-guide-row-fix-2`.
+
+Scope: No JavaScript, chart data, prices, cart, product galleries, carousel card layout, rail, or wheel behavior changed.
+
 ## 2026-07-18 04:05 UTC — KW-RUNTIME-SIZE-GUIDES-014
 
 Summary: Corrected the carousel modal Size Guide quantity-row layout so the Size Guide control no longer covers the quantity input or plus button.
