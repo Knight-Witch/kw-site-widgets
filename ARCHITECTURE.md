@@ -172,10 +172,12 @@ fourthwall/kwfw-size-guide.css
 The runtime injects a Size Guide button into:
 
 ```text
-.kwfw-panel before [data-kwfw-add]
-.kwpj-panel before [data-kwpj-add]
+.kwfw modal quantity row beside .kwfw-qty
+.kwpj modal quantity row beside .kwpj-qty
 native /products/ pages before the detected Add to Cart control
 ```
+
+The modal injector creates one idempotent `.kw-size-qty-size-row`, moves the existing quantity field into it, and appends the Size Guide button. MutationObserver refreshes reuse the same row and button.
 
 A button is only shown when a registered chart resolves. Unknown products, Cauldron Cores, wall art, collars, and other accessories do not receive a generic size chart.
 
