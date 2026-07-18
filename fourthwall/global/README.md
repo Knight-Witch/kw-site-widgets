@@ -5,15 +5,15 @@ This directory owns the site-wide Fourthwall runtime layer. Read `/OPERATING_CON
 ## Current production candidate
 
 ```text
-Commit: 0de2b178480bf6f1128ad50b9c0068e9cda50da7
-Cache key: 20260717-ladies-size-guides-1
+Commit: 94a92c443658086ee2a3c5b822ba68a873c3f3ef
+Cache key: 20260717-featured-size-guide-restore-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@0de2b178480bf6f1128ad50b9c0068e9cda50da7/fourthwall/global/kw-fourthwall-loader.js?v=20260717-ladies-size-guides-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@94a92c443658086ee2a3c5b822ba68a873c3f3ef/fourthwall/global/kw-fourthwall-loader.js?v=20260717-featured-size-guide-restore-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -96,6 +96,13 @@ native Fourthwall /products/ pages
 
 Carousel-modal buttons sit beside quantity controls and use AgencyFB. Native product-page buttons remain full width before Add to Cart.
 
+The two carousel modal namespaces intentionally use different row geometry:
+
+- Standard `kwfw` uses its restored flex/end-aligned quantity row and native 170px quantity control.
+- Step 3 `kwpj` uses the fixed two-column grid and explicit `48px 58px 48px` quantity geometry required to prevent overlap.
+
+Do not force both modal systems through one shared quantity-row grid.
+
 The registry uses exact product slugs, controlled title aliases, and selected-variant aliases. Unknown products do not receive generic charts.
 
 Current ladies mapping decisions:
@@ -125,6 +132,7 @@ It supports `.kwfw-*` and `.kwpj-*` modals, resolves actual Fourthwall `variant.
 3. Several modules remain pinned to different historical commits.
 4. Legacy global loaders remain in the directory.
 5. Native Fourthwall product-page markup and exact product slugs require live verification.
+6. The latest Featured Spellweave Size Guide restore requires live visual verification.
 
 ## Production rules
 
