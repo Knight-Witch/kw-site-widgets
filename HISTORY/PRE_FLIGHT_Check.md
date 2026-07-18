@@ -2,6 +2,41 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
+## 2026-07-18 04:55 UTC — PF-20260718-017 — Restore Featured Spellweave quantity row
+
+Requested change:
+
+- Restore the Featured Spellweave `kwfw` Size Guide placement that was working before the July 18 quantity-row changes.
+- Preserve the now-correct Step 3 `kwpj` quantity and Size Guide layout.
+
+Files reviewed:
+
+- Current `fourthwall/kwfw-size-guide.css`
+- Current `fourthwall/kwfw-size-guide.js`
+- Base `fourthwall/kwfw-carousel.css`
+- Last known-good Featured Spellweave CSS at loader commit `0de2b178480bf6f1128ad50b9c0068e9cda50da7`
+- Current loader and live screenshot
+
+Risk/conflict notes:
+
+- The previous fix flattened the `kwfw` quantity field with `display: contents` and assigned explicit grid rows, which moved Size Guide below the quantity controls in the live modal.
+- Returning both modal systems to the old flex rule would regress the Step 3 overlap fix.
+- The modal injector itself is functioning; the regression is CSS-only.
+
+Plan/result:
+
+- Split quantity-row rules by namespace.
+- Restore only `kwfw` to the prior flex/end-aligned layout.
+- Retain the current fixed two-column grid and `48px 58px 48px` quantity geometry for `kwpj`.
+- Remove the bad `kwfw` display-contents/explicit-grid-row rules.
+- Bump the global loader cache key.
+
+Validation:
+
+- Compared the old and current size-guide CSS directly.
+- No JavaScript, chart data, prices, cart, gallery, carousel card, rail, or wheel behavior changed.
+- Live visual verification remains required after replacing the pinned footer.
+
 ## 2026-07-18 04:40 UTC — PF-20260718-016 — Featured Size Guide vertical alignment
 
 Requested change:
@@ -34,7 +69,7 @@ Validation:
 
 - CSS-only namespace-specific change.
 - No JavaScript, chart data, prices, cart, gallery, carousel card, rail, or wheel behavior changed.
-- Live visual verification remains required after replacing the pinned footer.
+- Live visual verification failed; the button moved onto its own lower row and this state was replaced by PF-20260718-017.
 
 ## 2026-07-18 04:25 UTC — PF-20260718-015 — Namespace-specific quantity-row correction
 
@@ -70,7 +105,7 @@ Plan/result:
 Validation:
 
 - No JavaScript, chart data, prices, cart, galleries, carousel cards, rail, or wheel code changed.
-- Live visual verification remains required after replacing the pinned footer loader.
+- Step 3 verified fixed. Featured Spellweave alignment remained incorrect and was superseded by later entries.
 
 ## 2026-07-18 04:05 UTC — PF-20260718-014 — Size Guide quantity-control spacing
 
@@ -109,10 +144,6 @@ Validation:
 - Reviewed both native quantity control footprints.
 - No JavaScript changed.
 - No chart data, price, cart, gallery, rail, grid, or wheel behavior changed.
-
-User input required:
-
-- None. Live visual verification remains required after the footer update.
 
 ## 2026-07-18 03:25 UTC — PF-20260718-013 — Correct ladies garment chart identities
 
