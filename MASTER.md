@@ -15,8 +15,8 @@ Native product media may remain Fourthwall-hosted. Other Knight Witch site media
 ### Global Fourthwall loader
 
 ```text
-Commit: 1e5cb24e662a37358d296949e998c4980309a883
-Cache key: 20260717-size-guide-registry-1
+Commit: 3ae4a2f1827a4aa132da234faac94a876e18e489
+Cache key: 20260717-size-guide-placement-2
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
@@ -25,7 +25,7 @@ Currency: USD
 URL:
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@1e5cb24e662a37358d296949e998c4980309a883/fourthwall/global/kw-fourthwall-loader.js?v=20260717-size-guide-registry-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@3ae4a2f1827a4aa132da234faac94a876e18e489/fourthwall/global/kw-fourthwall-loader.js?v=20260717-size-guide-placement-2
 ```
 
 The live storefront token is intentionally not committed to documentation.
@@ -160,6 +160,8 @@ The system injects a targeted Size Guide button into:
 - Step 3 `kwpj` base-jacket modals.
 - Native Fourthwall `/products/` pages when a registered chart resolves.
 
+In both carousel modal systems, the Size Guide button sits in the quantity-control row and uses the same AgencyFB display typography. Native product-page buttons remain full width before Add to Cart.
+
 It follows selected garment variants, supports US/Metric display, and does not show a generic chart for unresolved products.
 
 Current chart registry:
@@ -262,6 +264,7 @@ https://knightwitch.nyc3.cdn.digitaloceanspaces.com/domainvideos/ENTER-TCD-V2.we
 - Added a centralized product size-chart registry.
 - Added Size Guide injection for standard modals, Step 3 modals, and qualifying native product pages.
 - Added exact US/Metric conversion including measurement ranges.
+- Returned modal Size Guide buttons to the quantity-control row and matched carousel typography.
 
 ## Pending cleanup
 
