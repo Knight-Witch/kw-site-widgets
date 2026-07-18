@@ -2,61 +2,54 @@
 
 This module changelog records global-runtime-specific changes. `/HISTORY/CHANGELOG.md` remains canonical.
 
-## 2026-07-18 — Samurai chart routing and original Featured row ownership
+## 2026-07-18 — Featured row compatibility and compact size charts
 
 Production candidate:
 
 ```text
-Global loader commit: 8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0
-Cache key: 20260718-samurai-size-guides-1
+Global loader commit: aa8ad96cb30ddfcff156be0785846040633aea3d
+Cache key: 20260718-size-guide-layout-compact-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 ```
 
 Changed:
 
-- Restored Featured `kwfw` injection to the historical working ownership boundary: only `.kwfw-qty` is wrapped with Size Guide; the Qty label remains in `.kwfw-field`.
-- Preserved the verified Step 3 `kwpj` field-level fixed grid.
-- Added product-scoped material routing before generic aliases.
-- Renamed the featured ladies chart to `Ladies Crop-Top Vest Size Chart`.
-- Routed featured mens rocker/vest variants to `Men's Hooded Vest Size Chart`.
-- Added `Vegan Moto Jacket - Unisex`.
-- Added `Genuine Leather Moto Jacket - Unisex`.
+- Featured row styling now covers both `.kw-size-qty-size-row` and `.kw-size-qty-size-row--kwfw`.
+- This prevents Fourthwall editor hot-reloaded legacy rows from rendering Size Guide below the quantity controls.
+- Step 3 field-level grid and internal quantity geometry remain unchanged.
+- Size-chart titles now use AgencyFB with explicit letter spacing.
+- Desktop panel/table widths are content-driven instead of fixed to a broad 980px footprint.
+- Desktop table and note spacing is tighter.
+- Mobile tables no longer force a 560px minimum width.
+- Mobile header labels wrap and cells use conservative padding.
 
 Scope:
 
-- No price, Add to Cart, variant-gallery, carousel card, rail, grid, or wheel code changed.
-
-Validation:
-
-- Replacement runtime and registry passed `node --check`.
-- Live Samurai product title, slug, and material labels were checked.
-- Step 3 selectors and geometry remained unchanged.
+- CSS and loader cache-key change only.
+- No registry, resolver, price, cart, gallery, carousel card, rail, grid, or wheel behavior changed.
 
 Rollback:
 
 ```text
-Global loader commit: 94a92c443658086ee2a3c5b822ba68a873c3f3ef
-Cache key: 20260717-featured-size-guide-restore-1
+Global loader commit: 8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0
+Cache key: 20260718-samurai-size-guides-1
 ```
+
+## 2026-07-18 — Samurai chart routing and original Featured row ownership
+
+Loader commit `8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0` restored Featured quantity-box ownership, preserved Step 3 field-level geometry, corrected Samurai vest routing, and added product-scoped Vegan/Genuine unisex Samurai Moto charts.
 
 ## 2026-07-18 — restore Featured Spellweave Size Guide row
 
-Production candidate:
-
-```text
-Global loader commit: 94a92c443658086ee2a3c5b822ba68a873c3f3ef
-Cache key: 20260717-featured-size-guide-restore-1
-```
-
-This CSS-only state restored separate namespace styling but still wrapped the full Featured field. It is superseded by the current quantity-box ownership fix.
+Loader commit `94a92c443658086ee2a3c5b822ba68a873c3f3ef` restored namespace-specific styling but remained incomplete under live editor DOM reuse.
 
 ## 2026-07-18 — failed Featured alignment grid
 
-The `kwfw`-only `display: contents`/explicit-grid-row state at loader commit `2a3d96c115de79cc6a22eb85181350cb4c76b465` moved Size Guide onto a separate lower row and is not a valid production state.
+The `display:contents`/explicit-grid-row state at loader commit `2a3d96c115de79cc6a22eb85181350cb4c76b465` moved Size Guide onto a separate lower row and is not production-valid.
 
 ## 2026-07-18 — Step 3 quantity-row correction
 
-Loader commit `0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462` corrected Step 3 overlap using explicit quantity tracks. Its Step 3 geometry remains active in the current production candidate.
+Loader commit `0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462` corrected Step 3 overlap using explicit quantity tracks. That Step 3 geometry remains active.
 
 ## 2026-07-18 — exact ladies size-guide mappings
 
