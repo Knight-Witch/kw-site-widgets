@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: aa8ad96cb30ddfcff156be0785846040633aea3d
-Cache key: 20260718-size-guide-layout-compact-1
+Commit: 4bc31f2f1c2dd6253625391a45d11c9786e93f06
+Cache key: 20260718-standard-modal-layout-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@aa8ad96cb30ddfcff156be0785846040633aea3d/fourthwall/global/kw-fourthwall-loader.js?v=20260718-size-guide-layout-compact-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@4bc31f2f1c2dd6253625391a45d11c9786e93f06/fourthwall/global/kw-fourthwall-loader.js?v=20260718-standard-modal-layout-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -50,9 +50,19 @@ fourthwall/kwfw-font-agencyfb.css
 
 Status: active. Scroll behavior remains shared across base CSS, desktop overrides, and the wheel bridge.
 
+Standard modal behavior:
+
+- Product descriptions remain in the right-side `.kwfw-panel-info` column below quick-shop controls.
+- Legacy full-width `.kwfw-desc-wide` clones are removed/hidden.
+- The visible combined variant label is `Size & Style Variant` while the Fourthwall option key remains `Description` for correct cart selection.
+- Standard selects use a stable product-specific width based on their longest option and clamp to the available column width.
+- Select widths recalculate after font readiness and viewport resize without changing when the selected option changes.
+
 ### Step 3 base-jacket carousel
 
 Owned on branch `kw-product-carousel-refactor` under `components/kw-plain-jackets/`.
+
+Status: unchanged by the current standard-modal update. Its description, labels, select widths, and quantity geometry remain branch-owned.
 
 ### Shared product modal compatibility
 
@@ -71,6 +81,7 @@ Current behavior:
 - Switches galleries to selected-variant media.
 - Falls back to product-wide media.
 - Preserves standard-modal universal support slides.
+- Owns standard-only visible option relabeling and stable select-width calculation.
 
 ### Global product size guide
 
@@ -96,9 +107,9 @@ Current behavior:
 - Supports US/Metric conversion and standard modal dismissal/focus behavior.
 - Supports product-scoped variant rules for generic material options.
 - Does not show a generic chart for unresolved products.
-- Size-chart headings now use AgencyFB with controlled letter spacing.
+- Size-chart headings use AgencyFB with controlled letter spacing.
 - Chart panels and tables use content-driven widths and tighter spacing.
-- Mobile tables no longer enforce a blanket `560px` minimum width.
+- Mobile tables do not enforce a blanket `560px` minimum width.
 
 Current registry:
 
@@ -136,6 +147,23 @@ Known chart-data gaps:
 - Men's Punkass 8X-Large row remains obscured.
 - Men's Black & Red Moto rows below brand size 42 remain obscured.
 
+### Universal product media
+
+Owned by:
+
+```text
+fourthwall/kwfw-universal-media.css
+fourthwall/kwfw-universal-media.js
+fourthwall/prod_card_media/manifest.json
+```
+
+Current behavior:
+
+- Appends configured/manifest support media to standard modal galleries.
+- No longer clones descriptions into a full-width row.
+- Removes legacy `.kwfw-desc-wide` clones and leaves the original description in `.kwfw-panel-info`.
+- CSS hides legacy clones that may be recreated by an older hot-reloaded observer.
+
 ## Active risks
 
 1. Title-bar CSS/JS still float from `main`.
@@ -146,7 +174,8 @@ Known chart-data gaps:
 6. Exact product slugs/aliases must expand as more garment charts are supplied.
 7. Variant-specific gallery behavior still needs broad live verification.
 8. `gallery-portfolio/index.html` references a missing runtime in the audited branch.
-9. The latest Featured row compatibility selector and compact chart layout require live visual verification after publishing the new footer.
+9. The latest standard description-column and dynamic select-width behavior require live visual verification after publishing the new footer.
+10. In a Fourthwall editor session that hot-swaps loaders without a page reload, old JavaScript listeners may remain resident; CSS explicitly neutralizes legacy wide-description clones.
 
 ## Completed recent work
 
@@ -160,19 +189,35 @@ Known chart-data gaps:
 - Added separate unisex Vegan and Genuine Leather Samurai Moto charts.
 - Added legacy-row-compatible Featured alignment selectors.
 - Added AgencyFB chart titles and condensed desktop/mobile chart spacing.
+- Returned standard product descriptions to the right information column.
+- Replaced the visible standard `Description` label with `Size & Style Variant` without changing the API option key.
+- Added longest-option-based stable standard select widths.
 
 ## Pending work
 
-1. Verify the latest loader live in standard, Step 3, and native product contexts.
+1. Verify the latest loader live in standard Spellweave, Cauldron Core, Step 3, and native product contexts.
 2. Add remaining garment charts as exact source data is supplied.
 3. Confirm native product slugs where normalized names differ.
 4. Obtain unobscured missing men's chart rows.
-5. Fold the title-bar hotfix into the base component.
-6. Stabilize or merge `kw-info-accordion-dev`.
-7. Audit/archive obsolete carousel experiments.
-8. Resolve the missing gallery portfolio runtime.
+5. Separate size and style into independent front-end controls while continuing to resolve the correct Fourthwall variant for cart submission.
+6. Fold the title-bar hotfix into the base component.
+7. Stabilize or merge `kw-info-accordion-dev`.
+8. Audit/archive obsolete carousel experiments.
+9. Resolve the missing gallery portfolio runtime.
 
 ## REMOVALS / DECISIONS AGAINST
+
+### No full-width standard product description row
+
+Reason: Spellweave and Cauldron Core descriptions should remain in the same right-side information column architecture as Step 3 instead of extending beneath the gallery.
+
+### No selected-option-driven dropdown width
+
+Reason: a select that resizes on every option change is visually jumpy. Width must be calculated once from the product's longest option and remain stable.
+
+### No visible `Description` label for combined variants
+
+Reason: it is an internal Fourthwall option name and does not describe the customer-facing control. The UI uses `Size & Style Variant` while preserving the original key for cart resolution.
 
 ### No shared quantity-row DOM ownership for `kwfw` and `kwpj`
 
