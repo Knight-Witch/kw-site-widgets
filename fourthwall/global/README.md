@@ -9,8 +9,8 @@ Fourthwall should contain a small footer snippet that loads `fourthwall/global/k
 ## Current production candidate
 
 ```text
-Commit: 1e5cb24e662a37358d296949e998c4980309a883
-Cache key: 20260717-size-guide-registry-1
+Commit: 3ae4a2f1827a4aa132da234faac94a876e18e489
+Cache key: 20260717-size-guide-placement-2
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
@@ -19,7 +19,7 @@ Currency: USD
 URL:
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@1e5cb24e662a37358d296949e998c4980309a883/fourthwall/global/kw-fourthwall-loader.js?v=20260717-size-guide-registry-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@3ae4a2f1827a4aa132da234faac94a876e18e489/fourthwall/global/kw-fourthwall-loader.js?v=20260717-size-guide-placement-2
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -107,6 +107,8 @@ standard .kwfw product modals
 Step 3 .kwpj base-jacket modals
 native Fourthwall /products/ pages
 ```
+
+In standard and Step 3 modals, the button is placed beside the existing quantity controls in one idempotent `.kw-size-qty-size-row`. It uses the same AgencyFB display typography and 46px control height as the carousel UI. Native product-page buttons remain full width before Add to Cart.
 
 A button only appears when the current product slug, product title, or selected garment variant resolves to a registered chart. Unknown products and non-garment products do not receive a generic chart.
 
