@@ -32,7 +32,7 @@ Fourthwall pages should contain small loader/drop-in snippets. Shared source bel
 │  ├─ domains/collection/
 │  ├─ info-sections/
 │  ├─ prod_card_media/
-│  └─ kwfw-*
+│  └─ kwfw-* / kw-product-*      product widgets and shared modal systems
 ├─ gallery-portfolio/
 ├─ logo-banner/
 └─ widgets/
@@ -83,7 +83,8 @@ The global loader derives `selfRef` from its pinned jsDelivr URL, sets `window.K
 13. `fourthwall/kwfw-universal-media.css` from `selfRef`
 14. `fourthwall/kwfw-product-rules.css` from its pinned commit
 15. `fourthwall/kwfw-modal-product-fix.css` from `selfRef`
-16. `fourthwall/global/kw-cart-runtime.css` from `selfRef`
+16. `fourthwall/kw-product-modal-presentation.css` from `selfRef`
+17. `fourthwall/global/kw-cart-runtime.css` from `selfRef`
 
 ### JavaScript
 
@@ -102,9 +103,10 @@ The global loader derives `selfRef` from its pinned jsDelivr URL, sets `window.K
 13. `fourthwall/kwfw-universal-media.js` from `selfRef`
 14. `fourthwall/kwfw-product-rules.js` from its pinned commit
 15. `fourthwall/kwfw-modal-product-fix.js` from `selfRef`
-16. `fourthwall/global/kw-cart-runtime.js` from `selfRef`
+16. `fourthwall/kw-product-modal-presentation.js` from `selfRef`
+17. `fourthwall/global/kw-cart-runtime.js` from `selfRef`
 
-`kwfw-size-guide-data.js` must load before `kwfw-size-guide.js`.
+`kwfw-size-guide-data.js` must load before `kwfw-size-guide.js`. The shared presentation module loads after modal compatibility so it can style and format the final `kwfw` and `kwpj` modal DOM without owning variant, price, cart, or gallery-selection logic.
 
 ## Product carousel systems
 
@@ -139,7 +141,7 @@ Authoritative implementation is on branch `kw-product-carousel-refactor` under:
 components/kw-plain-jackets/
 ```
 
-It uses separate `.kwpj-*` selectors and a body-level `.kwpj-modal`. Global compatibility modules may intentionally support both `.kwfw-*` and `.kwpj-*`, but the underlying Step 3 module remains branch-owned until merged.
+It uses separate `.kwpj-*` selectors and a body-level `.kwpj-modal`. Global compatibility and presentation modules may intentionally support both `.kwfw-*` and `.kwpj-*`, but the underlying Step 3 product loading, filtering, modal construction, and cart logic remain branch-owned until merged.
 
 ### Shared modal compatibility
 
@@ -158,6 +160,30 @@ Standard-only option presentation also belongs here:
 - Each standard select measures every option and receives one stable product-specific width based on the longest label.
 - Widths recalculate after font readiness and viewport resize, and clamp to the available information-column width.
 - Step 3 option labels and select widths are not altered by this compatibility layer.
+
+### Unified modal presentation
+
+Owned by:
+
+```text
+fourthwall/kw-product-modal-presentation.css
+fourthwall/kw-product-modal-presentation.js
+```
+
+This module owns visual and title-level synchronization between the standard `kwfw` modal and Step 3 `kwpj` modal. It does not own product loading, variant resolution, pricing, Add to Cart, or selected-variant media selection.
+
+Current responsibilities:
+
+- Black panel, gallery, track, and information-column surfaces across both namespaces.
+- Shared desktop panel width, column ratio, 540px gallery cap, top-aligned `contain` media, AgencyFB typography, control colors, close buttons, details buttons, dots, and transparent gallery navigation styling.
+- Shared mobile gallery height based on viewport width, compact information spacing, centered dots, and transparent arrows at the Step 3 edge positions.
+- Hides navigation and dots for single-media galleries.
+- Parses recognized collection names out of product titles without mutating the Fourthwall product object.
+- Renders `Cyberpunk 2077` as a red collection subtitle linked to `/pages/edgerunners`.
+- Desktop pointer/focus swaps the subtitle to `Edgerunners Collection` through a glitch transition.
+- Mobile cycles between both subtitle labels every four seconds unless reduced motion is enabled.
+
+Collection parsing currently recognizes Cyberpunk 2077 as either a title prefix or suffix separated by a dash, colon, or pipe. Unrecognized titles remain unchanged and receive no collection subtitle.
 
 ## Global size-guide architecture
 
@@ -262,6 +288,7 @@ Known dangerous state: commit `3f0582046c6c0f31aedefa5e9d4805ec9eedddf3` contain
 - Carousel desktop footprint: `fourthwall/kwfw-carousel-desktop-grid.css`
 - Carousel wheel/page-scroll behavior: `fourthwall/kwfw-carousel-wheel-bridge.js`
 - Shared product modal prices/CTA/variant gallery and standard option presentation: `fourthwall/kwfw-modal-product-fix.*`
+- Cross-system modal visuals and collection-title presentation: `fourthwall/kw-product-modal-presentation.*`
 - Standard modal support media and description-column preservation: `fourthwall/kwfw-universal-media.*`
 - Size-chart data and exact routing: `fourthwall/kwfw-size-guide-data.js`
 - Size-guide injection/modal behavior: `fourthwall/kwfw-size-guide.js`
