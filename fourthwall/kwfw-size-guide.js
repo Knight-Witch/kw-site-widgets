@@ -12,9 +12,11 @@
     .trim();
   const slugify = value => normalize(value).replace(/\s+/g, "-");
   const unique = values => [...new Set(values.filter(Boolean))];
+
   let unit = localStorage.getItem("kw_size_unit") || "us";
   let returnFocus = null;
   let bodyOverflow = "";
+  let refreshFrame = 0;
 
   const chartEntries = () => Object.entries(charts());
   const exactMatch = (values, aliases) => {
@@ -31,6 +33,7 @@
   const resolve = input => {
     const context = typeof input === "string" ? { token: input } : input || {};
     if(context.token && charts()[context.token]) return context.token;
+
     const selectedValues = unique([
       ...(context.selectedValues || []),
       context.variant,
@@ -38,18 +41,21 @@
       context.type,
       context.gender
     ]);
+
     for(const [key, chart] of chartEntries()){
       if(exactMatch(selectedValues, chart.variantAliases || [])) return key;
     }
     for(const [key, chart] of chartEntries()){
       if(phraseMatch(selectedValues, chart.variantAliases || [])) return key;
     }
+
     const slug = slugify(context.slug || "");
     if(slug){
       for(const [key, chart] of chartEntries()){
         if((chart.productSlugs || []).map(slugify).includes(slug)) return key;
       }
     }
+
     const titles = unique([context.title, context.name, context.product, context.token]);
     for(const [key, chart] of chartEntries()){
       if(exactMatch(titles, chart.aliases || [])) return key;
@@ -57,6 +63,7 @@
     for(const [key, chart] of chartEntries()){
       if(phraseMatch(titles, chart.aliases || [])) return key;
     }
+
     return null;
   };
 
@@ -68,10 +75,10 @@
   const convertCell = (value, column) => {
     if(unit === "us" || column?.unit !== "in") return String(value);
     if(typeof value === "number") return formatMetric(value);
+
     const text = String(value).trim();
     const range = text.match(/^(-?\d+(?:\.\d+)?)\s*[-–]\s*(-?\d+(?:\.\d+)?)$/);
-    if(range) return `${formatMetric(range[1])}–${formatMetric(range[2])}`;
-    return text;
+    return range ? `${formatMetric(range[1])}–${formatMetric(range[2])}` : text;
   };
   const columnLabel = column => {
     if(!column?.unit) return column?.label || "";
@@ -81,6 +88,7 @@
   const modal = () => {
     let element = q(".kw-size-modal");
     if(element) return element;
+
     element = d.createElement("div");
     element.className = "kw-size-modal";
     element.setAttribute("aria-hidden", "true");
@@ -91,13 +99,20 @@
   const renderChart = key => {
     const chart = charts()[key];
     if(!chart) return false;
+
     const element = modal();
     element.dataset.chartKey = key;
     q(".kw-size-title", element).textContent = chart.title;
-    qa("[data-kw-size-unit]", element).forEach(button => button.classList.toggle("is-active", button.dataset.kwSizeUnit === unit));
+    qa("[data-kw-size-unit]", element).forEach(button => {
+      button.classList.toggle("is-active", button.dataset.kwSizeUnit === unit);
+    });
+
     const head = chart.columns.map(column => `<th>${columnLabel(column)}</th>`).join("");
     const rows = chart.rows.map(row => `<tr>${row.map((value, index) => `<td>${convertCell(value, chart.columns[index])}</td>`).join("")}</tr>`).join("");
-    const notes = chart.notes?.length ? `<ul class="kw-size-notes">${chart.notes.map(note => `<li>${note}</li>`).join("")}</ul>` : "";
+    const notes = chart.notes?.length
+      ? `<ul class="kw-size-notes">${chart.notes.map(note => `<li>${note}</li>`).join("")}</ul>`
+      : "";
+
     q(".kw-size-body", element).innerHTML = `<div class="kw-size-table-wrap"><table class="kw-size-table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>${notes}`;
     return true;
   };
@@ -105,13 +120,16 @@
     const element = modal();
     element.dataset.chartKey = "";
     q(".kw-size-title", element).textContent = "Select Size Chart";
-    qa("[data-kw-size-unit]", element).forEach(button => button.classList.toggle("is-active", button.dataset.kwSizeUnit === unit));
+    qa("[data-kw-size-unit]", element).forEach(button => {
+      button.classList.toggle("is-active", button.dataset.kwSizeUnit === unit);
+    });
     q(".kw-size-body", element).innerHTML = `<div class="kw-size-picker">${chartEntries().map(([key, chart]) => `<button type="button" class="kw-size-choice" data-kw-size-chart="${key}">${chart.title}</button>`).join("")}</div>`;
   };
   const open = (context, trigger = d.activeElement) => {
     const key = resolve(context);
-    if(key ? !renderChart(key) : false) return false;
+    if(key && !renderChart(key)) return false;
     if(!key) renderPicker();
+
     const element = modal();
     returnFocus = trigger instanceof HTMLElement ? trigger : null;
     bodyOverflow = d.body.style.overflow;
@@ -124,6 +142,7 @@
   const close = () => {
     const element = q(".kw-size-modal");
     if(!element?.classList.contains("is-open")) return;
+
     element.classList.remove("is-open");
     element.setAttribute("aria-hidden", "true");
     d.body.style.overflow = bodyOverflow;
@@ -131,17 +150,19 @@
     returnFocus = null;
   };
 
-  const modalContext = button => {
-    const standardModal = button.closest(".kwfw-modal");
-    const jacketModal = button.closest(".kwpj-modal");
+  const modalContext = source => {
+    const standardModal = source?.closest?.(".kwfw-modal");
+    const jacketModal = source?.closest?.(".kwpj-modal");
     const owner = standardModal || jacketModal;
     if(!owner) return null;
+
     const product = owner._product || {};
-    const selectors = standardModal ? "[data-kwfw-option]" : "[data-kwpj-option]";
+    const selector = standardModal ? "[data-kwfw-option]" : "[data-kwpj-option]";
     const selectedValues = [];
-    qa(selectors, owner).forEach(select => {
+    qa(selector, owner).forEach(select => {
       selectedValues.push(select.value, select.options?.[select.selectedIndex]?.textContent);
     });
+
     return {
       slug: product.slug || product.handle || product.productSlug || product.product_slug,
       title: product.title || product.name,
@@ -150,13 +171,21 @@
   };
   const nativeSelectedValues = root => {
     const values = [];
-    qa("select", root).forEach(select => values.push(select.value, select.options?.[select.selectedIndex]?.textContent));
+
+    qa("select", root).forEach(select => {
+      values.push(select.value, select.options?.[select.selectedIndex]?.textContent);
+    });
     qa('input[type="radio"]:checked,input[type="checkbox"]:checked', root).forEach(input => {
       values.push(input.value);
-      const label = input.id ? q(`label[for="${CSS.escape(input.id)}"]`, root) : input.closest("label");
+      const label = input.id
+        ? q(`label[for="${CSS.escape(input.id)}"]`, root)
+        : input.closest("label");
       if(label) values.push(label.textContent);
     });
-    qa('[aria-checked="true"],[data-state="checked"]', root).forEach(element => values.push(element.textContent, element.getAttribute("value")));
+    qa('[aria-checked="true"],[data-state="checked"]', root).forEach(element => {
+      values.push(element.textContent, element.getAttribute("value"));
+    });
+
     return unique(values.map(value => String(value || "").trim()));
   };
   const nativeContext = () => {
@@ -165,9 +194,15 @@
     const productIndex = path.lastIndexOf("products");
     const slug = productIndex >= 0 ? path[productIndex + 1] || "" : "";
     const title = q("h1", root)?.textContent || d.title;
-    return { slug, title, selectedValues: nativeSelectedValues(root) };
+
+    return {
+      slug,
+      title,
+      selectedValues: nativeSelectedValues(root)
+    };
   };
   const buttonContext = button => modalContext(button) || nativeContext();
+
   const makeButton = () => {
     const button = d.createElement("button");
     button.type = "button";
@@ -176,12 +211,33 @@
     button.setAttribute("aria-haspopup", "dialog");
     return button;
   };
-  const installModalButton = (panel, addSelector) => {
-    const add = q(addSelector, panel);
+  const ensureQuantityRow = (panel, quantityField) => {
+    let row = quantityField.closest(".kw-size-qty-size-row");
+    if(row) return row;
+
+    row = d.createElement("div");
+    row.className = "kw-size-qty-size-row";
+    quantityField.parentNode.insertBefore(row, quantityField);
+    row.appendChild(quantityField);
+    return row;
+  };
+  const installModalButton = (panel, namespace) => {
+    const add = q(`[data-${namespace}-add]`, panel);
     if(!add) return;
-    let button = q(":scope .kw-size-guide-btn", panel);
+
+    let button = q(".kw-size-guide-btn", panel);
     if(!button) button = makeButton();
-    if(button.nextElementSibling !== add) add.parentNode.insertBefore(button, add);
+
+    const quantityInput = q(`[data-${namespace}-qty-input]`, panel);
+    const quantityField = quantityInput?.closest(`.${namespace}-field`);
+
+    if(quantityField){
+      const row = ensureQuantityRow(panel, quantityField);
+      if(button.parentNode !== row) row.appendChild(button);
+    }else if(button.nextElementSibling !== add){
+      add.parentNode.insertBefore(button, add);
+    }
+
     button.hidden = !resolve(modalContext(button));
   };
   const findNativeAddButton = root => {
@@ -190,38 +246,47 @@
   };
   const installNativeButton = () => {
     if(!/\/products\//.test(location.pathname)) return;
+
     const root = q("main") || d.body;
     const key = resolve(nativeContext());
     let button = q(".kw-size-guide-native-btn", root);
+
     if(!key){
       button?.remove();
       return;
     }
+
     const add = findNativeAddButton(root);
     if(!add) return;
+
     if(!button){
       button = makeButton();
       button.classList.add("kw-size-guide-native-btn");
     }
+
     const parent = add.parentNode;
-    if(button.parentNode !== parent || button.nextElementSibling !== add) parent.insertBefore(button, add);
+    if(button.parentNode !== parent || button.nextElementSibling !== add){
+      parent.insertBefore(button, add);
+    }
     button.hidden = false;
   };
   const installExplicitButtons = root => {
-    qa("[data-kw-size-guide]", root).forEach(button => button.classList.add("kw-size-guide-explicit"));
+    qa("[data-kw-size-guide]", root).forEach(button => {
+      button.classList.add("kw-size-guide-explicit");
+    });
   };
   const refresh = () => {
-    qa(".kwfw-panel").forEach(panel => installModalButton(panel, "[data-kwfw-add]"));
-    qa(".kwpj-panel").forEach(panel => installModalButton(panel, "[data-kwpj-add]"));
+    qa(".kwfw-panel").forEach(panel => installModalButton(panel, "kwfw"));
+    qa(".kwpj-panel").forEach(panel => installModalButton(panel, "kwpj"));
     installNativeButton();
     installExplicitButtons(d);
+
     const openModal = q(".kw-size-modal.is-open");
     if(openModal && returnFocus?.isConnected){
       const key = resolve(buttonContext(returnFocus));
       if(key && openModal.dataset.chartKey !== key) renderChart(key);
     }
   };
-  let refreshFrame = 0;
   const scheduleRefresh = () => {
     cancelAnimationFrame(refreshFrame);
     refreshFrame = requestAnimationFrame(refresh);
@@ -232,6 +297,7 @@
       close();
       return;
     }
+
     const unitButton = event.target.closest("[data-kw-size-unit]");
     if(unitButton){
       unit = unitButton.dataset.kwSizeUnit;
@@ -240,21 +306,25 @@
       key ? renderChart(key) : renderPicker();
       return;
     }
+
     const chartButton = event.target.closest("[data-kw-size-chart]");
     if(chartButton){
       renderChart(chartButton.dataset.kwSizeChart);
       return;
     }
+
     const explicit = event.target.closest("[data-kw-size-guide]");
     if(explicit){
       open(explicit.dataset.kwSizeGuide || buttonContext(explicit), explicit);
       return;
     }
+
     const guide = event.target.closest(".kw-size-guide-btn");
     if(guide){
       open(buttonContext(guide), guide);
       return;
     }
+
     scheduleRefresh();
   }, true);
   d.addEventListener("change", scheduleRefresh, true);
@@ -262,8 +332,20 @@
   d.addEventListener("keydown", event => {
     if(event.key === "Escape") close();
   });
-  new MutationObserver(scheduleRefresh).observe(d.documentElement, { childList: true, subtree: true });
+  new MutationObserver(scheduleRefresh).observe(d.documentElement, {
+    childList: true,
+    subtree: true
+  });
 
-  w.KWSizeGuide = { open, close, resolve, refresh, charts: charts() };
-  d.readyState === "loading" ? d.addEventListener("DOMContentLoaded", refresh) : refresh();
+  w.KWSizeGuide = {
+    open,
+    close,
+    resolve,
+    refresh,
+    charts: charts()
+  };
+
+  d.readyState === "loading"
+    ? d.addEventListener("DOMContentLoaded", refresh)
+    : refresh();
 })();
