@@ -137,6 +137,8 @@ border-color: #ffb04a;
 
 The expanded Add to Cart button uses an orange glow/pulse. View Details remains dark. Prices use `#ff4b4b` and must come from real Fourthwall variant data. Selected variants switch to their assigned `variant.images` media with product-wide fallback.
 
+Step 3 `.kwpj-gallery-track` images and videos use `object-fit:contain` with `object-position:top center`, matching the standard modal’s top-justified product-media presentation instead of vertically centering shorter jacket images inside the gallery viewport.
+
 ### Standard `kwfw` modal layout
 
 - Gallery remains in the left column.
