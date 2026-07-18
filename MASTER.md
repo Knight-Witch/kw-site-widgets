@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: 0de2b178480bf6f1128ad50b9c0068e9cda50da7
-Cache key: 20260717-ladies-size-guides-1
+Commit: 698f65f6d87caa4d32b3839fbdfde205b09a022f
+Cache key: 20260717-size-guide-qty-spacing-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@0de2b178480bf6f1128ad50b9c0068e9cda50da7/fourthwall/global/kw-fourthwall-loader.js?v=20260717-ladies-size-guides-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@698f65f6d87caa4d32b3839fbdfde205b09a022f/fourthwall/global/kw-fourthwall-loader.js?v=20260717-size-guide-qty-spacing-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -28,15 +28,13 @@ Cache key: 20260706-titlebar-hotfix-1
 Entrypoint: components/kw-title-bars/kw-title-bars-hotfix-loader.js
 ```
 
-Status: active temporary compatibility layer. Fold into the base component after verification.
+Status: active temporary compatibility layer.
 
 ## Active systems
 
 ### Global runtime
 
 Owned by `fourthwall/global/` and coordinated by `kw-fourthwall-loader.js`.
-
-Active systems include the foundation/layout guard, background video, header/nav, social icons, info spacing, cart guard, standard carousel dependencies, global size guides, product rules, and shared modal compatibility.
 
 ### Standard product carousel
 
@@ -50,17 +48,11 @@ fourthwall/kwfw-carousel-wheel-bridge.js
 fourthwall/kwfw-font-agencyfb.css
 ```
 
-Status: active. Scroll behavior is shared across base CSS, desktop override, and the wheel bridge.
+Status: active. Scroll behavior remains shared across base CSS, desktop overrides, and the wheel bridge.
 
 ### Step 3 base-jacket carousel
 
-Owned on branch `kw-product-carousel-refactor` under:
-
-```text
-components/kw-plain-jackets/
-```
-
-Status: active page-level system using `.kwpj-*` selectors.
+Owned on branch `kw-product-carousel-refactor` under `components/kw-plain-jackets/`.
 
 ### Shared product modal compatibility
 
@@ -78,7 +70,7 @@ Current behavior:
 - Restores the orange glowing Add to Cart CTA.
 - Switches galleries to selected-variant media.
 - Falls back to product-wide media.
-- Preserves standard-modal support slides.
+- Preserves standard-modal universal support slides.
 
 ### Global product size guide
 
@@ -92,11 +84,14 @@ fourthwall/kwfw-size-guide.css
 
 Current behavior:
 
-- Injects into featured Spellweave/standard product modals.
+- Injects into featured Spellweave/standard modals.
 - Injects into Step 3 base-jacket modals.
-- Injects into registered native Fourthwall `/products/` pages.
+- Injects into registered native Fourthwall product pages.
 - Follows the selected garment variant.
-- Uses AgencyFB and sits in the quantity row in both carousel modal systems.
+- Uses AgencyFB in carousel modals.
+- Uses a two-column quantity row: fixed 170px quantity controls plus a separate Size Guide column.
+- Preserves the `-`, quantity input, and `+` controls without overlap.
+- Uses a 14px desktop gap and 8px mobile gap.
 - Remains full width before Add to Cart on native product pages.
 - Supports US/Metric conversion and standard modal dismissal/focus behavior.
 - Does not show a generic chart for unresolved products.
@@ -121,46 +116,17 @@ mens-black-red-moto-vest
 mens-classic-leather-moto-vest
 ```
 
-Ladies chart mapping decisions:
+Ladies mapping decisions:
 
-- `ladies-crop-top-rocker-jacket` and `ladies-snakeskin-crop-top-vest` share one chart.
+- Ladies Crop-Top Rocker Jacket and Ladies Snakeskin Crop Top Vest share one chart.
 - Featured `Ladies Rocker Vest` option labels resolve to that shared chart.
-- The old generic `ladies-rocker-vest` registry identity was removed.
-- The old unverified generic `ladies-moto-vest` mapping was removed rather than exposing an incorrect chart.
+- The old generic ladies rocker identity was removed.
+- The unverified generic ladies moto mapping was removed.
 
-Known source-data gaps:
+Known chart-data gaps:
 
 - Men's Punkass 8X-Large row remains obscured.
 - Men's Black & Red Moto rows below brand size 42 remain obscured.
-
-### Universal product media
-
-Owned by:
-
-```text
-fourthwall/kwfw-universal-media.css
-fourthwall/kwfw-universal-media.js
-fourthwall/prod_card_media/manifest.json
-```
-
-### Product rules
-
-Owned by:
-
-```text
-fourthwall/kwfw-product-rules.css
-fourthwall/kwfw-product-rules.js
-```
-
-Current specialization: Cyberpunk collar variants.
-
-### Title bars
-
-Owned by `components/kw-title-bars/`. Base CSS/JS still float from `main`; a separate pinned hotfix remains active.
-
-### Info sections
-
-Loaded from `kw-info-accordion-dev`. Inspect the branch before editing.
 
 ## Active risks
 
@@ -168,36 +134,36 @@ Loaded from `kw-info-accordion-dev`. Inspect the branch before editing.
 2. The title-bar hotfix remains a separate production snippet.
 3. Info sections still load from a development branch.
 4. Legacy carousel loaders remain in the repository.
-5. Native product-page Size Guide placement depends on current Fourthwall markup and requires live verification.
-6. Exact product slugs/aliases must be extended as additional garment charts are supplied.
-7. Variant-specific gallery behavior still needs representative live checks across products.
+5. Native product-page Size Guide placement depends on current Fourthwall markup.
+6. Exact product slugs/aliases must expand as more garment charts are supplied.
+7. Variant-specific gallery behavior still needs broad live verification.
 8. `gallery-portfolio/index.html` references a missing runtime in the audited branch.
 
 ## Completed recent work
 
-- Stabilized real prices and modal Add to Cart styling in both carousel systems.
-- Added selected-variant gallery filtering and corrected default-variant fallback behavior.
-- Added one centralized size-chart registry.
-- Added Size Guide injection to standard modals, Step 3 modals, and qualifying native product pages.
-- Restored compact quantity-row Size Guide placement and carousel typography.
-- Replaced generic ladies chart identities with exact Crop-Top Rocker/Snakeskin, Goth Merc, Punkass, and Biker mappings.
+- Restored real modal prices and Add to Cart styling.
+- Added selected-variant galleries and corrected default-variant fallback.
+- Added the centralized size-chart registry and global injector.
+- Restored compact quantity-row placement and carousel typography.
+- Corrected ladies product identities and chart mappings.
+- Separated Size Guide from the 170px quantity controls to prevent overlap.
 
 ## Pending work
 
-1. Verify the current loader live across representative standard, Step 3, and native product contexts.
-2. Add remaining ladies jackets, vests, coats, and LUXE charts as exact source data is supplied.
-3. Confirm actual native product slugs if any differ from normalized product names.
+1. Verify the latest loader live in standard, Step 3, and native product contexts.
+2. Add remaining garment charts as exact source data is supplied.
+3. Confirm native product slugs where normalized names differ.
 4. Obtain unobscured missing men's chart rows.
 5. Fold the title-bar hotfix into the base component.
 6. Stabilize or merge `kw-info-accordion-dev`.
-7. Audit and archive obsolete carousel experiments.
+7. Audit/archive obsolete carousel experiments.
 8. Resolve the missing gallery portfolio runtime.
 
 ## REMOVALS / DECISIONS AGAINST
 
 ### No broad generic jacket/vest chart matching
 
-Reason: garments use different manufacturers and measurements. Chart resolution must use exact registry mappings.
+Reason: garments use different manufacturers and measurements.
 
 ### No fabricated sizing rows
 
