@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: 0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462
-Cache key: 20260717-size-guide-row-fix-2
+Commit: 2a3d96c115de79cc6a22eb85181350cb4c76b465
+Cache key: 20260717-featured-size-guide-align-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462/fourthwall/global/kw-fourthwall-loader.js?v=20260717-size-guide-row-fix-2
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@2a3d96c115de79cc6a22eb85181350cb4c76b465/fourthwall/global/kw-fourthwall-loader.js?v=20260717-featured-size-guide-align-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -92,7 +92,8 @@ Current behavior:
 - Uses an explicit two-column modal grid: fixed 170px quantity controls plus a separate Size Guide column.
 - Forces both modal namespaces to the original `48px 58px 48px` quantity-control geometry.
 - Preserves the `-`, quantity input, and `+` controls without overlap.
-- Bottom-aligns the Size Guide control with the quantity controls.
+- In standard `kwfw` modals, puts the Qty label in row 1 and aligns the quantity controls and Size Guide together in row 2.
+- Leaves the corrected Step 3 `kwpj` row geometry unchanged.
 - Uses a 16px desktop gap and 10px mobile gap.
 - Remains full width before Add to Cart on native product pages.
 - Supports US/Metric conversion and standard modal dismissal/focus behavior.
@@ -149,6 +150,7 @@ Known chart-data gaps:
 - Restored compact quantity-row placement and carousel typography.
 - Corrected ladies product identities and chart mappings.
 - Separated Size Guide from the quantity controls and normalized both modal namespaces to fixed internal quantity geometry.
+- Aligned the featured Spellweave Size Guide specifically to the standard quantity-control row without touching Step 3.
 
 ## Pending work
 
