@@ -171,14 +171,12 @@ Visual rules:
 
 - Size Guide buttons use AgencyFB, white uppercase text, black background, a subtle white border, and orange hover/focus state.
 - Standard and Step 3 modal buttons sit beside the quantity controls.
-- `.kw-size-qty-size-row` uses a fixed `170px` quantity column and a separate `max-content` Size Guide column.
-- The quantity controls use explicit `48px 58px 48px` tracks with two `8px` gaps.
-- Size Guide has a `148px` desktop minimum width.
-- Desktop column gap is `16px`; mobile gap is `10px`.
-- Modal control height is `46px`.
-- Standard `kwfw` modals use two grid rows: Qty label in row 1, quantity controls and Size Guide together in row 2.
-- The standard `.kwfw-field` is flattened with `display: contents` only inside the injected quantity row.
-- Step 3 `kwpj` retains its corrected single-field geometry and is not affected by the standard-only alignment rule.
+- Standard `kwfw` uses its native 170px quantity control inside a flex row with `align-items:flex-end` and a 10px gap.
+- Standard `kwfw` does not use `display:contents`, explicit grid rows, or the Step 3 fixed input track geometry.
+- Step 3 `kwpj` uses a two-column grid with a fixed 170px quantity column and a separate `max-content` Size Guide column.
+- Step 3 quantity controls use explicit `48px 58px 48px` tracks with two 8px gaps.
+- Step 3 Size Guide has a 148px desktop minimum width and a 16px desktop gap.
+- Modal control height is 46px.
 - Native product-page buttons remain full width before Add to Cart.
 - Overlay: `rgba(0,0,0,.82)`.
 - Panel: `min(980px,96vw)`, `max-height:92vh`, near-black background, subtle red shadow.
