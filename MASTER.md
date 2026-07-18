@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: 8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0
-Cache key: 20260718-samurai-size-guides-1
+Commit: aa8ad96cb30ddfcff156be0785846040633aea3d
+Cache key: 20260718-size-guide-layout-compact-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0/fourthwall/global/kw-fourthwall-loader.js?v=20260718-samurai-size-guides-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@aa8ad96cb30ddfcff156be0785846040633aea3d/fourthwall/global/kw-fourthwall-loader.js?v=20260718-size-guide-layout-compact-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -89,12 +89,16 @@ Current behavior:
 - Injects into registered native Fourthwall product pages.
 - Follows the selected garment variant.
 - Uses AgencyFB in carousel modals.
-- Standard `kwfw` modals wrap only the existing `.kwfw-qty` inside the field, preserving the Qty label and original control alignment.
-- Step 3 `kwpj` modals retain the fixed field-level two-column grid and explicit `48px 58px 48px` quantity geometry.
+- Standard `kwfw` modals keep the Qty label in the field and place quantity controls plus Size Guide in the same two-column row.
+- Standard row CSS also targets legacy unmodified `.kw-size-qty-size-row` elements so editor hot reloads do not leave Size Guide on a second line.
+- Step 3 `kwpj` modals retain the verified field-level two-column grid and explicit `48px 58px 48px` quantity geometry.
 - Native product-page buttons remain full width before Add to Cart.
 - Supports US/Metric conversion and standard modal dismissal/focus behavior.
 - Supports product-scoped variant rules for generic material options.
 - Does not show a generic chart for unresolved products.
+- Size-chart headings now use AgencyFB with controlled letter spacing.
+- Chart panels and tables use content-driven widths and tighter spacing.
+- Mobile tables no longer enforce a blanket `560px` minimum width.
 
 Current registry:
 
@@ -142,7 +146,7 @@ Known chart-data gaps:
 6. Exact product slugs/aliases must expand as more garment charts are supplied.
 7. Variant-specific gallery behavior still needs broad live verification.
 8. `gallery-portfolio/index.html` references a missing runtime in the audited branch.
-9. The corrected Featured Spellweave quantity-row injection and Samurai material routing require live verification after publishing the new footer.
+9. The latest Featured row compatibility selector and compact chart layout require live visual verification after publishing the new footer.
 
 ## Completed recent work
 
@@ -151,9 +155,11 @@ Known chart-data gaps:
 - Added the centralized size-chart registry and global injector.
 - Corrected ladies product identities and chart mappings.
 - Fixed Step 3 quantity overlap with namespace-specific fixed geometry.
-- Restored the Featured Spellweave injector to its original quantity-box ownership instead of wrapping the whole field.
+- Restored Featured Spellweave quantity-box ownership.
 - Added exact Samurai vest mappings.
 - Added separate unisex Vegan and Genuine Leather Samurai Moto charts.
+- Added legacy-row-compatible Featured alignment selectors.
+- Added AgencyFB chart titles and condensed desktop/mobile chart spacing.
 
 ## Pending work
 
@@ -171,6 +177,10 @@ Known chart-data gaps:
 ### No shared quantity-row DOM ownership for `kwfw` and `kwpj`
 
 Reason: Featured Spellweaves require the row inside `.kwfw-field` around `.kwfw-qty`; Step 3 requires a field-level grid. Treating both the same repeatedly regressed one system.
+
+### No fixed blanket mobile table width
+
+Reason: short size charts should use available mobile space efficiently; only genuinely wide charts should scroll horizontally.
 
 ### No global material-only chart routing
 
