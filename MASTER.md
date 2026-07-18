@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: 94a92c443658086ee2a3c5b822ba68a873c3f3ef
-Cache key: 20260717-featured-size-guide-restore-1
+Commit: 8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0
+Cache key: 20260718-samurai-size-guides-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@94a92c443658086ee2a3c5b822ba68a873c3f3ef/fourthwall/global/kw-fourthwall-loader.js?v=20260717-featured-size-guide-restore-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0/fourthwall/global/kw-fourthwall-loader.js?v=20260718-samurai-size-guides-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -89,10 +89,11 @@ Current behavior:
 - Injects into registered native Fourthwall product pages.
 - Follows the selected garment variant.
 - Uses AgencyFB in carousel modals.
-- Standard `kwfw` modals use the restored flex/end-aligned quantity row that was working before the July 18 spacing changes.
-- Step 3 `kwpj` modals retain the fixed two-column grid and explicit `48px 58px 48px` quantity geometry that prevents overlap.
+- Standard `kwfw` modals wrap only the existing `.kwfw-qty` inside the field, preserving the Qty label and original control alignment.
+- Step 3 `kwpj` modals retain the fixed field-level two-column grid and explicit `48px 58px 48px` quantity geometry.
 - Native product-page buttons remain full width before Add to Cart.
 - Supports US/Metric conversion and standard modal dismissal/focus behavior.
+- Supports product-scoped variant rules for generic material options.
 - Does not show a generic chart for unresolved products.
 
 Current registry:
@@ -113,14 +114,18 @@ mens-tactical-vest
 mens-punkass-vest
 mens-black-red-moto-vest
 mens-classic-leather-moto-vest
+samurai-vegan-moto-jacket
+samurai-genuine-leather-moto-jacket
 ```
 
-Ladies mapping decisions:
+Samurai mapping decisions:
 
-- Ladies Crop-Top Rocker Jacket and Ladies Snakeskin Crop Top Vest share one chart.
-- Featured `Ladies Rocker Vest` option labels resolve to that shared chart.
-- The old generic ladies rocker identity was removed.
-- The unverified generic ladies moto mapping was removed.
+- Featured `Ladies Rocker Vest` resolves to **Ladies Crop-Top Vest Size Chart**.
+- Featured `Mens Rocker Vest` and mens vest-only/collar variants resolve to **Men's Hooded Vest Size Chart**.
+- The Samurai Moto Jacket uses product-scoped material routing.
+- `Vegan Leather` resolves to **Vegan Moto Jacket - Unisex**.
+- `Genuine Leather` resolves to **Genuine Leather Moto Jacket - Unisex**.
+- Generic Vegan/Genuine options on unrelated products do not resolve to the Samurai charts.
 
 Known chart-data gaps:
 
@@ -137,17 +142,18 @@ Known chart-data gaps:
 6. Exact product slugs/aliases must expand as more garment charts are supplied.
 7. Variant-specific gallery behavior still needs broad live verification.
 8. `gallery-portfolio/index.html` references a missing runtime in the audited branch.
-9. The restored Featured Spellweave Size Guide row requires live visual verification after the new footer is published.
+9. The corrected Featured Spellweave quantity-row injection and Samurai material routing require live verification after publishing the new footer.
 
 ## Completed recent work
 
 - Restored real modal prices and Add to Cart styling.
 - Added selected-variant galleries and corrected default-variant fallback.
 - Added the centralized size-chart registry and global injector.
-- Restored compact quantity-row placement and carousel typography.
 - Corrected ladies product identities and chart mappings.
 - Fixed Step 3 quantity overlap with namespace-specific fixed geometry.
-- Restored Featured Spellweave quantity-row styling to the pre-spacing-change flex layout without changing Step 3.
+- Restored the Featured Spellweave injector to its original quantity-box ownership instead of wrapping the whole field.
+- Added exact Samurai vest mappings.
+- Added separate unisex Vegan and Genuine Leather Samurai Moto charts.
 
 ## Pending work
 
@@ -162,9 +168,13 @@ Known chart-data gaps:
 
 ## REMOVALS / DECISIONS AGAINST
 
-### No shared quantity-row geometry for `kwfw` and `kwpj`
+### No shared quantity-row DOM ownership for `kwfw` and `kwpj`
 
-Reason: the two modal systems have different field and quantity-control behavior. Shared forced geometry fixed Step 3 but repeatedly regressed Featured Spellweaves.
+Reason: Featured Spellweaves require the row inside `.kwfw-field` around `.kwfw-qty`; Step 3 requires a field-level grid. Treating both the same repeatedly regressed one system.
+
+### No global material-only chart routing
+
+Reason: `Vegan Leather` and `Genuine Leather` appear on multiple products. Samurai Moto routing must also match the Samurai product context.
 
 ### No broad generic jacket/vest chart matching
 
