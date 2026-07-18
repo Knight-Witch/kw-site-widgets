@@ -2,126 +2,78 @@
 
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records under `/HISTORY/DIFFS/`.
 
-## 2026-07-18 05:30 UTC — KW-RUNTIME-SIZE-GUIDES-018
+## 2026-07-18 20:40 UTC — KW-RUNTIME-SIZE-GUIDES-019
 
-Summary: Restored the Featured Spellweave Size Guide to the original quantity-box injection model, preserved the verified Step 3 field-level grid, corrected Samurai vest chart routing, and added separate unisex Vegan and Genuine Leather Samurai Moto charts.
+Summary: Corrected Featured Spellweave Size Guide row compatibility and condensed the size-chart modal. Standard `kwfw` rows now align even when Fourthwall editor hot reloads leave an older unmodified `.kw-size-qty-size-row` in the DOM. Chart titles now use AgencyFB with deliberate tracking; desktop and mobile tables use content-driven widths and tighter spacing.
 
 Affected files:
 
 ```text
-fourthwall/kwfw-size-guide.js
 fourthwall/kwfw-size-guide.css
-fourthwall/kwfw-size-guide-data.js
 fourthwall/global/kw-fourthwall-loader.js
-ARCHITECTURE.md
 STYLE_KEYS.md
 MASTER.md
 fourthwall/global/README.md
 fourthwall/global/CHANGELOG.md
 HISTORY/PRE_FLIGHT_Check.md
 HISTORY/CHANGELOG.md
-HISTORY/DIFFS/2026-07-18-samurai-size-guides-and-featured-row-1.md
+HISTORY/DIFFS/2026-07-18-size-guide-layout-compact-1.md
 ```
 
 Runtime commits:
 
 ```text
-e04c39dd4dafcf7f33ff10cfb2e792e32a972623
-32c872f7d081e095133301132743f7c4498b23d3
-68e06910b03a489fe3a61820b5fc2b07b79494be
-8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0
+f28f4ae79bca76ba40c26ec91d5e326eaf7d8098
+aa8ad96cb30ddfcff156be0785846040633aea3d
 ```
 
-Reason: Featured Spellweaves were still misaligned because recent fixes wrapped the entire `.kwfw-field`. The historical working implementation wrapped only `.kwfw-qty`, leaving the Qty label in place. Samurai vest aliases also pointed to generic rocker charts, and the unisex Samurai Moto product needed material-specific measurements.
+Reason: Live verification showed the Featured Size Guide button still appearing on a second row. The current runtime can encounter an older row without the newer `--kwfw` modifier during editor hot reload, so modifier-only CSS did not apply. The chart modal also used a fixed 980px panel and forced 560px mobile table minimum, creating unnecessary empty space and excessive mobile width.
 
 Behavior:
 
-- Featured `kwfw` Size Guide now shares a row directly with `.kwfw-qty` inside the existing field.
-- Step 3 `kwpj` remains on its verified field-level grid.
-- Ladies Samurai vest resolves to `Ladies Crop-Top Vest Size Chart`.
-- Mens Samurai vest resolves to `Men's Hooded Vest Size Chart`.
-- Samurai Moto `Vegan Leather` resolves to `Vegan Moto Jacket - Unisex`.
-- Samurai Moto `Genuine Leather` resolves to `Genuine Leather Moto Jacket - Unisex`.
-- Material rules are product-scoped so unrelated Vegan/Genuine products are not affected.
+- Featured row styling targets both base and modifier row classes.
+- Featured quantity controls remain `48px 58px 48px`; Size Guide occupies a separate same-row column.
+- Step 3 layout and selectors remain unchanged.
+- Chart titles use AgencyFB with `.09em` desktop and `.075em` mobile letter spacing.
+- Desktop tables use content-driven widths and reduced padding.
+- Mobile headers may wrap; cells use `12.5px` text and `7px 5px` padding.
+- The former blanket mobile `560px` minimum was removed.
 
-Rollback: Restore loader commit `94a92c443658086ee2a3c5b822ba68a873c3f3ef` with cache key `20260717-featured-size-guide-restore-1`.
+Rollback: Restore loader commit `8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0` with cache key `20260718-samurai-size-guides-1`.
 
-Production candidate: Loader commit `8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0`, cache key `20260718-samurai-size-guides-1`.
+Production candidate: Loader commit `aa8ad96cb30ddfcff156be0785846040633aea3d`, cache key `20260718-size-guide-layout-compact-1`.
 
-Validation: Replacement JavaScript and registry passed `node --check`. The live Samurai vest and Samurai Moto product titles, slug, and material labels were checked. No price, Add to Cart, gallery, carousel grid, rail, or wheel code changed.
+Validation: Reviewed current Featured/Step 3 DOM ownership and base carousel quantity geometry. CSS-only runtime change plus loader cache bump. No chart data, resolver, prices, cart, galleries, carousel cards, rail, grid, or wheel behavior changed. Live visual verification remains required.
+
+## 2026-07-18 05:30 UTC — KW-RUNTIME-SIZE-GUIDES-018
+
+Restored Featured quantity-box injection, preserved Step 3 field-level geometry, corrected Samurai vest routing, and added product-scoped Vegan/Genuine unisex Samurai Moto charts.
+
+Runtime commits: `e04c39dd4dafcf7f33ff10cfb2e792e32a972623`; `32c872f7d081e095133301132743f7c4498b23d3`; `68e06910b03a489fe3a61820b5fc2b07b79494be`; `8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0`.
 
 ## 2026-07-18 04:55 UTC — KW-RUNTIME-SIZE-GUIDES-017
 
-Summary: Restored the Featured Spellweave `kwfw` Size Guide quantity-row layout to the last known-good flex behavior from before the July 18 spacing experiments, while preserving the corrected fixed-grid Step 3 `kwpj` layout.
+Restored separate Featured and Step 3 row styling. Superseded by later compatibility work after live Featured verification still failed.
 
-Affected files:
-
-```text
-fourthwall/kwfw-size-guide.css
-fourthwall/global/kw-fourthwall-loader.js
-MASTER.md
-STYLE_KEYS.md
-fourthwall/global/README.md
-fourthwall/global/CHANGELOG.md
-HISTORY/PRE_FLIGHT_Check.md
-HISTORY/CHANGELOG.md
-HISTORY/DIFFS/2026-07-18-featured-size-guide-restore-1.md
-```
-
-Runtime commits:
-
-```text
-03128a0f5d4e06b3b16ff7a244cfd359677ca84d
-94a92c443658086ee2a3c5b822ba68a873c3f3ef
-```
-
-Reason: The prior `kwfw`-only `display: contents`/explicit-grid-row correction moved Size Guide onto a separate lower row in the live Featured Spellweave modal. The Featured layout had already been correct before the shared Step 3 spacing work.
-
-Change:
-
-- Split standard and Step 3 quantity-row CSS by namespace.
-- Restored the old `kwfw` flex/end-aligned row and native 170px quantity control.
-- Retained the current `kwpj` two-column grid and explicit `48px 58px 48px` quantity geometry.
-- Removed the bad `kwfw` display-contents and explicit row-placement rules.
-
-Rollback: Restore loader commit `2a3d96c115de79cc6a22eb85181350cb4c76b465` with cache key `20260717-featured-size-guide-align-1`.
-
-Production candidate: Loader commit `94a92c443658086ee2a3c5b822ba68a873c3f3ef`, cache key `20260717-featured-size-guide-restore-1`.
-
-Scope: CSS and loader cache key only. No JavaScript, chart data, prices, cart, galleries, carousel cards, rail, or wheel behavior changed.
+Runtime commits: `03128a0f5d4e06b3b16ff7a244cfd359677ca84d`; `94a92c443658086ee2a3c5b822ba68a873c3f3ef`.
 
 ## 2026-07-18 04:40 UTC — KW-RUNTIME-SIZE-GUIDES-016
 
-Summary: Attempted a `kwfw`-only explicit grid-row alignment using `display: contents` on the quantity field. Live verification showed this moved Size Guide onto a separate lower row. This state is superseded by KW-RUNTIME-SIZE-GUIDES-017.
+Attempted a `kwfw` explicit-grid/display-contents correction. Live verification failed and this state is not production-valid.
 
-Runtime commits:
-
-```text
-f3be53876a4ed3b5fc4f54a022818cbfd700abf9
-2a3d96c115de79cc6a22eb85181350cb4c76b465
-```
+Runtime commits: `f3be53876a4ed3b5fc4f54a022818cbfd700abf9`; `2a3d96c115de79cc6a22eb85181350cb4c76b465`.
 
 ## 2026-07-18 04:25 UTC — KW-RUNTIME-SIZE-GUIDES-015
 
-Summary: Corrected Step 3 quantity overlap by constraining both modal systems to explicit internal quantity geometry. Step 3 was verified fixed; Featured alignment remained unresolved.
+Corrected Step 3 quantity overlap with explicit internal geometry. Step 3 was verified fixed.
 
-Runtime commits:
-
-```text
-18cd5ac5c38921c29c8bac80de870b8c29914c92
-0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462
-```
+Runtime commits: `18cd5ac5c38921c29c8bac80de870b8c29914c92`; `0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462`.
 
 ## 2026-07-18 04:05 UTC — KW-RUNTIME-SIZE-GUIDES-014
 
-Summary: Introduced a two-column quantity/Size Guide grid to prevent overlap.
+Introduced a two-column quantity/Size Guide grid.
 
-Runtime commits:
-
-```text
-dd094b674e2d27209433bba24d5b56a5782a6c1b
-698f65f6d87caa4d32b3839fbdfde205b09a022f
-```
+Runtime commits: `dd094b674e2d27209433bba24d5b56a5782a6c1b`; `698f65f6d87caa4d32b3839fbdfde205b09a022f`.
 
 ## 2026-07-18 03:25 UTC — KW-RUNTIME-SIZE-GUIDES-013
 
@@ -131,9 +83,7 @@ Runtime commits: `0c42e82110db0f3e13c5dc32bdc666f3821c3a30`; `0de2b178480bf6f112
 
 ## 2026-07-18 00:45 UTC — KW-RUNTIME-SIZE-GUIDES-012
 
-Moved Size Guide into the quantity row in both modal systems, matched AgencyFB typography, and retained full-width native product-page placement.
-
-Runtime commits: `642d30b4d34cc7a5aa8a81a99e99de48742b6257`; `2655c77e18f52a8861240deb1c21449541301693`; `3ae4a2f1827a4aa132da234faac94a876e18e489`.
+Moved Size Guide into carousel quantity rows, matched AgencyFB button typography, and retained full-width native product-page placement.
 
 ## 2026-07-18 00:25 UTC — KW-RUNTIME-SIZE-GUIDES-011
 
