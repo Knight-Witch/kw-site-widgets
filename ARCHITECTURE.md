@@ -80,7 +80,7 @@ The global loader derives `selfRef` from its pinned jsDelivr URL, sets `window.K
 10. `fourthwall/kwfw-font-agencyfb.css` from its pinned commit
 11. `fourthwall/kwfw-carousel-desktop-grid.css` from `selfRef`
 12. `fourthwall/kwfw-size-guide.css` from `selfRef`
-13. `fourthwall/kwfw-universal-media.css` from its pinned commit
+13. `fourthwall/kwfw-universal-media.css` from `selfRef`
 14. `fourthwall/kwfw-product-rules.css` from its pinned commit
 15. `fourthwall/kwfw-modal-product-fix.css` from `selfRef`
 16. `fourthwall/global/kw-cart-runtime.css` from `selfRef`
@@ -99,7 +99,7 @@ The global loader derives `selfRef` from its pinned jsDelivr URL, sets `window.K
 10. `fourthwall/kwfw-carousel-wheel-bridge.js` from `selfRef`
 11. `fourthwall/kwfw-size-guide-data.js` from `selfRef`
 12. `fourthwall/kwfw-size-guide.js` from `selfRef`
-13. `fourthwall/kwfw-universal-media.js` from its pinned commit
+13. `fourthwall/kwfw-universal-media.js` from `selfRef`
 14. `fourthwall/kwfw-product-rules.js` from its pinned commit
 15. `fourthwall/kwfw-modal-product-fix.js` from `selfRef`
 16. `fourthwall/global/kw-cart-runtime.js` from `selfRef`
@@ -129,6 +129,8 @@ Holder selectors:
 
 The base runtime owns product loading, card rendering, the standard product modal, option selection, cart actions, and gallery controls. Desktop grid and wheel behavior are shared across the base CSS, desktop override, and wheel bridge. Do not treat the wheel bridge as an isolated listener.
 
+The base runtime renders the product description inside `.kwfw-panel-info`. `kwfw-universal-media.*` must preserve that ownership and must not widen or clone the description below the two-column modal grid.
+
 ### Step 3 `kwpj` base-jacket carousel
 
 Authoritative implementation is on branch `kw-product-carousel-refactor` under:
@@ -149,6 +151,13 @@ fourthwall/kwfw-modal-product-fix.js
 ```
 
 This shared layer supports both modal namespaces. It resolves real Fourthwall `variant.unitPrice` values, restores modal Add to Cart styling, and switches galleries to the selected variant's native `variant.images` media. It keeps the original collection-product object separate from product-detail data so dropdown selection remains stable.
+
+Standard-only option presentation also belongs here:
+
+- The visible `Description` option label is renamed to `Size & Style Variant` without changing the underlying Fourthwall option key.
+- Each standard select measures every option and receives one stable product-specific width based on the longest label.
+- Widths recalculate after font readiness and viewport resize, and clamp to the available information-column width.
+- Step 3 option labels and select widths are not altered by this compatibility layer.
 
 ## Global size-guide architecture
 
@@ -202,6 +211,8 @@ fourthwall/prod_card_media/manifest.json
 
 It appends shared support media to standard product modal galleries. Native product/variant media remains Fourthwall-hosted; shared support media should use the Knight Witch CDN.
 
+The universal-media runtime does not own product-description placement. It removes legacy `.kwfw-desc-wide` clones and leaves the original `.kwfw-desc` inside `.kwfw-panel-info`. CSS also hides any clone left behind by a hot-reloaded older observer.
+
 ## Product rules
 
 Owned by:
@@ -250,15 +261,11 @@ Known dangerous state: commit `3f0582046c6c0f31aedefa5e9d4805ec9eedddf3` contain
 - Standard carousel base UI/runtime: `fourthwall/kwfw-carousel.css`, `kwfw-carousel.js`
 - Carousel desktop footprint: `fourthwall/kwfw-carousel-desktop-grid.css`
 - Carousel wheel/page-scroll behavior: `fourthwall/kwfw-carousel-wheel-bridge.js`
-- Shared product modal prices/CTA/variant gallery: `fourthwall/kwfw-modal-product-fix.*`
+- Shared product modal prices/CTA/variant gallery and standard option presentation: `fourthwall/kwfw-modal-product-fix.*`
+- Standard modal support media and description-column preservation: `fourthwall/kwfw-universal-media.*`
 - Size-chart data and exact routing: `fourthwall/kwfw-size-guide-data.js`
 - Size-guide injection/modal behavior: `fourthwall/kwfw-size-guide.js`
 - Size-guide visuals and namespace-specific quantity geometry: `fourthwall/kwfw-size-guide.css`
-- Universal product-support media: `fourthwall/kwfw-universal-media.*`
 - Product option rules: `fourthwall/kwfw-product-rules.*`
 - Cart guard: `fourthwall/global/kw-cart-runtime.*`
 - Collection domain: `fourthwall/domains/collection/`
-
-## Documentation rule
-
-Update this file whenever folder ownership, loader order, dependency flow, global behavior, module boundaries, production entrypoints, or future edit locations change.
