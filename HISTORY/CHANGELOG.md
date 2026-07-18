@@ -2,9 +2,9 @@
 
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records under `/HISTORY/DIFFS/`.
 
-## 2026-07-18 04:40 UTC — KW-RUNTIME-SIZE-GUIDES-016
+## 2026-07-18 04:55 UTC — KW-RUNTIME-SIZE-GUIDES-017
 
-Summary: Corrected the remaining vertical alignment issue in the standard `kwfw` featured-product modal without changing the now-correct Step 3 `kwpj` layout.
+Summary: Restored the Featured Spellweave `kwfw` Size Guide quantity-row layout to the last known-good flex behavior from before the July 18 spacing experiments, while preserving the corrected fixed-grid Step 3 `kwpj` layout.
 
 Affected files:
 
@@ -13,11 +13,38 @@ fourthwall/kwfw-size-guide.css
 fourthwall/global/kw-fourthwall-loader.js
 MASTER.md
 STYLE_KEYS.md
+fourthwall/global/README.md
 fourthwall/global/CHANGELOG.md
 HISTORY/PRE_FLIGHT_Check.md
 HISTORY/CHANGELOG.md
-HISTORY/DIFFS/2026-07-18-featured-size-guide-align-1.md
+HISTORY/DIFFS/2026-07-18-featured-size-guide-restore-1.md
 ```
+
+Runtime commits:
+
+```text
+03128a0f5d4e06b3b16ff7a244cfd359677ca84d
+94a92c443658086ee2a3c5b822ba68a873c3f3ef
+```
+
+Reason: The prior `kwfw`-only `display: contents`/explicit-grid-row correction moved Size Guide onto a separate lower row in the live Featured Spellweave modal. The Featured layout had already been correct before the shared Step 3 spacing work.
+
+Change:
+
+- Split standard and Step 3 quantity-row CSS by namespace.
+- Restored the old `kwfw` flex/end-aligned row and native 170px quantity control.
+- Retained the current `kwpj` two-column grid and explicit `48px 58px 48px` quantity geometry.
+- Removed the bad `kwfw` display-contents and explicit row-placement rules.
+
+Rollback: Restore loader commit `2a3d96c115de79cc6a22eb85181350cb4c76b465` with cache key `20260717-featured-size-guide-align-1`.
+
+Production candidate: Loader commit `94a92c443658086ee2a3c5b822ba68a873c3f3ef`, cache key `20260717-featured-size-guide-restore-1`.
+
+Scope: CSS and loader cache key only. No JavaScript, chart data, prices, cart, galleries, carousel cards, rail, or wheel behavior changed.
+
+## 2026-07-18 04:40 UTC — KW-RUNTIME-SIZE-GUIDES-016
+
+Summary: Attempted a `kwfw`-only explicit grid-row alignment using `display: contents` on the quantity field. Live verification showed this moved Size Guide onto a separate lower row. This state is superseded by KW-RUNTIME-SIZE-GUIDES-017.
 
 Runtime commits:
 
@@ -26,36 +53,9 @@ f3be53876a4ed3b5fc4f54a022818cbfd700abf9
 2a3d96c115de79cc6a22eb85181350cb4c76b465
 ```
 
-Reason: In the standard modal, the Qty label and controls were still inside one `.kwfw-field`. The Size Guide button could align against the combined field height instead of the 46px control row.
-
-Change:
-
-- Added `kwfw`-only two-row grid semantics.
-- Flattened only the standard quantity field with `display: contents`.
-- Placed the Qty label in row 1.
-- Placed the quantity controls and Size Guide button together in row 2.
-- Left all Step 3 `.kwpj-*` geometry unchanged.
-
-Rollback: Restore loader commit `0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462` with cache key `20260717-size-guide-row-fix-2`.
-
-Production candidate: Loader commit `2a3d96c115de79cc6a22eb85181350cb4c76b465`, cache key `20260717-featured-size-guide-align-1`.
-
-Scope: CSS-only modal alignment change. No JavaScript, chart data, prices, cart, gallery, carousel card, rail, or wheel behavior changed.
-
 ## 2026-07-18 04:25 UTC — KW-RUNTIME-SIZE-GUIDES-015
 
-Summary: Corrected the remaining live quantity-row failures in both carousel modal namespaces. The standard `kwfw` Size Guide button now bottom-aligns with the quantity controls, and the Step 3 `kwpj` quantity control can no longer expand underneath the Size Guide button.
-
-Affected files:
-
-```text
-fourthwall/kwfw-size-guide.css
-fourthwall/global/kw-fourthwall-loader.js
-MASTER.md
-HISTORY/PRE_FLIGHT_Check.md
-HISTORY/CHANGELOG.md
-HISTORY/DIFFS/2026-07-18-size-guide-row-fix-2.md
-```
+Summary: Corrected Step 3 quantity overlap by constraining both modal systems to explicit internal quantity geometry. Step 3 was verified fixed; Featured alignment remained unresolved.
 
 Runtime commits:
 
@@ -64,37 +64,9 @@ Runtime commits:
 0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462
 ```
 
-Reason: Live screenshots showed the earlier two-column grid still inherited conflicting internal quantity widths. In `kwfw`, the button sat below the control line; in `kwpj`, the input expanded beyond the nominal 170px field and rendered below the Size Guide column.
-
-Change:
-
-- Forced the shared row to an explicit two-column grid using `!important`.
-- Forced both `kwfw` and `kwpj` quantity controls to `48px 58px 48px` plus two 8px gaps.
-- Forced the input and buttons to remain inside those columns.
-- Removed quantity-field bottom margins and bottom-aligned the Size Guide button.
-- Increased the desktop column gap to 16px and mobile gap to 10px.
-
-Rollback: Restore loader commit `698f65f6d87caa4d32b3839fbdfde205b09a022f` with cache key `20260717-size-guide-qty-spacing-1`.
-
-Production candidate: Loader commit `0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462`, cache key `20260717-size-guide-row-fix-2`.
-
-Scope: No JavaScript, chart data, prices, cart, product galleries, carousel card layout, rail, or wheel behavior changed.
-
 ## 2026-07-18 04:05 UTC — KW-RUNTIME-SIZE-GUIDES-014
 
-Summary: Corrected the carousel modal Size Guide quantity-row layout so the Size Guide control no longer covers the quantity input or plus button.
-
-Affected files:
-
-```text
-fourthwall/kwfw-size-guide.css
-fourthwall/global/kw-fourthwall-loader.js
-STYLE_KEYS.md
-MASTER.md
-HISTORY/PRE_FLIGHT_Check.md
-HISTORY/CHANGELOG.md
-HISTORY/DIFFS/2026-07-18-size-guide-quantity-spacing-1.md
-```
+Summary: Introduced a two-column quantity/Size Guide grid to prevent overlap.
 
 Runtime commits:
 
@@ -102,21 +74,6 @@ Runtime commits:
 dd094b674e2d27209433bba24d5b56a5782a6c1b
 698f65f6d87caa4d32b3839fbdfde205b09a022f
 ```
-
-Reason: The previous auto-width flex row allowed the wrapped quantity field to consume the available row width. The Size Guide button could then visually occupy the input/plus-control area.
-
-Change:
-
-- Replaced the auto-width flex row with a two-column grid.
-- Reserved a fixed 170px quantity column matching the native `- / input / +` control.
-- Added a separate max-content Size Guide column.
-- Set a 14px desktop gap and 8px mobile gap.
-
-Rollback: Restore loader commit `0de2b178480bf6f1128ad50b9c0068e9cda50da7` with cache key `20260717-ladies-size-guides-1`.
-
-Production candidate: Loader commit `698f65f6d87caa4d32b3839fbdfde205b09a022f`, cache key `20260717-size-guide-qty-spacing-1`.
-
-Validation: Reviewed both standard `kwfw` and Step 3 `kwpj` 170px quantity grids. No JavaScript, chart data, prices, cart, galleries, carousel layout, rail, or wheel behavior changed. Live visual verification remains required.
 
 ## 2026-07-18 03:25 UTC — KW-RUNTIME-SIZE-GUIDES-013
 
