@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: 698f65f6d87caa4d32b3839fbdfde205b09a022f
-Cache key: 20260717-size-guide-qty-spacing-1
+Commit: 0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462
+Cache key: 20260717-size-guide-row-fix-2
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@698f65f6d87caa4d32b3839fbdfde205b09a022f/fourthwall/global/kw-fourthwall-loader.js?v=20260717-size-guide-qty-spacing-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462/fourthwall/global/kw-fourthwall-loader.js?v=20260717-size-guide-row-fix-2
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -89,9 +89,11 @@ Current behavior:
 - Injects into registered native Fourthwall product pages.
 - Follows the selected garment variant.
 - Uses AgencyFB in carousel modals.
-- Uses a two-column quantity row: fixed 170px quantity controls plus a separate Size Guide column.
+- Uses an explicit two-column modal grid: fixed 170px quantity controls plus a separate Size Guide column.
+- Forces both modal namespaces to the original `48px 58px 48px` quantity-control geometry.
 - Preserves the `-`, quantity input, and `+` controls without overlap.
-- Uses a 14px desktop gap and 8px mobile gap.
+- Bottom-aligns the Size Guide control with the quantity controls.
+- Uses a 16px desktop gap and 10px mobile gap.
 - Remains full width before Add to Cart on native product pages.
 - Supports US/Metric conversion and standard modal dismissal/focus behavior.
 - Does not show a generic chart for unresolved products.
@@ -146,7 +148,7 @@ Known chart-data gaps:
 - Added the centralized size-chart registry and global injector.
 - Restored compact quantity-row placement and carousel typography.
 - Corrected ladies product identities and chart mappings.
-- Separated Size Guide from the 170px quantity controls to prevent overlap.
+- Separated Size Guide from the quantity controls and normalized both modal namespaces to fixed internal quantity geometry.
 
 ## Pending work
 
