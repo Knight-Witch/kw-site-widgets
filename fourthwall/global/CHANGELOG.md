@@ -2,6 +2,35 @@
 
 This module changelog records global-runtime-specific changes. `/HISTORY/CHANGELOG.md` remains canonical.
 
+## 2026-07-18 — size-guide modal placement and typography
+
+Production candidate:
+
+```text
+Global loader commit: 3ae4a2f1827a4aa132da234faac94a876e18e489
+Cache key: 20260717-size-guide-placement-2
+Entrypoint: fourthwall/global/kw-fourthwall-loader.js
+```
+
+Changed:
+
+- Standard `kwfw` and Step 3 `kwpj` Size Guide buttons now sit beside their existing quantity controls.
+- The injector creates and reuses one `.kw-size-qty-size-row` rather than inserting a full-width button before Add to Cart.
+- The modal button now uses the carousel AgencyFB font stack and matches the 46px quantity-control height.
+- Native Fourthwall product-page buttons remain full width before Add to Cart.
+
+Scope:
+
+- No size-chart data or resolution rules changed.
+- No price, cart, Add to Cart, gallery, rail, grid, or scroll behavior changed.
+
+Rollback:
+
+```text
+Global loader commit: 1e5cb24e662a37358d296949e998c4980309a883
+Cache key: 20260717-size-guide-registry-1
+```
+
 ## 2026-07-18 — global size-guide registry and injector
 
 Production candidate:
