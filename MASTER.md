@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: 2a3d96c115de79cc6a22eb85181350cb4c76b465
-Cache key: 20260717-featured-size-guide-align-1
+Commit: 94a92c443658086ee2a3c5b822ba68a873c3f3ef
+Cache key: 20260717-featured-size-guide-restore-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@2a3d96c115de79cc6a22eb85181350cb4c76b465/fourthwall/global/kw-fourthwall-loader.js?v=20260717-featured-size-guide-align-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@94a92c443658086ee2a3c5b822ba68a873c3f3ef/fourthwall/global/kw-fourthwall-loader.js?v=20260717-featured-size-guide-restore-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -89,13 +89,9 @@ Current behavior:
 - Injects into registered native Fourthwall product pages.
 - Follows the selected garment variant.
 - Uses AgencyFB in carousel modals.
-- Uses an explicit two-column modal grid: fixed 170px quantity controls plus a separate Size Guide column.
-- Forces both modal namespaces to the original `48px 58px 48px` quantity-control geometry.
-- Preserves the `-`, quantity input, and `+` controls without overlap.
-- In standard `kwfw` modals, puts the Qty label in row 1 and aligns the quantity controls and Size Guide together in row 2.
-- Leaves the corrected Step 3 `kwpj` row geometry unchanged.
-- Uses a 16px desktop gap and 10px mobile gap.
-- Remains full width before Add to Cart on native product pages.
+- Standard `kwfw` modals use the restored flex/end-aligned quantity row that was working before the July 18 spacing changes.
+- Step 3 `kwpj` modals retain the fixed two-column grid and explicit `48px 58px 48px` quantity geometry that prevents overlap.
+- Native product-page buttons remain full width before Add to Cart.
 - Supports US/Metric conversion and standard modal dismissal/focus behavior.
 - Does not show a generic chart for unresolved products.
 
@@ -141,6 +137,7 @@ Known chart-data gaps:
 6. Exact product slugs/aliases must expand as more garment charts are supplied.
 7. Variant-specific gallery behavior still needs broad live verification.
 8. `gallery-portfolio/index.html` references a missing runtime in the audited branch.
+9. The restored Featured Spellweave Size Guide row requires live visual verification after the new footer is published.
 
 ## Completed recent work
 
@@ -149,8 +146,8 @@ Known chart-data gaps:
 - Added the centralized size-chart registry and global injector.
 - Restored compact quantity-row placement and carousel typography.
 - Corrected ladies product identities and chart mappings.
-- Separated Size Guide from the quantity controls and normalized both modal namespaces to fixed internal quantity geometry.
-- Aligned the featured Spellweave Size Guide specifically to the standard quantity-control row without touching Step 3.
+- Fixed Step 3 quantity overlap with namespace-specific fixed geometry.
+- Restored Featured Spellweave quantity-row styling to the pre-spacing-change flex layout without changing Step 3.
 
 ## Pending work
 
@@ -164,6 +161,10 @@ Known chart-data gaps:
 8. Resolve the missing gallery portfolio runtime.
 
 ## REMOVALS / DECISIONS AGAINST
+
+### No shared quantity-row geometry for `kwfw` and `kwpj`
+
+Reason: the two modal systems have different field and quantity-control behavior. Shared forced geometry fixed Step 3 but repeatedly regressed Featured Spellweaves.
 
 ### No broad generic jacket/vest chart matching
 
