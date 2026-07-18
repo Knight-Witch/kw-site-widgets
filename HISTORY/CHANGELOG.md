@@ -2,6 +2,42 @@
 
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records in `/HISTORY/DIFFS/`.
 
+## 2026-07-18 00:45 UTC — KW-RUNTIME-SIZE-GUIDES-012
+
+Summary: Returned the Size Guide button to the quantity-control row in both standard `kwfw` and Step 3 `kwpj` product modals. The button now uses the same AgencyFB display stack and 46px control height as the carousel quantity UI. Native Fourthwall product-page buttons remain full width before Add to Cart.
+
+Affected files:
+
+```text
+fourthwall/kwfw-size-guide.js
+fourthwall/kwfw-size-guide.css
+fourthwall/global/kw-fourthwall-loader.js
+ARCHITECTURE.md
+STYLE_KEYS.md
+MASTER.md
+fourthwall/global/README.md
+fourthwall/global/CHANGELOG.md
+HISTORY/PRE_FLIGHT_Check.md
+HISTORY/CHANGELOG.md
+HISTORY/DIFFS/2026-07-18-size-guide-placement-2.md
+```
+
+Runtime commits:
+
+```text
+642d30b4d34cc7a5aa8a81a99e99de48742b6257
+2655c77e18f52a8861240deb1c21449541301693
+3ae4a2f1827a4aa132da234faac94a876e18e489
+```
+
+Reason: The global injector initially placed the modal button directly before Add to Cart, which changed the established compact quantity-row layout and made the Step 3 button full width.
+
+Rollback: Restore loader commit `1e5cb24e662a37358d296949e998c4980309a883` with cache key `20260717-size-guide-registry-1`.
+
+Production candidate: Loader commit `3ae4a2f1827a4aa132da234faac94a876e18e489`, cache key `20260717-size-guide-placement-2`.
+
+Validation: Reviewed both modal quantity structures. The injector creates one idempotent `.kw-size-qty-size-row`, reuses the existing quantity field/button, and keeps a full-width fallback only when no quantity field exists. No chart data, price, gallery, cart, grid, rail, or scroll behavior changed. Live visual verification remains required.
+
 ## 2026-07-18 00:25 UTC — KW-RUNTIME-SIZE-GUIDES-011
 
 Summary: Rebuilt product sizing as one global registry and injector. Targeted Size Guide buttons now support standard `kwfw` product modals, Step 3 `kwpj` base-jacket modals, and qualifying native Fourthwall `/products/` pages. The active chart follows the current garment variant, supports US/Metric output, and is not shown for unresolved products.
