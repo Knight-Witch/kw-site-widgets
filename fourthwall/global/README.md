@@ -5,15 +5,15 @@ This directory owns the site-wide Fourthwall runtime layer. Read `/OPERATING_CON
 ## Current production candidate
 
 ```text
-Commit: 8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0
-Cache key: 20260718-samurai-size-guides-1
+Commit: aa8ad96cb30ddfcff156be0785846040633aea3d
+Cache key: 20260718-size-guide-layout-compact-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0/fourthwall/global/kw-fourthwall-loader.js?v=20260718-samurai-size-guides-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@aa8ad96cb30ddfcff156be0785846040633aea3d/fourthwall/global/kw-fourthwall-loader.js?v=20260718-size-guide-layout-compact-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -96,8 +96,10 @@ native Fourthwall /products/ pages
 
 The two carousel namespaces intentionally use different DOM ownership:
 
-- Featured `kwfw`: `.kwfw-label` remains inside `.kwfw-field`; only `.kwfw-qty` and Size Guide are placed in `.kw-size-qty-size-row--kwfw`.
+- Featured `kwfw`: `.kwfw-label` remains inside `.kwfw-field`; `.kwfw-qty` and Size Guide share the same quantity row.
 - Step 3 `kwpj`: the full `.kwpj-field` remains inside its fixed two-column row.
+
+Featured CSS targets both `.kw-size-qty-size-row` and `.kw-size-qty-size-row--kwfw`. This is deliberate: Fourthwall editor hot reloads can preserve an older base-class row, and modifier-only styling leaves Size Guide below the quantity controls.
 
 Do not force both systems through one field-level wrapper.
 
@@ -111,6 +113,15 @@ Current Samurai routing:
 - Samurai Moto + Genuine Leather → Genuine Leather Moto Jacket - Unisex.
 
 Unknown products do not receive generic charts. Native product-page buttons remain full width before Add to Cart.
+
+Current chart presentation:
+
+- Size-chart titles use AgencyFB with explicit tracking.
+- Table text remains Arial/Helvetica for readability.
+- Desktop panel/table widths are content-driven.
+- Desktop cell and note spacing is compact.
+- Mobile tables no longer force a blanket 560px width.
+- Mobile header labels can wrap; horizontal scrolling is reserved for genuinely wide charts.
 
 The popup supports US/Metric conversion, numeric-range conversion, Escape/backdrop/close dismissal, body scroll lock, and focus restoration.
 
@@ -132,7 +143,7 @@ It supports `.kwfw-*` and `.kwpj-*` modals, resolves actual Fourthwall `variant.
 3. Several modules remain pinned to different historical commits.
 4. Legacy global loaders remain in the directory.
 5. Native Fourthwall product-page markup and exact product slugs require live verification.
-6. The corrected Featured row and Samurai material routing require live verification after publishing the new loader.
+6. The latest Featured compatibility selector and compact chart layout require live verification after publishing the loader.
 
 ## Production rules
 
