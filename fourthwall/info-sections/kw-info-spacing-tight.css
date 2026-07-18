@@ -1,0 +1,27 @@
+.kw-info-root {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.kw-info-item {
+  margin: 10px auto;
+}
+
+.kw-info-panel {
+  margin: 0 auto 20px;
+}
+
+.kw-info-state {
+  margin: 10px auto;
+}
+
+@media (max-width: 768px) {
+  .kw-info-root {
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+
+  .kw-info-item {
+    margin: 10px auto;
+  }
+}
