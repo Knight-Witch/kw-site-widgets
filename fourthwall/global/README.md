@@ -5,15 +5,15 @@ This directory owns the site-wide Fourthwall runtime layer. Read `/OPERATING_CON
 ## Current production candidate
 
 ```text
-Commit: aa8ad96cb30ddfcff156be0785846040633aea3d
-Cache key: 20260718-size-guide-layout-compact-1
+Commit: 4bc31f2f1c2dd6253625391a45d11c9786e93f06
+Cache key: 20260718-standard-modal-layout-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@aa8ad96cb30ddfcff156be0785846040633aea3d/fourthwall/global/kw-fourthwall-loader.js?v=20260718-size-guide-layout-compact-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@4bc31f2f1c2dd6253625391a45d11c9786e93f06/fourthwall/global/kw-fourthwall-loader.js?v=20260718-standard-modal-layout-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -38,6 +38,7 @@ This remains temporary and must be folded into the title-bar component/global lo
 - Loads CSS first and JavaScript sequentially.
 - Replaces stale same-key resources when URLs change.
 - Loads `kwfw-size-guide-data.js` before `kwfw-size-guide.js`.
+- Loads current `kwfw-universal-media.css` and `kwfw-universal-media.js` from `selfRef`.
 
 The exact dependency order is documented in `/ARCHITECTURE.md`.
 
@@ -73,8 +74,30 @@ Legacy compatibility loaders remain in this directory. Do not use them as produc
 - Global size-chart registry and injector.
 - Universal product-support media.
 - Product rules.
-- Shared modal price/CTA/variant-gallery compatibility.
+- Shared modal price/CTA/variant-gallery and standard option-presentation compatibility.
 - Cart runtime.
+
+## Standard product modal presentation
+
+Owned across:
+
+```text
+fourthwall/kwfw-universal-media.css
+fourthwall/kwfw-universal-media.js
+fourthwall/kwfw-modal-product-fix.css
+fourthwall/kwfw-modal-product-fix.js
+```
+
+Current behavior:
+
+- Spellweave and Cauldron Core product descriptions remain in `.kwfw-panel-info` under the quick-shop controls.
+- The old full-width `.kwfw-desc-wide` clone is removed by JavaScript and hidden by CSS for hot-reload compatibility.
+- The customer-facing `Description` option label is changed to `Size & Style Variant`.
+- The underlying `data-kwfw-option="Description"` key remains unchanged so the base carousel selects and submits the correct Fourthwall variant.
+- Every standard select is measured against all of its options and receives one stable width based on the longest label.
+- Select width includes font metrics, padding, borders, and dropdown-arrow allowance, with a `124px` minimum and responsive column-width maximum.
+- Width recalculates after font readiness and viewport resize.
+- Step 3 `.kwpj-*` labels, description placement, and select widths are untouched.
 
 ## Global size-guide system
 
@@ -100,8 +123,6 @@ The two carousel namespaces intentionally use different DOM ownership:
 - Step 3 `kwpj`: the full `.kwpj-field` remains inside its fixed two-column row.
 
 Featured CSS targets both `.kw-size-qty-size-row` and `.kw-size-qty-size-row--kwfw`. This is deliberate: Fourthwall editor hot reloads can preserve an older base-class row, and modifier-only styling leaves Size Guide below the quantity controls.
-
-Do not force both systems through one field-level wrapper.
 
 The resolver supports exact product slugs, controlled aliases, selected-variant aliases, and product-scoped variant rules. Product-scoped rules are required for generic values such as `Vegan Leather` and `Genuine Leather`.
 
@@ -134,7 +155,7 @@ fourthwall/kwfw-modal-product-fix.css
 fourthwall/kwfw-modal-product-fix.js
 ```
 
-It supports `.kwfw-*` and `.kwpj-*` modals, resolves actual Fourthwall `variant.unitPrice`, restores the orange Add to Cart CTA, and switches gallery media to selected-variant media with product-wide fallback.
+It supports `.kwfw-*` and `.kwpj-*` modals, resolves actual Fourthwall `variant.unitPrice`, restores the orange Add to Cart CTA, switches gallery media to selected-variant media with product-wide fallback, and owns standard-only visible variant-label/select-width presentation.
 
 ## Risks
 
@@ -143,7 +164,8 @@ It supports `.kwfw-*` and `.kwpj-*` modals, resolves actual Fourthwall `variant.
 3. Several modules remain pinned to different historical commits.
 4. Legacy global loaders remain in the directory.
 5. Native Fourthwall product-page markup and exact product slugs require live verification.
-6. The latest Featured compatibility selector and compact chart layout require live verification after publishing the loader.
+6. The latest standard description-column and dynamic select-width behavior require live verification after publishing the loader.
+7. An editor hot swap cannot remove listeners installed by an older script instance; CSS neutralizes any legacy wide-description clone until the page is fully reloaded.
 
 ## Production rules
 
