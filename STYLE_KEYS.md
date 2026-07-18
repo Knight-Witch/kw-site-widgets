@@ -225,6 +225,7 @@ Primary classes:
 ```text
 .kw-size-guide-btn
 .kw-size-guide-native-btn
+.kw-size-qty-size-row
 .kw-size-modal
 .kw-size-panel
 .kw-size-top
@@ -241,8 +242,11 @@ Primary classes:
 
 Visual rules:
 
-- Size Guide buttons use a black background, white uppercase Arial/Helvetica text, a subtle white border, and orange hover/focus state.
-- Modal and native-page injected buttons are full width and sit directly before Add to Cart.
+- Size Guide buttons use the carousel AgencyFB stack, white uppercase text, a black background, a subtle white border, and an orange hover/focus state.
+- Standard and Step 3 modal buttons sit beside the existing quantity controls inside `.kw-size-qty-size-row`.
+- The modal button height is `46px`, matching the quantity controls.
+- The modal row uses `display:flex`, `align-items:flex-end`, a `10px` desktop gap, and an `8px` mobile gap.
+- Native product-page buttons remain full width before Add to Cart.
 - The overlay uses `rgba(0,0,0,.82)`.
 - Panel width is `min(980px, 96vw)` with `max-height: 92vh`.
 - Panel background is `#050505` with a subtle red shadow.
