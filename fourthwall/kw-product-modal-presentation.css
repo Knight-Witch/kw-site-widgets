@@ -124,6 +124,13 @@
   outline:none!important;
   text-shadow:0 0 9px rgba(255,122,0,.7),0 0 18px rgba(0,0,0,.9)!important
 }
+.kwfw-gallery.is-single .kwfw-gallery-nav,
+.kwpj-gallery.is-single .kwpj-gallery-nav,
+.kwfw-gallery.is-single .kwfw-gallery-cue,
+.kwfw-gallery.is-single .kwfw-dots,
+.kwpj-gallery.is-single .kwpj-dots{
+  display:none!important
+}
 .kwfw-gallery-prev,
 .kwpj-gallery-prev{left:10px!important}
 .kwfw-gallery-next,
