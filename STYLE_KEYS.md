@@ -25,7 +25,7 @@ Primary display stack:
 font-family: "AgencyFB", "Agency FB", AgencyFB, Arial, sans-serif;
 ```
 
-Current font assets live under `/FONTS/`. Product descriptions, forms, and size-chart tables use Arial/Helvetica for readability.
+Current font assets live under `/FONTS/`. Product descriptions, forms, and size-chart tables use Arial/Helvetica where readability requires it.
 
 ## Core palette
 
@@ -137,6 +137,19 @@ border-color: #ffb04a;
 
 The expanded Add to Cart button uses an orange glow/pulse. View Details remains dark. Prices use `#ff4b4b` and must come from real Fourthwall variant data. Selected variants switch to their assigned `variant.images` media with product-wide fallback.
 
+### Standard `kwfw` modal layout
+
+- Gallery remains in the left column.
+- Product title, price, options, quantity, Size Guide, Add to Cart, View Details, status, and product description remain in `.kwfw-panel-info` in the right column.
+- `.kwfw-desc-wide` is a retired full-width treatment and is always hidden.
+- Standard product descriptions use AgencyFB, normal sentence casing, `.055em` tracking, and `1.55` line height.
+- The visible option label `Description` is presented as `Size & Style Variant`; the underlying Fourthwall option name remains unchanged.
+- Standard select width is calculated from the longest option for that specific product, not from the selected option.
+- Width calculation includes the computed select font, horizontal padding, borders, and native dropdown-arrow allowance.
+- Minimum standard select width is `124px`; maximum width is the available option-field width.
+- Width remains stable while variants change and recalculates after font readiness and viewport resize.
+- Step 3 `.kwpj-select` sizing and option labels are not affected by the standard compatibility rule.
+
 ## Global size guide
 
 Owned by:
@@ -201,7 +214,7 @@ fourthwall/kwfw-universal-media.js
 fourthwall/prod_card_media/manifest.json
 ```
 
-Shared support media uses the Knight Witch CDN.
+Shared support media uses the Knight Witch CDN. Universal-media behavior may style standard gallery media but must not relocate product descriptions outside `.kwfw-panel-info`.
 
 ## Product rules
 
