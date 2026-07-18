@@ -2,15 +2,15 @@
 
 This file is the rolling pre-flight log for the Knight Witch site/widgets repository. Older entries before the active July 2026 runtime work remain available in Git history and paired diff records.
 
-## 2026-07-18 00:45 UTC — PF-20260718-012 — Size Guide modal placement and typography
+## 2026-07-18 03:25 UTC — PF-20260718-013 — Correct ladies garment chart identities
 
 Requested change:
 
-- Return the Size Guide button to the quantity-control row in both carousel modal systems.
-- Match the carousel/display AgencyFB typography.
-- Preserve native product-page injection.
+- Replace the incorrect generic ladies chart names/mappings.
+- Add the exact Ladies Goth Merc Vest, Ladies Punkass Vest, Ladies Biker Vest, and snakeskin/crop-top chart data.
+- Make the snakeskin garment share the Ladies Crop-Top Rocker Jacket chart.
 
-Docs reviewed:
+Docs/files reviewed:
 
 - `/ARCHITECTURE.md`
 - `/STYLE_KEYS.md`
@@ -19,30 +19,55 @@ Docs reviewed:
 - `/HISTORY/PRE_FLIGHT_Check.md`
 - `/fourthwall/global/README.md`
 - `/fourthwall/global/CHANGELOG.md`
-
-Files/modules inspected:
-
+- `fourthwall/kwfw-size-guide-data.js`
 - `fourthwall/kwfw-size-guide.js`
-- `fourthwall/kwfw-size-guide.css`
-- Standard `kwfw` modal quantity markup in `fourthwall/kwfw-carousel.js`
-- Step 3 `kwpj` modal quantity markup in `components/kw-plain-jackets/kw-plain-jackets-v2.js`
 - `fourthwall/global/kw-fourthwall-loader.js`
+- Four supplied ladies size-chart images
 
-Risk and conflict notes:
+Risk/conflict notes:
 
-- The current injector inserts directly before Add to Cart, which produces a full-width row.
-- Both modal systems have equivalent quantity-field structures but different namespace prefixes.
-- Repeated MutationObserver refreshes must not create duplicate wrappers or buttons.
-- Native Fourthwall product pages should retain their existing full-width placement because their markup differs from carousel modals.
+- The previous `ladies-rocker-vest` and `ladies-moto-vest` keys were generic labels inherited from an older five-chart system, not verified current product identities.
+- Broad ladies vest/moto aliases can display the wrong manufacturer's measurements.
+- Featured Spellweave options still use `Ladies Rocker Vest`, so that selected-option alias must remain connected to the actual shared Crop-Top Rocker/Snakeskin chart.
+- The user explicitly stated that the snakeskin garment and Ladies Crop-Top Rocker Jacket share one chart.
 
-Plan:
+Plan/result:
 
-- Wrap each modal's existing quantity field and Size Guide button in one idempotent `.kw-size-qty-size-row`.
-- Keep native-page buttons outside that wrapper.
-- Use the AgencyFB carousel font stack for the button.
-- Keep chart resolution, product data, prices, galleries, Add to Cart, and scrolling unchanged.
+- Replace the generic ladies rocker entry with `ladies-crop-top-rocker-jacket`.
+- Add `ladies-snakeskin-crop-top-vest` as a product slug/alias on the same chart.
+- Preserve `Ladies Rocker Vest` only as a selected-variant alias for featured Spellweaves.
+- Add exact Goth Merc, Punkass, and Biker vest charts.
+- Remove the unverified generic `ladies-moto-vest` chart rather than continue exposing potentially wrong sizing.
+- Bump the global loader cache key.
 
-User input required: none.
+Validation:
+
+- Registry passed `node --check` before commit.
+- No modal placement, chart UI, price, gallery, cart, carousel layout, or scroll code changed.
+
+User input required:
+
+- Additional exact product names/charts as the remaining ladies jackets are supplied.
+
+## 2026-07-18 02:45 UTC — PF-20260718-012 — Size Guide modal placement and typography
+
+Requested change:
+
+- Restore the Size Guide button to the quantity-control row in both carousel modal systems.
+- Match the carousel display typography.
+- Confirm native product-page injection remains active.
+
+Risk notes:
+
+- Standard and Step 3 modal quantity controls use separate namespaces.
+- Native product pages use unrelated Fourthwall markup and should retain full-width placement.
+
+Plan/result:
+
+- Wrap the modal quantity field and Size Guide button in an idempotent shared row.
+- Use AgencyFB for injected controls.
+- Keep native product-page placement before Add to Cart.
+- No chart data, gallery, price, or scroll behavior changed.
 
 ## 2026-07-18 00:25 UTC — PF-20260718-011 — Global product size-guide registry
 
