@@ -1,1 +1,269 @@
-(()=>{const d=document,w=window,charts={sandevistan:{title:"Mantle Size Chart",columns:["Size","Chest Width","Body Length","Sleeves"],rows:[["X-Small",18,41,25],["Small",18.5,42,25],["Medium",18.5,43,26],["Large",19.5,43,26],["X-Large",20,44,27],["XX-Large",21,45,27]],notes:["Chest width is measured flat from armhole to armhole."]},ladiesMoto:{title:"Ladies Moto Size Chart",columns:["Size","Bust","Shoulder","Sleeve","Length"],rows:[["SM",37.5,15.4,24,20],["MD",39,16,24,21],["LG",41.5,16.5,24,22],["XL",43.5,17.5,24,22],["2XL",48,18.5,24,22.5]],notes:["Size up if you run between sizes. You will want a little extra room to accommodate the electronic hardware. It’s very slim (7mm) but still requires a little room.","If you aren’t sure about your size, reach out with your measurements and we can advise, or potentially send you a try before you buy version of a jacket to make sure the fit is perfect."]},ladiesVest:{title:"Ladies Vest Size Chart",columns:["Size","Bust","Shoulder","Sleeve","Length"],rows:[["SM",36.5,14.5,"NA",15.5],["MD",39,15,"NA",16],["LG",41.5,15.5,"NA",16.5],["XL",43.5,16,"NA",17]],notes:["Size up if you run between sizes. You will want a little extra room to accommodate the electronic hardware. It’s very slim (7mm) but still requires a little room.","If you aren’t sure about your size, reach out with your measurements and we can advise, or potentially send you a try before you buy version of a jacket to make sure the fit is perfect."]},mensMoto:{title:"Men's Moto Size Chart",columns:["Size","Chest","Waist","Shoulder","Sleeve","Length"],rows:[["XS",39,36,15,23,25],["SM",41,37,16.5,24.5,26],["MD",43,38,17.5,25,27],["LG",45,40,18,26,28],["XL",47,42,19,27,29]],notes:["Size up if you run between sizes. You will want a little extra room to accommodate the electronic hardware. It’s very slim (7mm) but still requires a little room.","If you aren’t sure about your size, reach out with your measurements and we can advise, or potentially send you a try before you buy version of a jacket to make sure the fit is perfect."]},mensVest:{title:"Men's Vest Size Chart",columns:["Size","Chest","Waist","Shoulder","Sleeve","Length"],rows:[["SM",42,38,18,"NA",26.5],["MD",44,39,18.5,"NA",27.5],["LG",46,41,19,"NA",28.5],["XL",48,43,19.3,"NA",29],["2XL",50,44,19.7,"NA",30]],notes:["Size up if you run between sizes. You will want a little extra room to accommodate the electronic hardware. It’s very slim (7mm) but still requires a little room.","If you aren’t sure about your size, reach out with your measurements and we can advise, or potentially send you a try before you buy version of a jacket to make sure the fit is perfect."]}},q=(s,r=d)=>r.querySelector(s),qa=(s,r=d)=>Array.from(r.querySelectorAll(s)),esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])),norm=s=>String(s||"").toLowerCase().replace(/[’']/g,"").replace(/[^a-z0-9]+/g," ").trim();let unit=localStorage.getItem("kw_size_unit")||"us";function resolve(input){let source="";if(typeof input==="string")source=input;else if(input&&typeof input==="object")source=[input.type,input.gender,input.product,input.variant,input.style,input.title,input.name].filter(Boolean).join(" ");const s=norm(source),type=norm(input?.type),gender=norm(input?.gender),isSandevistan=/\b(sandevistan|mantle|zyphr|zeyphr|zephyr)\b/.test(s)||type==="sandevistan",isVest=/\bvests?\b/.test(s)||type==="vest",isMoto=/\b(moto|motorcycle|rocker)\b/.test(s)||type==="moto",isMen=/\b(men|mens|male|man)\b/.test(s)||/\b(men|mens|male|man)\b/.test(gender),isWomen=/\b(women|womens|ladies|lady|female)\b/.test(s)||/\b(women|womens|ladies|lady|female)\b/.test(gender);if(isSandevistan)return"sandevistan";if(isMoto&&isWomen)return"ladiesMoto";if(isMoto&&isMen)return"mensMoto";if(isVest&&isWomen)return"ladiesVest";if(isVest&&isMen)return"mensVest";if(isVest)return"ladiesVest";if(isMoto)return"ladiesMoto";return null}function label(col){return col==="Size"?col:unit==="metric"?`${col} (cm)`:`${col} (in)`}function convert(v){if(typeof v!=="number")return v;if(unit==="us")return String(v).replace(/\.0$/,"");return String(Math.round(v*25.4)/10).replace(/\.0$/,"")}function modal(){let m=q(".kw-size-modal");if(m)return m;m=d.createElement("div");m.className="kw-size-modal";m.innerHTML=`<div class="kw-size-panel" role="dialog" aria-modal="true"><div class="kw-size-top"><div class="kw-size-units"><button type="button" class="kw-size-unit" data-kw-size-unit="us">US</button><button type="button" class="kw-size-unit" data-kw-size-unit="metric">Metric</button></div><h2 class="kw-size-title"></h2><button type="button" class="kw-size-close" aria-label="Close"></button></div><div class="kw-size-body"></div></div>`;d.body.appendChild(m);return m}function renderChart(key){const chart=charts[key],m=modal();m.dataset.chartKey=key;q(".kw-size-title",m).textContent=chart.title;qa("[data-kw-size-unit]",m).forEach(b=>b.classList.toggle("is-active",b.dataset.kwSizeUnit===unit));const cols=chart.columns.map((c,i)=>`<th>${esc(i?label(c):c)}</th>`).join(""),rows=chart.rows.map(r=>`<tr>${r.map((x,i)=>`<td>${esc(i?convert(x):x)}</td>`).join("")}</tr>`).join(""),notes=chart.notes?.length?`<ul class="kw-size-notes">${chart.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>`:"";q(".kw-size-body",m).innerHTML=`<div class="kw-size-table-wrap"><table class="kw-size-table"><thead><tr>${cols}</tr></thead><tbody>${rows}</tbody></table></div>${notes}`}function renderPicker(){const m=modal();m.dataset.chartKey="";q(".kw-size-title",m).textContent="Select Size Chart";qa("[data-kw-size-unit]",m).forEach(b=>b.classList.toggle("is-active",b.dataset.kwSizeUnit===unit));q(".kw-size-body",m).innerHTML=`<div class="kw-size-picker"><button type="button" class="kw-size-choice" data-kw-size-chart="ladiesMoto">Ladies Moto</button><button type="button" class="kw-size-choice" data-kw-size-chart="mensMoto">Men's Moto</button><button type="button" class="kw-size-choice" data-kw-size-chart="ladiesVest">Ladies Vest</button><button type="button" class="kw-size-choice" data-kw-size-chart="mensVest">Men's Vest</button><button type="button" class="kw-size-choice" data-kw-size-chart="sandevistan">Mantle / Sandevistan</button></div>`}function open(input){const m=modal(),key=resolve(input);key?renderChart(key):renderPicker();m.classList.add("is-open")}function close(){const m=q(".kw-size-modal");if(m)m.classList.remove("is-open")}function currentContext(button){const panel=button.closest(".kwfw-panel"),m=button.closest(".kwfw-modal"),p=m?._product||{},parts=[p.title,p.name,p.slug,p.handle];if(panel)qa("[data-kwfw-option]",panel).forEach(el=>parts.push(el.value,el.options?.[el.selectedIndex]?.text));return parts.filter(Boolean).join(" ")}function panels(root=d){const out=[];if(root.nodeType===1&&root.matches?.(".kwfw-panel"))out.push(root);if(root.nodeType===1&&root.closest?.(".kwfw-panel"))out.push(root.closest(".kwfw-panel"));if(root.querySelectorAll)out.push(...qa(".kwfw-panel",root));return [...new Set(out)]}function installButtons(root=d){panels(root).forEach(panel=>{if(q(".kw-size-guide-btn",panel))return;const qtyInput=q("[data-kwfw-qty-input]",panel);if(!qtyInput)return;const qtyField=qtyInput.closest(".kwfw-field")||qtyInput.parentElement,qtyBox=q(".kwfw-qty",qtyField)||qtyInput.parentElement,btn=d.createElement("button");btn.type="button";btn.className="kw-size-guide-btn";btn.textContent="Size Guide";let row=q(".kw-size-qty-size-row",qtyField);if(!row){row=d.createElement("div");row.className="kw-size-qty-size-row";qtyBox.parentNode.insertBefore(row,qtyBox);row.appendChild(qtyBox)}row.appendChild(btn)})}function scanSoon(){installButtons();setTimeout(installButtons,80);setTimeout(installButtons,250);setTimeout(installButtons,700)}d.addEventListener("click",e=>{if(e.target.closest(".kw-size-close")||e.target.matches(".kw-size-modal")){close();return}const unitBtn=e.target.closest("[data-kw-size-unit]");if(unitBtn){unit=unitBtn.dataset.kwSizeUnit;localStorage.setItem("kw_size_unit",unit);const active=q(".kw-size-modal")?.dataset.chartKey;active?renderChart(active):renderPicker();return}const chartBtn=e.target.closest("[data-kw-size-chart]");if(chartBtn){renderChart(chartBtn.dataset.kwSizeChart);return}const guideBtn=e.target.closest(".kw-size-guide-btn");if(guideBtn){open(currentContext(guideBtn));return}if(e.target.closest("[data-kwfw-open]"))scanSoon()});d.addEventListener("change",e=>{if(e.target.matches("[data-kwfw-option]"))scanSoon()});d.addEventListener("keydown",e=>{if(e.key==="Escape")close()});new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===1)installButtons(n)}))).observe(d.documentElement,{childList:true,subtree:true});w.KWSizeGuide={open,close,resolve,installButtons,charts};d.readyState==="loading"?d.addEventListener("DOMContentLoaded",scanSoon):scanSoon()})();
+(() => {
+  const d = document;
+  const w = window;
+  const q = (selector, root = d) => root.querySelector(selector);
+  const qa = (selector, root = d) => Array.from(root.querySelectorAll(selector));
+  const charts = () => w.KW_SIZE_GUIDE_CHARTS || {};
+  const normalize = value => String(value || "")
+    .toLowerCase()
+    .replace(/[’']/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+  const slugify = value => normalize(value).replace(/\s+/g, "-");
+  const unique = values => [...new Set(values.filter(Boolean))];
+  let unit = localStorage.getItem("kw_size_unit") || "us";
+  let returnFocus = null;
+  let bodyOverflow = "";
+
+  const chartEntries = () => Object.entries(charts());
+  const exactMatch = (values, aliases) => {
+    const normalizedValues = values.map(normalize).filter(Boolean);
+    return aliases.some(alias => normalizedValues.includes(normalize(alias)));
+  };
+  const phraseMatch = (values, aliases) => {
+    const normalizedValues = values.map(normalize).filter(Boolean);
+    return aliases.some(alias => {
+      const target = normalize(alias);
+      return target && normalizedValues.some(value => value === target || value.includes(target));
+    });
+  };
+  const resolve = input => {
+    const context = typeof input === "string" ? { token: input } : input || {};
+    if(context.token && charts()[context.token]) return context.token;
+    const selectedValues = unique([
+      ...(context.selectedValues || []),
+      context.variant,
+      context.style,
+      context.type,
+      context.gender
+    ]);
+    for(const [key, chart] of chartEntries()){
+      if(exactMatch(selectedValues, chart.variantAliases || [])) return key;
+    }
+    for(const [key, chart] of chartEntries()){
+      if(phraseMatch(selectedValues, chart.variantAliases || [])) return key;
+    }
+    const slug = slugify(context.slug || "");
+    if(slug){
+      for(const [key, chart] of chartEntries()){
+        if((chart.productSlugs || []).map(slugify).includes(slug)) return key;
+      }
+    }
+    const titles = unique([context.title, context.name, context.product, context.token]);
+    for(const [key, chart] of chartEntries()){
+      if(exactMatch(titles, chart.aliases || [])) return key;
+    }
+    for(const [key, chart] of chartEntries()){
+      if(phraseMatch(titles, chart.aliases || [])) return key;
+    }
+    return null;
+  };
+
+  const formatMetric = value => {
+    const amount = Number(value);
+    if(!Number.isFinite(amount)) return value;
+    return String(Math.round(amount * 25.4) / 10).replace(/\.0$/, "");
+  };
+  const convertCell = (value, column) => {
+    if(unit === "us" || column?.unit !== "in") return String(value);
+    if(typeof value === "number") return formatMetric(value);
+    const text = String(value).trim();
+    const range = text.match(/^(-?\d+(?:\.\d+)?)\s*[-–]\s*(-?\d+(?:\.\d+)?)$/);
+    if(range) return `${formatMetric(range[1])}–${formatMetric(range[2])}`;
+    return text;
+  };
+  const columnLabel = column => {
+    if(!column?.unit) return column?.label || "";
+    return `${column.label} (${unit === "metric" ? "cm" : "in"})`;
+  };
+
+  const modal = () => {
+    let element = q(".kw-size-modal");
+    if(element) return element;
+    element = d.createElement("div");
+    element.className = "kw-size-modal";
+    element.setAttribute("aria-hidden", "true");
+    element.innerHTML = `<div class="kw-size-panel" role="dialog" aria-modal="true" aria-labelledby="kw-size-title"><div class="kw-size-top"><div class="kw-size-units"><button type="button" class="kw-size-unit" data-kw-size-unit="us">US</button><button type="button" class="kw-size-unit" data-kw-size-unit="metric">Metric</button></div><h2 class="kw-size-title" id="kw-size-title"></h2><button type="button" class="kw-size-close" aria-label="Close size guide"></button></div><div class="kw-size-body"></div></div>`;
+    d.body.appendChild(element);
+    return element;
+  };
+  const renderChart = key => {
+    const chart = charts()[key];
+    if(!chart) return false;
+    const element = modal();
+    element.dataset.chartKey = key;
+    q(".kw-size-title", element).textContent = chart.title;
+    qa("[data-kw-size-unit]", element).forEach(button => button.classList.toggle("is-active", button.dataset.kwSizeUnit === unit));
+    const head = chart.columns.map(column => `<th>${columnLabel(column)}</th>`).join("");
+    const rows = chart.rows.map(row => `<tr>${row.map((value, index) => `<td>${convertCell(value, chart.columns[index])}</td>`).join("")}</tr>`).join("");
+    const notes = chart.notes?.length ? `<ul class="kw-size-notes">${chart.notes.map(note => `<li>${note}</li>`).join("")}</ul>` : "";
+    q(".kw-size-body", element).innerHTML = `<div class="kw-size-table-wrap"><table class="kw-size-table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>${notes}`;
+    return true;
+  };
+  const renderPicker = () => {
+    const element = modal();
+    element.dataset.chartKey = "";
+    q(".kw-size-title", element).textContent = "Select Size Chart";
+    qa("[data-kw-size-unit]", element).forEach(button => button.classList.toggle("is-active", button.dataset.kwSizeUnit === unit));
+    q(".kw-size-body", element).innerHTML = `<div class="kw-size-picker">${chartEntries().map(([key, chart]) => `<button type="button" class="kw-size-choice" data-kw-size-chart="${key}">${chart.title}</button>`).join("")}</div>`;
+  };
+  const open = (context, trigger = d.activeElement) => {
+    const key = resolve(context);
+    if(key ? !renderChart(key) : false) return false;
+    if(!key) renderPicker();
+    const element = modal();
+    returnFocus = trigger instanceof HTMLElement ? trigger : null;
+    bodyOverflow = d.body.style.overflow;
+    d.body.style.overflow = "hidden";
+    element.classList.add("is-open");
+    element.setAttribute("aria-hidden", "false");
+    q(".kw-size-close", element)?.focus({ preventScroll: true });
+    return true;
+  };
+  const close = () => {
+    const element = q(".kw-size-modal");
+    if(!element?.classList.contains("is-open")) return;
+    element.classList.remove("is-open");
+    element.setAttribute("aria-hidden", "true");
+    d.body.style.overflow = bodyOverflow;
+    returnFocus?.focus?.({ preventScroll: true });
+    returnFocus = null;
+  };
+
+  const modalContext = button => {
+    const standardModal = button.closest(".kwfw-modal");
+    const jacketModal = button.closest(".kwpj-modal");
+    const owner = standardModal || jacketModal;
+    if(!owner) return null;
+    const product = owner._product || {};
+    const selectors = standardModal ? "[data-kwfw-option]" : "[data-kwpj-option]";
+    const selectedValues = [];
+    qa(selectors, owner).forEach(select => {
+      selectedValues.push(select.value, select.options?.[select.selectedIndex]?.textContent);
+    });
+    return {
+      slug: product.slug || product.handle || product.productSlug || product.product_slug,
+      title: product.title || product.name,
+      selectedValues
+    };
+  };
+  const nativeSelectedValues = root => {
+    const values = [];
+    qa("select", root).forEach(select => values.push(select.value, select.options?.[select.selectedIndex]?.textContent));
+    qa('input[type="radio"]:checked,input[type="checkbox"]:checked', root).forEach(input => {
+      values.push(input.value);
+      const label = input.id ? q(`label[for="${CSS.escape(input.id)}"]`, root) : input.closest("label");
+      if(label) values.push(label.textContent);
+    });
+    qa('[aria-checked="true"],[data-state="checked"]', root).forEach(element => values.push(element.textContent, element.getAttribute("value")));
+    return unique(values.map(value => String(value || "").trim()));
+  };
+  const nativeContext = () => {
+    const root = q("main") || d.body;
+    const path = location.pathname.split("/").filter(Boolean);
+    const productIndex = path.lastIndexOf("products");
+    const slug = productIndex >= 0 ? path[productIndex + 1] || "" : "";
+    const title = q("h1", root)?.textContent || d.title;
+    return { slug, title, selectedValues: nativeSelectedValues(root) };
+  };
+  const buttonContext = button => modalContext(button) || nativeContext();
+  const makeButton = () => {
+    const button = d.createElement("button");
+    button.type = "button";
+    button.className = "kw-size-guide-btn";
+    button.textContent = "Size Guide";
+    button.setAttribute("aria-haspopup", "dialog");
+    return button;
+  };
+  const installModalButton = (panel, addSelector) => {
+    const add = q(addSelector, panel);
+    if(!add) return;
+    let button = q(":scope .kw-size-guide-btn", panel);
+    if(!button) button = makeButton();
+    if(button.nextElementSibling !== add) add.parentNode.insertBefore(button, add);
+    button.hidden = !resolve(modalContext(button));
+  };
+  const findNativeAddButton = root => {
+    const candidates = qa('button,[role="button"],input[type="submit"]', root);
+    return candidates.find(element => /add\s+to\s+(cart|auto\s*buy)/i.test(element.textContent || element.value || "")) || null;
+  };
+  const installNativeButton = () => {
+    if(!/\/products\//.test(location.pathname)) return;
+    const root = q("main") || d.body;
+    const key = resolve(nativeContext());
+    let button = q(".kw-size-guide-native-btn", root);
+    if(!key){
+      button?.remove();
+      return;
+    }
+    const add = findNativeAddButton(root);
+    if(!add) return;
+    if(!button){
+      button = makeButton();
+      button.classList.add("kw-size-guide-native-btn");
+    }
+    const parent = add.parentNode;
+    if(button.parentNode !== parent || button.nextElementSibling !== add) parent.insertBefore(button, add);
+    button.hidden = false;
+  };
+  const installExplicitButtons = root => {
+    qa("[data-kw-size-guide]", root).forEach(button => button.classList.add("kw-size-guide-explicit"));
+  };
+  const refresh = () => {
+    qa(".kwfw-panel").forEach(panel => installModalButton(panel, "[data-kwfw-add]"));
+    qa(".kwpj-panel").forEach(panel => installModalButton(panel, "[data-kwpj-add]"));
+    installNativeButton();
+    installExplicitButtons(d);
+    const openModal = q(".kw-size-modal.is-open");
+    if(openModal && returnFocus?.isConnected){
+      const key = resolve(buttonContext(returnFocus));
+      if(key && openModal.dataset.chartKey !== key) renderChart(key);
+    }
+  };
+  let refreshFrame = 0;
+  const scheduleRefresh = () => {
+    cancelAnimationFrame(refreshFrame);
+    refreshFrame = requestAnimationFrame(refresh);
+  };
+
+  d.addEventListener("click", event => {
+    if(event.target.closest(".kw-size-close") || event.target === q(".kw-size-modal")){
+      close();
+      return;
+    }
+    const unitButton = event.target.closest("[data-kw-size-unit]");
+    if(unitButton){
+      unit = unitButton.dataset.kwSizeUnit;
+      localStorage.setItem("kw_size_unit", unit);
+      const key = q(".kw-size-modal")?.dataset.chartKey;
+      key ? renderChart(key) : renderPicker();
+      return;
+    }
+    const chartButton = event.target.closest("[data-kw-size-chart]");
+    if(chartButton){
+      renderChart(chartButton.dataset.kwSizeChart);
+      return;
+    }
+    const explicit = event.target.closest("[data-kw-size-guide]");
+    if(explicit){
+      open(explicit.dataset.kwSizeGuide || buttonContext(explicit), explicit);
+      return;
+    }
+    const guide = event.target.closest(".kw-size-guide-btn");
+    if(guide){
+      open(buttonContext(guide), guide);
+      return;
+    }
+    scheduleRefresh();
+  }, true);
+  d.addEventListener("change", scheduleRefresh, true);
+  d.addEventListener("input", scheduleRefresh, true);
+  d.addEventListener("keydown", event => {
+    if(event.key === "Escape") close();
+  });
+  new MutationObserver(scheduleRefresh).observe(d.documentElement, { childList: true, subtree: true });
+
+  w.KWSizeGuide = { open, close, resolve, refresh, charts: charts() };
+  d.readyState === "loading" ? d.addEventListener("DOMContentLoaded", refresh) : refresh();
+})();
