@@ -2,6 +2,43 @@
 
 This module changelog records global-runtime-specific changes. `/HISTORY/CHANGELOG.md` remains canonical.
 
+## 2026-07-18 — Samurai chart routing and original Featured row ownership
+
+Production candidate:
+
+```text
+Global loader commit: 8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0
+Cache key: 20260718-samurai-size-guides-1
+Entrypoint: fourthwall/global/kw-fourthwall-loader.js
+```
+
+Changed:
+
+- Restored Featured `kwfw` injection to the historical working ownership boundary: only `.kwfw-qty` is wrapped with Size Guide; the Qty label remains in `.kwfw-field`.
+- Preserved the verified Step 3 `kwpj` field-level fixed grid.
+- Added product-scoped material routing before generic aliases.
+- Renamed the featured ladies chart to `Ladies Crop-Top Vest Size Chart`.
+- Routed featured mens rocker/vest variants to `Men's Hooded Vest Size Chart`.
+- Added `Vegan Moto Jacket - Unisex`.
+- Added `Genuine Leather Moto Jacket - Unisex`.
+
+Scope:
+
+- No price, Add to Cart, variant-gallery, carousel card, rail, grid, or wheel code changed.
+
+Validation:
+
+- Replacement runtime and registry passed `node --check`.
+- Live Samurai product title, slug, and material labels were checked.
+- Step 3 selectors and geometry remained unchanged.
+
+Rollback:
+
+```text
+Global loader commit: 94a92c443658086ee2a3c5b822ba68a873c3f3ef
+Cache key: 20260717-featured-size-guide-restore-1
+```
+
 ## 2026-07-18 — restore Featured Spellweave Size Guide row
 
 Production candidate:
@@ -9,33 +46,9 @@ Production candidate:
 ```text
 Global loader commit: 94a92c443658086ee2a3c5b822ba68a873c3f3ef
 Cache key: 20260717-featured-size-guide-restore-1
-Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 ```
 
-Changed:
-
-- Restored the standard `kwfw` quantity/Size Guide row to its last known-good flex/end-aligned layout.
-- Removed the failed `kwfw` `display: contents` and explicit grid-row placement.
-- Preserved the current Step 3 `kwpj` fixed two-column grid and explicit quantity geometry.
-- Bumped the global cache key.
-
-Scope:
-
-- CSS and loader cache key only.
-- No chart data, JavaScript, prices, cart, galleries, carousel cards, rail, or wheel behavior changed.
-
-Validation:
-
-- Compared current styling against the known-good Featured state at loader commit `0de2b178480bf6f1128ad50b9c0068e9cda50da7`.
-- Restored only `kwfw` behavior from that state.
-- Live visual verification remains required.
-
-Rollback:
-
-```text
-Global loader commit: 2a3d96c115de79cc6a22eb85181350cb4c76b465
-Cache key: 20260717-featured-size-guide-align-1
-```
+This CSS-only state restored separate namespace styling but still wrapped the full Featured field. It is superseded by the current quantity-box ownership fix.
 
 ## 2026-07-18 — failed Featured alignment grid
 
