@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: 4bc31f2f1c2dd6253625391a45d11c9786e93f06
-Cache key: 20260718-standard-modal-layout-1
+Commit: e0a3259a41624d7e45ebb74a145d888a76246410
+Cache key: 20260718-step3-gallery-top-align-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@4bc31f2f1c2dd6253625391a45d11c9786e93f06/fourthwall/global/kw-fourthwall-loader.js?v=20260718-standard-modal-layout-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@e0a3259a41624d7e45ebb74a145d888a76246410/fourthwall/global/kw-fourthwall-loader.js?v=20260718-step3-gallery-top-align-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -62,7 +62,11 @@ Standard modal behavior:
 
 Owned on branch `kw-product-carousel-refactor` under `components/kw-plain-jackets/`.
 
-Status: unchanged by the current standard-modal update. Its description, labels, select widths, and quantity geometry remain branch-owned.
+Current global compatibility behavior:
+
+- Step 3 modal images and videos remain `object-fit:contain`.
+- Their gallery alignment is forced to `object-position:top center` so shorter jacket images sit against the top of the gallery like the standard Spellweave/Cauldron Core modal.
+- Step 3 description placement, option labels, select widths, quantity geometry, variant gallery filtering, and carousel scrolling remain unchanged.
 
 ### Shared product modal compatibility
 
@@ -82,6 +86,7 @@ Current behavior:
 - Falls back to product-wide media.
 - Preserves standard-modal universal support slides.
 - Owns standard-only visible option relabeling and stable select-width calculation.
+- Applies Step 3-only top alignment to gallery media without changing gallery dimensions.
 
 ### Global product size guide
 
@@ -174,7 +179,7 @@ Current behavior:
 6. Exact product slugs/aliases must expand as more garment charts are supplied.
 7. Variant-specific gallery behavior still needs broad live verification.
 8. `gallery-portfolio/index.html` references a missing runtime in the audited branch.
-9. The latest standard description-column and dynamic select-width behavior require live visual verification after publishing the new footer.
+9. The latest Step 3 gallery top-alignment override requires live visual verification after publishing the new footer.
 10. In a Fourthwall editor session that hot-swaps loaders without a page reload, old JavaScript listeners may remain resident; CSS explicitly neutralizes legacy wide-description clones.
 
 ## Completed recent work
@@ -192,6 +197,7 @@ Current behavior:
 - Returned standard product descriptions to the right information column.
 - Replaced the visible standard `Description` label with `Size & Style Variant` without changing the API option key.
 - Added longest-option-based stable standard select widths.
+- Top-aligned Step 3 modal gallery media to match the standard modal.
 
 ## Pending work
 
@@ -206,6 +212,10 @@ Current behavior:
 9. Resolve the missing gallery portfolio runtime.
 
 ## REMOVALS / DECISIONS AGAINST
+
+### No vertical centering for Step 3 modal product media
+
+Reason: jacket imagery should align to the top of the fixed gallery viewport, matching the standard modal and avoiding large empty space above shorter product images.
 
 ### No full-width standard product description row
 
