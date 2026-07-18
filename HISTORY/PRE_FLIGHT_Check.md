@@ -2,15 +2,14 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
-## 2026-07-18 20:40 UTC — PF-20260718-019 — Featured row compatibility and chart compaction
+## 2026-07-18 21:20 UTC — PF-20260718-020 — Standard modal description and variant-control layout
 
 Requested change:
 
-- Fix the Featured Spellweave Size Guide button still appearing below the quantity controls.
-- Keep the now-correct Step 3 jacket layout unchanged.
-- Use AgencyFB for chart titles with enough tracking to remain readable.
-- Reduce unused desktop chart space.
-- Reduce unnecessary mobile column width and spacing.
+- Move Spellweave and Cauldron Core descriptions from the full-width row below the gallery into the standard modal’s right-side information column.
+- Rename the standard combined variant option label from `Description` to `Size & Style Variant`.
+- Give each standard product select a stable width based on that product’s longest option, rather than the currently selected option or the full column width.
+- Leave the Step 3 jacket modal unchanged.
 
 Docs/files reviewed:
 
@@ -20,46 +19,55 @@ Docs/files reviewed:
 - `/MASTER.md`
 - `/HISTORY/CHANGELOG.md`
 - `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/README.md`
 - `/fourthwall/global/README.md`
 - `/fourthwall/global/CHANGELOG.md`
-- `fourthwall/kwfw-size-guide.js`
-- `fourthwall/kwfw-size-guide.css`
-- `fourthwall/global/kw-fourthwall-loader.js`
-- Base `fourthwall/kwfw-carousel.css`
-- Supplied live Featured Spellweave screenshot
+- Base standard `fourthwall/kwfw-carousel.js` at its production pin
+- `fourthwall/kwfw-universal-media.js`
+- `fourthwall/kwfw-universal-media.css`
+- `fourthwall/kwfw-modal-product-fix.js`
+- `fourthwall/kwfw-modal-product-fix.css`
+- Step 3 `components/kw-plain-jackets/kw-plain-jackets-v2.js`
+- Step 3 `components/kw-plain-jackets/kw-plain-jackets.css`
+- Supplied standard and Step 3 modal screenshots
 
 Risk/conflict notes:
 
-- The live editor may preserve an older `.kw-size-qty-size-row` without the newer `--kwfw` modifier during hot reload.
-- Modifier-only CSS therefore leaves the row at its default block layout even though the current runtime structure is otherwise correct.
-- Step 3 uses the same base row class but requires different field-level geometry.
-- The existing `560px` mobile table minimum makes short charts unnecessarily wide.
-- Size-chart table text must remain Arial/Helvetica for mobile readability even while the title changes to AgencyFB.
+- The standard carousel already renders `.kwfw-desc` inside `.kwfw-panel-info`; the universal-media runtime deliberately clones it into `.kwfw-desc-wide` and hides the original on desktop. The full-width description is therefore not owned by the base carousel.
+- Existing editor sessions may retain the old universal-media MutationObserver after a loader swap. CSS must hide any legacy `.kwfw-desc-wide` clone even after the new runtime stops creating it.
+- The Step 3 description already remains in `.kwpj-info` and must not be modified.
+- The `Description` option key is used by the standard base carousel to select the correct Fourthwall variant and add it to cart. Only the visible label should change; the option key/data attribute must remain intact.
+- Select width measurement must inspect all option labels, include native select padding/arrow space, remain fixed while the user switches variants, and clamp to the available right-column width.
 
-Plan/result:
+Plan:
 
-- Extend only Featured selectors to cover both base and modifier row classes.
-- Use a two-column `170px + max-content` Featured row with centered alignment.
-- Preserve all current `.kwpj-*` rules unchanged.
-- Change chart titles to AgencyFB with controlled desktop/mobile tracking.
-- Make panel/table width content-driven on desktop.
-- Reduce desktop cell padding and note spacing.
-- Remove the blanket mobile `560px` minimum, wrap header labels, and use tighter mobile cell padding.
-- Bump the global loader cache key.
+- Update universal-media CSS so the original `.kwfw-panel-info > .kwfw-desc` is visible and `.kwfw-desc-wide` is always hidden.
+- Update universal-media JavaScript to stop cloning descriptions and remove any legacy clones it encounters.
+- Extend the shared modal compatibility runtime with standard-only option presentation logic.
+- Rename only the visible `Description` label.
+- Measure the longest option using the select’s computed font and assign a stable inline width with a responsive maximum.
+- Recalculate widths after modal creation, font readiness, and viewport resize.
+- Keep all `.kwpj-*` behavior unchanged.
+- Move universal-media CSS/JS to the current pinned `selfRef` in the global loader and bump the cache key.
 
-Validation:
+Validation plan:
 
-- Reviewed base quantity geometry and current namespace-specific selectors.
-- Confirmed no JavaScript, registry, resolver, price, cart, gallery, carousel card, rail, grid, or wheel files changed.
-- Live storefront verification remains required after replacing the pinned footer.
+- Run `node --check` on both updated JavaScript files.
+- Confirm Step 3 selectors and runtime code are unchanged.
+- Confirm no price, cart, size-chart registry, selected-variant gallery, carousel rail, grid, or wheel behavior is altered.
+- Live visual verification remains required after replacing the pinned footer.
 
 User input required:
 
 - None.
 
+## 2026-07-18 20:40 UTC — PF-20260718-019 — Featured row compatibility and chart compaction
+
+Added legacy-row-compatible Featured alignment selectors, AgencyFB chart titles, content-driven chart widths, and tighter mobile table spacing. Step 3 remained unchanged.
+
 ## 2026-07-18 05:30 UTC — PF-20260718-018 — Samurai routing and original Featured row ownership
 
-Restored Featured quantity-box ownership, preserved Step 3 field-level wrapping, added product-scoped material rules, corrected Samurai vest routing, and added separate Vegan/Genuine unisex Samurai Moto charts. JavaScript and registry passed syntax validation.
+Restored Featured quantity-box ownership, preserved Step 3 field-level wrapping, added product-scoped material rules, corrected Samurai vest routing, and added separate Vegan/Genuine unisex Samurai Moto charts.
 
 ## 2026-07-18 04:55 UTC — PF-20260718-017 — Restore Featured Spellweave quantity row
 
