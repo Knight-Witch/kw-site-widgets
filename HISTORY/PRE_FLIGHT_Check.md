@@ -33,29 +33,29 @@ Docs/files reviewed:
 
 Risk/conflict notes:
 
-- The standard carousel already renders `.kwfw-desc` inside `.kwfw-panel-info`; the universal-media runtime deliberately clones it into `.kwfw-desc-wide` and hides the original on desktop. The full-width description is therefore not owned by the base carousel.
+- The standard carousel already renders `.kwfw-desc` inside `.kwfw-panel-info`; the universal-media runtime deliberately cloned it into `.kwfw-desc-wide` and hid the original on desktop. The full-width description was therefore not owned by the base carousel.
 - Existing editor sessions may retain the old universal-media MutationObserver after a loader swap. CSS must hide any legacy `.kwfw-desc-wide` clone even after the new runtime stops creating it.
 - The Step 3 description already remains in `.kwpj-info` and must not be modified.
-- The `Description` option key is used by the standard base carousel to select the correct Fourthwall variant and add it to cart. Only the visible label should change; the option key/data attribute must remain intact.
+- The `Description` option key is used by the standard base carousel to select the correct Fourthwall variant and add it to cart. Only the visible label can change; the option key/data attribute must remain intact.
 - Select width measurement must inspect all option labels, include native select padding/arrow space, remain fixed while the user switches variants, and clamp to the available right-column width.
 
-Plan:
+Plan/result:
 
-- Update universal-media CSS so the original `.kwfw-panel-info > .kwfw-desc` is visible and `.kwfw-desc-wide` is always hidden.
-- Update universal-media JavaScript to stop cloning descriptions and remove any legacy clones it encounters.
-- Extend the shared modal compatibility runtime with standard-only option presentation logic.
-- Rename only the visible `Description` label.
-- Measure the longest option using the select’s computed font and assign a stable inline width with a responsive maximum.
-- Recalculate widths after modal creation, font readiness, and viewport resize.
-- Keep all `.kwpj-*` behavior unchanged.
-- Move universal-media CSS/JS to the current pinned `selfRef` in the global loader and bump the cache key.
+- Updated universal-media CSS so the original `.kwfw-panel-info > .kwfw-desc` is visible and `.kwfw-desc-wide` is always hidden.
+- Updated universal-media JavaScript to stop cloning descriptions and remove legacy clones it encounters.
+- Extended the shared modal compatibility runtime with standard-only option presentation logic.
+- Renamed only the visible `Description` label.
+- Measured the longest option using the select’s computed font and assigned a stable inline width with a responsive maximum.
+- Added recalculation after modal creation, font readiness, and viewport resize.
+- Preserved all `.kwpj-*` source and behavior.
+- Moved universal-media CSS/JS to the current pinned `selfRef` in the global loader and bumped the cache key.
 
-Validation plan:
+Validation:
 
-- Run `node --check` on both updated JavaScript files.
-- Confirm Step 3 selectors and runtime code are unchanged.
-- Confirm no price, cart, size-chart registry, selected-variant gallery, carousel rail, grid, or wheel behavior is altered.
-- Live visual verification remains required after replacing the pinned footer.
+- `node --check` passed for both updated JavaScript files.
+- Confirmed Step 3 files were inspected but not modified.
+- Confirmed no size-chart registry/routing, price resolution, Add to Cart request, selected-variant gallery selection, carousel card, rail, grid, or wheel code changed.
+- Live storefront verification remains required after replacing the pinned footer.
 
 User input required:
 
