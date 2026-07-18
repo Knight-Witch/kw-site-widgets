@@ -1,94 +1,78 @@
 # Master Project Log
 
-This is the project source bible for the Knight Witch site/widgets repo. It tracks live systems, tasks, bugs, risks, snippets, hard-coded Fourthwall unknowns, cleanup, and decisions.
+This is the source bible for the Knight Witch site/widgets repository. It tracks production-facing systems, current snippets, completed work, active risks, cleanup, planned work, and decisions against.
 
 Read `/OPERATING_CONTRACT.md` before editing this file.
 
-## Current source-of-truth boundary
+## Source-of-truth boundary
 
-GitHub owns the runtime code documented here. Fourthwall still owns snippet placement, native product data, native product images, and any hard-coded page sections not represented by GitHub files.
+GitHub owns the runtime code documented here. Fourthwall owns snippet placement, checkout, native product data, native product and variant media, and any custom page section not represented in this repository.
 
-If a live website element is not documented in `/ARCHITECTURE.md`, `/STYLE_KEYS.md`, this file, or a module README, assume it may still be hard-coded in Fourthwall until audited.
+Native product media may remain Fourthwall-hosted. Other Knight Witch site media should use the DigitalOcean CDN unless documented otherwise.
 
-Media direction:
-
-- Native product media returned by the Fourthwall product API can remain Fourthwall-hosted.
-- All other site media used by this repo is on the Knight Witch DigitalOcean CDN unless a documented exception says otherwise.
-- Repo-local assets belong in `/ASSETS/`.
-
-## Current live / production-facing systems
+## Current production candidate
 
 ### Global Fourthwall loader
 
-Production candidate footer uses:
+```text
+Commit: 1e5cb24e662a37358d296949e998c4980309a883
+Cache key: 20260717-size-guide-registry-1
+Entrypoint: fourthwall/global/kw-fourthwall-loader.js
+Shop domain: knightwitchapparel.com
+Currency: USD
+```
 
-- Global loader commit: `26760b14a2676316be45e76df034638ae0990379`
-- Global loader cache key: `20260717-variant-gallery-1`
-- Entrypoint: `fourthwall/global/kw-fourthwall-loader.js`
-- Shop domain: `knightwitchapparel.com`
-- Currency: `USD`
-- The live storefront value is intentionally not committed to repo docs.
-
-Current global loader URL:
+URL:
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@26760b14a2676316be45e76df034638ae0990379/fourthwall/global/kw-fourthwall-loader.js?v=20260717-variant-gallery-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@1e5cb24e662a37358d296949e998c4980309a883/fourthwall/global/kw-fourthwall-loader.js?v=20260717-size-guide-registry-1
 ```
+
+The live storefront token is intentionally not committed to documentation.
 
 ### Temporary title-bar hotfix
 
-Production footer also currently uses a temporary title-bar hotfix loader:
+```text
+Commit: 663b046d1dcb77b86a06ee1af427af2a5b0821dc
+Cache key: 20260706-titlebar-hotfix-1
+Entrypoint: components/kw-title-bars/kw-title-bars-hotfix-loader.js
+```
 
-- Hotfix commit: `663b046d1dcb77b86a06ee1af427af2a5b0821dc`
-- Cache key: `20260706-titlebar-hotfix-1`
-- Entrypoint: `components/kw-title-bars/kw-title-bars-hotfix-loader.js`
-
-Hotfix URL:
+URL:
 
 ```text
 https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@663b046d1dcb77b86a06ee1af427af2a5b0821dc/components/kw-title-bars/kw-title-bars-hotfix-loader.js?v=20260706-titlebar-hotfix-1
 ```
 
-Status: temporary production hotfix.
+Status: temporary. Fold into the base title-bar/global-loader architecture after live verification.
 
-Required follow-up: fold this into the title-bar component/global loader so the extra footer snippet can be removed.
+## Active production-facing systems
 
-### Global background video
+### Global foundation and background
 
 Owned by:
 
 ```text
+fourthwall/global/kw-fourthwall-layout-guard.css
+fourthwall/global/kw-global-foundation.css
 fourthwall/global/kw-global-config.js
 fourthwall/global/kw-background-video.css
 fourthwall/global/kw-background-video.js
 ```
 
-Status: active global system.
+Status: active.
 
-### Header/nav
+### Header and navigation
 
 Owned by:
 
 ```text
 fourthwall/global/kw-header.css
 fourthwall/global/kw-header.js
+fourthwall/global/kw-header-about-menu-patch.js
 ```
 
-Status: active global system.
-
-Top-level items currently injected by the GitHub header runtime:
-
-```text
-Home
-Gallery
-Shop The Collection
-Shop The Cauldron
-Shop Decor
-About
-View Cart
-```
-
-The detailed nav tree is documented in `/ARCHITECTURE.md`.
+Status: active. Detailed nav ownership is in `/ARCHITECTURE.md`.
 
 ### Social icons
 
@@ -100,7 +84,7 @@ fourthwall/global/kw-social-icons.js
 fourthwall/global/kw-global-config.js
 ```
 
-Status: active global system.
+Status: active.
 
 ### Cart runtime
 
@@ -111,11 +95,9 @@ fourthwall/global/kw-cart-runtime.css
 fourthwall/global/kw-cart-runtime.js
 ```
 
-Status: active global system.
+Status: active. Guards empty-cart navigation and uses `kwfw_cart_id`, `kwfw_cart_count`, and `kwfw_cart_items`.
 
-Purpose: empty-cart modal/redirect guard and cart count/item checks.
-
-### Product carousel
+### Standard product carousel
 
 Owned by:
 
@@ -125,15 +107,83 @@ fourthwall/kwfw-carousel.js
 fourthwall/kwfw-carousel-desktop-grid.css
 fourthwall/kwfw-carousel-wheel-bridge.js
 fourthwall/kwfw-font-agencyfb.css
+```
+
+Status: active through the global loader.
+
+### Step 3 base-jacket carousel
+
+Owned on branch `kw-product-carousel-refactor` by:
+
+```text
+components/kw-plain-jackets/
+```
+
+Status: active page-level system using `.kwpj-*` selectors. Global compatibility modules support its modal without taking ownership of the base module.
+
+### Shared product modal compatibility
+
+Owned by:
+
+```text
 fourthwall/kwfw-modal-product-fix.css
 fourthwall/kwfw-modal-product-fix.js
 ```
 
-Status: active via the global loader.
+Status: active.
 
-The shared modal compatibility runtime covers both the standard `kwfw` modal and the Step 3 `kwpj` base-jacket modal. It reads real Fourthwall `variant.unitPrice` values, restores the modal Add to Cart CTA, and switches the modal gallery to the selected variant's official `variant.images` array. If a selected variant has no dedicated media, the product-wide gallery remains the fallback. The standard modal preserves universal support-media slides.
+Current behavior:
 
-Current spacing work changed the desktop/mobile carousel pull-up to `-35px` and preserved a tighter title-to-carousel layout.
+- Supports standard `.kwfw-*` and Step 3 `.kwpj-*` modals.
+- Reads actual Fourthwall `variant.unitPrice` data.
+- Restores the orange glowing Add to Cart CTA.
+- Switches galleries to selected-variant `variant.images` media.
+- Keeps collection-product selection data separate from product-detail media data.
+- Falls back to product-wide media when a variant has no dedicated media.
+- Preserves standard-modal universal support slides.
+
+### Global product size guide
+
+Owned by:
+
+```text
+fourthwall/kwfw-size-guide-data.js
+fourthwall/kwfw-size-guide.js
+fourthwall/kwfw-size-guide.css
+```
+
+Status: production candidate through the global loader.
+
+The system injects a targeted Size Guide button into:
+
+- Featured Spellweave/standard `kwfw` modals.
+- Step 3 `kwpj` base-jacket modals.
+- Native Fourthwall `/products/` pages when a registered chart resolves.
+
+It follows selected garment variants, supports US/Metric display, and does not show a generic chart for unresolved products.
+
+Current chart registry:
+
+```text
+neo4ic-zyphr-mantle
+ladies-rocker-vest
+mens-leather-rocker-vest
+ladies-moto-vest
+mens-moto-vest
+mens-hexweave-merc-vest
+mens-blackout-merc-vest
+mens-hooded-vest
+mens-denim-vest
+mens-tactical-vest
+mens-punkass-vest
+mens-black-red-moto-vest
+mens-classic-leather-moto-vest
+```
+
+Known source-data gaps:
+
+- Punkass 8X-Large row was obscured in the supplied chart and was not inferred.
+- Black & Red Moto rows below brand size 42 were obscured and were not inferred.
 
 ### Universal product media
 
@@ -143,36 +193,12 @@ Owned by:
 fourthwall/kwfw-universal-media.css
 fourthwall/kwfw-universal-media.js
 fourthwall/prod_card_media/manifest.json
-fourthwall/prod_card_media/README.md
 ```
 
-Status: active via the global loader.
-
-Current manifest asset:
+Current support asset:
 
 ```text
 https://knightwitch.nyc3.cdn.digitaloceanspaces.com/GLOBAL/PROD_CARD_MEDIA/feature_card.webp
-```
-
-### Product size guide
-
-Owned by:
-
-```text
-fourthwall/kwfw-size-guide.css
-fourthwall/kwfw-size-guide.js
-```
-
-Status: active via the global loader.
-
-Current chart set:
-
-```text
-Mantle / Sandevistan
-Ladies Moto
-Ladies Vest
-Men's Moto
-Men's Vest
 ```
 
 ### Product rules
@@ -184,207 +210,114 @@ fourthwall/kwfw-product-rules.css
 fourthwall/kwfw-product-rules.js
 ```
 
-Status: active via the global loader.
-
-Current special case: Cyberpunk collar variant UI.
+Current specialization: Cyberpunk collar variants.
 
 ### Title bars
 
-Owned by:
+Owned by `components/kw-title-bars/`.
 
-```text
-components/kw-title-bars/
-```
+Status: active with temporary footer hotfix. The global loader still floats base title-bar CSS/JS from `main`.
 
-Status: active and currently protected by temporary hotfix.
+### Info sections
 
-Known issue: the global loader loads title-bar CSS/JS from floating `main`, creating mismatch risk when the global loader itself is pinned to an older commit.
+Status: branch-loaded from `kw-info-accordion-dev`. Inspect the branch before editing.
 
-### Collection domain page
+### Collection domain and feature video
 
 Owned by:
 
 ```text
 fourthwall/domains/collection/
-```
-
-Status: active page/domain module.
-
-The banner/category module was split from the lower feature video.
-
-### Collection feature video
-
-Owned by:
-
-```text
 fourthwall/domains/collection/feature-video/
 ```
 
-Status: active page/drop-in module.
-
-Current feature video asset:
+Current feature video:
 
 ```text
 https://knightwitch.nyc3.cdn.digitaloceanspaces.com/domainvideos/ENTER-TCD-V2.webm
 ```
 
-### Info sections
+## Active bugs and risks
 
-The global loader currently references `kw-info-accordion-dev` for info-section CSS/JS.
-
-Status: branch-loaded system; inspect the branch before editing.
-
-### Standalone gallery portfolio
-
-Owned by:
-
-```text
-gallery-portfolio/
-```
-
-Status: standalone/incomplete in audited `main` snapshot.
-
-Risk: `gallery-portfolio/index.html` references `gallery-portfolio.js`, but that file is not present in the audited `main` snapshot.
-
-### Standalone logo banner
-
-Owned by:
-
-```text
-logo-banner/logo-banner.js
-```
-
-Status: standalone; not documented as global-loader active.
-
-### Legacy FPX carousel
-
-Owned by:
-
-```text
-widgets/kw-carousel.css
-widgets/kw-carousel.js
-```
-
-Status: legacy; not documented as global-loader active.
-
-## Active bugs / risks
-
-1. Title-bar dependencies float from `main` in `kw-fourthwall-loader.js`.
-   - Risk: pinned global loader can still pull newer/broken title-bar files.
-   - Current mitigation: temporary title-bar hotfix snippet in footer.
-   - Required fix: pin or self-ref title-bar assets appropriately and fold hotfix into base component.
-
-2. Legacy carousel loaders and variants remain in the repo.
-   - Risk: stale loaders may be mistaken for production entrypoints.
-   - Required fix: audit and mark keep/remove/archive decisions.
-
-3. `kw-info-accordion-dev` is branch-loaded from the production global loader.
-   - Risk: production depends on a branch ref.
-   - Required fix: decide whether to merge/pin/stabilize the info-section system.
-
-4. GitHub code search may be unreliable for this repo.
-   - Risk: search may return no results even when files exist.
-   - Required mitigation: use direct path fetches or local ZIP audit when necessary.
-
-5. Live frontend storefront value cannot be committed into repo docs.
-   - Risk: docs snippets must use placeholders for that value.
-   - Required mitigation: keep the live value in Fourthwall/project instructions, not repo files.
-
-6. `gallery-portfolio/index.html` references a missing script.
-   - Risk: standalone gallery page will not function fully from current `main` files alone.
-   - Required fix: find, restore, rebuild, or remove the missing script reference.
-
-7. Unknown Fourthwall hard-coded sections remain.
-   - Risk: docs may not yet represent the whole live website.
-   - Required mitigation: audit Fourthwall page custom HTML snippets and add them to GitHub or document them as Fourthwall-owned.
-
-8. Variant-specific modal galleries require live verification against products with and without assigned variant images.
-   - Risk: a product with an undocumented media field may fall back to the product-wide gallery.
-   - Required mitigation: inspect the affected Fourthwall variant object and extend `ownerMedia()` in `kwfw-modal-product-fix.js` only when an actual field is confirmed.
+1. Title-bar CSS/JS float from `main` while the global loader is pinned.
+2. The temporary title-bar hotfix remains a separate production snippet.
+3. Info sections are loaded from `kw-info-accordion-dev` rather than a stable pinned main commit.
+4. Legacy carousel loaders and experimental runtime files remain in the repo and may be mistaken for production entrypoints.
+5. `gallery-portfolio/index.html` references a missing `gallery-portfolio.js`.
+6. Some Fourthwall custom sections remain unaudited and may still be backend-only.
+7. Variant-gallery behavior still requires representative live verification across products with and without assigned variant media.
+8. Native product-page Size Guide placement requires live verification against Fourthwall's current rendered Add to Cart markup.
+9. Exact size-chart aliases/slugs may need additions when more base-jacket products are registered.
 
 ## Completed items
 
-- Created `/OPERATING_CONTRACT.md`.
-- Created the root documentation system.
-- Expanded repo architecture, style, master, changelog, pre-flight, and diff records.
-- Reconciled `/fourthwall/global/README.md` with current production/global runtime docs.
-- Clarified `/fourthwall/README.md` media boundary and current product media docs.
-- Documented current global loader, active hotfix, title-bar risk, loader order, website element inventory, and media-hosting boundary.
-- Split Collection feature video into standalone module.
-- Added `/fourthwall/domains/collection/feature-video/README.md`.
-- Added `/fourthwall/prod_card_media/README.md`.
-- Removed Collection lower feature video from banner module.
-- Tightened carousel/title-bar spacing.
-- Added temporary title-bar hotfix loader and stylesheet.
-- Established current production footer as global loader plus hotfix loader.
-- Added expanded product modal price and Add to Cart CTA fix for both modal systems.
-- Added selected-variant gallery switching for both standard and Step 3 product modals.
+- Created the operating contract and required documentation system.
+- Externalized the global Fourthwall loader and runtime modules.
+- Added global background, header/nav, social icons, layout guard, and cart runtime.
+- Split the Collection feature video into its own module.
+- Added the title-bar hotfix and tightened title-to-carousel spacing.
+- Stabilized expanded-modal prices and Add to Cart styling for both modal systems.
+- Added selected-variant modal gallery filtering.
+- Corrected variant matching so detail data no longer forces the default variant.
+- Added a centralized product size-chart registry.
+- Added Size Guide injection for standard modals, Step 3 modals, and qualifying native product pages.
+- Added exact US/Metric conversion including measurement ranges.
 
-## Pending cleanup tasks
+## Pending cleanup
 
-1. Fold title-bar hotfix into base component/global loader.
-2. Stop title-bar CSS/JS from floating from `main` in the global loader.
-3. Audit legacy carousel files and decide keep/remove/archive status.
-4. Stabilize or document the `kw-info-accordion-dev` dependency.
-5. Resolve or document the missing `gallery-portfolio/gallery-portfolio.js`.
-6. Audit remaining Fourthwall hard-coded site sections and either migrate them into GitHub or document them as Fourthwall-owned.
-7. Continue backfilling changelog history from recent commits.
-8. Expand product media migration notes as CDN-hosted product-support media is added.
-9. Verify variant-specific galleries live for the Samurai vest and representative Step 3 jacket products.
+1. Fold the title-bar hotfix into the base component/global loader.
+2. Stop floating title-bar dependencies from `main`.
+3. Stabilize or merge `kw-info-accordion-dev`.
+4. Audit and archive/remove obsolete carousel loaders and experimental variants.
+5. Resolve the missing gallery portfolio runtime.
+6. Audit remaining Fourthwall-only custom sections.
+7. Add remaining jacket, vest, coat, and LUXE size charts to `kwfw-size-guide-data.js`.
+8. Obtain unobscured Punkass 8X and Black & Red Moto smaller-size rows.
+9. Verify native product-page Size Guide placement and selected-option detection live.
+10. Verify all Samurai ladies/mens and collar/no-collar gallery and size-guide mappings live.
 
 ## Planned work
 
-- Continue deeper documentation passes for GitHub-hosted website elements.
-- Use `/HISTORY/PRE_FLIGHT_Check.md` before future code edits.
-- Use `/HISTORY/CHANGELOG.md` and `/HISTORY/DIFFS/` for every GitHub update.
-- Keep current production snippets/URLs in this file.
-- Move temporary fixes into proper owning modules when verified.
-- Keep non-product-API media references on the Knight Witch CDN unless an exception is documented.
+- Continue chart-registry expansion as source charts are supplied.
+- Keep non-native site media on the Knight Witch CDN.
+- Maintain pinned production snippets and paired cache-key bumps.
+- Record every runtime update in `/HISTORY/CHANGELOG.md`, `/HISTORY/PRE_FLIGHT_Check.md`, and `/HISTORY/DIFFS/`.
 
-## Current production snippets / URLs
-
-Global loader URL:
+## Other production URLs
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@26760b14a2676316be45e76df034638ae0990379/fourthwall/global/kw-fourthwall-loader.js?v=20260717-variant-gallery-1
-```
-
-Temporary title-bar hotfix URL:
-
-```text
+Title-bar hotfix
 https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@663b046d1dcb77b86a06ee1af427af2a5b0821dc/components/kw-title-bars/kw-title-bars-hotfix-loader.js?v=20260706-titlebar-hotfix-1
-```
 
-Collection banner/category loader URL:
-
-```text
+Collection domain loader
 https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@ab0ccd97765db5f0318895fe8f8be626e537b211/fourthwall/domains/collection/kw-collection-domain-loader.js?v=20260706-collection-domain-6
-```
 
-Collection feature video loader URL:
-
-```text
+Collection feature video loader
 https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@ab0ccd97765db5f0318895fe8f8be626e537b211/fourthwall/domains/collection/feature-video/kw-collection-feature-video-loader.js?v=20260706-collection-feature-video-1
 ```
 
 ## REMOVALS / DECISIONS AGAINST
 
-### Do not rely on `@main` for production Fourthwall snippets
+### Do not use `@main` for production Fourthwall snippets
 
-Reason: jsDelivr/Fourthwall cache behavior and floating source changes can produce inconsistent live behavior. Production snippets should use pinned commits unless explicitly testing.
+Reason: floating source and cache behavior can change live output without a footer update.
 
-### Do not leave title-bar hotfix as permanent architecture
+### Do not keep the title-bar hotfix as permanent architecture
 
-Reason: the hotfix exists to override a broken/mismatched loader state. It should be folded into the base title-bar/global-loader system and then removed from the footer.
+Reason: it is a compatibility layer that should be folded into the owning component.
 
-### Do not use legacy carousel loader refs without verification
+### Do not use legacy carousel loaders without revalidation
 
-Reason: prior carousel work produced stale/intermediate loader states, including at least one mutation loop that could freeze the Fourthwall editor. Legacy loaders must be audited before use.
+Reason: prior experiments produced stale and at least one browser-freezing state.
 
-### Do not use `fourthwall/global/CHANGELOG.md` as canonical repo changelog
+### Do not use broad generic vest/jacket size-chart guessing
 
-Reason: it is module-specific. `/HISTORY/CHANGELOG.md` is the canonical repo-wide history.
+Reason: base garments from different manufacturers have different measurements. The size-guide resolver must use exact product/variant registry mappings.
 
-### Do not assume undocumented live sections are GitHub-owned
+### Do not fabricate obscured sizing rows
 
-Reason: some site sections may still be hard-coded in Fourthwall. GitHub ownership begins only when code/docs for that element exist here or when the Fourthwall snippet points to a GitHub loader documented here.
+Reason: customer-facing measurements must come from supplied source data, not inferred numeric patterns.
+
+### Do not assume undocumented Fourthwall sections are GitHub-owned
+
+Reason: some live sections remain backend-only until audited and documented.
