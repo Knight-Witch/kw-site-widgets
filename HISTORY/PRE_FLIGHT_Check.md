@@ -2,6 +2,42 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
+## 2026-07-18 04:25 UTC — PF-20260718-015 — Namespace-specific quantity-row correction
+
+Requested change:
+
+- Standard `kwfw`: raise the Size Guide button so it aligns with the quantity controls.
+- Step 3 `kwpj`: stop the quantity input/plus control from rendering underneath the Size Guide button.
+
+Files reviewed:
+
+- `fourthwall/kwfw-size-guide.css`
+- `fourthwall/kwfw-size-guide.js`
+- Base `fourthwall/kwfw-carousel.css` quantity rules
+- Branch-owned `components/kw-plain-jackets/kw-plain-jackets.css`
+- `components/kw-plain-jackets/kw-plain-jackets-polish.css`
+- Both supplied live screenshots
+
+Risk/conflict notes:
+
+- The wrapper field was fixed at 170px, but live Step 3 styles still allowed its internal `.kwpj-qty` grid/input to expand beyond that field.
+- The standard modal retained bottom margin/height differences that shifted Size Guide below the quantity controls.
+- Changing the injector or moving nodes again would add unnecessary risk; the failure is CSS geometry.
+
+Plan/result:
+
+- Keep the existing shared wrapper/injector.
+- Force both namespaces to an explicit `48px 58px 48px` quantity grid with two 8px gaps.
+- Constrain the input and buttons to their grid tracks.
+- Force quantity-field margin to zero.
+- Bottom-align Size Guide in a separate grid column with a 16px desktop gap.
+- Preserve mobile access with a 10px gap and horizontal overflow.
+
+Validation:
+
+- No JavaScript, chart data, prices, cart, galleries, carousel cards, rail, or wheel code changed.
+- Live visual verification remains required after replacing the pinned footer loader.
+
 ## 2026-07-18 04:05 UTC — PF-20260718-014 — Size Guide quantity-control spacing
 
 Requested change:
