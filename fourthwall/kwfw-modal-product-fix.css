@@ -13,6 +13,10 @@
   display:block!important;
   max-width:100%!important
 }
+.kwpj-panel .kwpj-gallery-track img,
+.kwpj-panel .kwpj-gallery-track video{
+  object-position:top center!important
+}
 .kwfw-panel [data-kwfw-add],
 .kwpj-panel [data-kwpj-add]{
   appearance:none!important;
