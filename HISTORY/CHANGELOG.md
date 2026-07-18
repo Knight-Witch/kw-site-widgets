@@ -1,111 +1,107 @@
 # Changelog
 
-Canonical repo-wide changelog. Module changelogs may remain, but they do not replace this file.
+Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records in `/HISTORY/DIFFS/`.
+
+## 2026-07-18 00:25 UTC — KW-RUNTIME-SIZE-GUIDES-011
+
+Summary: Rebuilt product sizing as one global registry and injector. Targeted Size Guide buttons now support standard `kwfw` product modals, Step 3 `kwpj` base-jacket modals, and qualifying native Fourthwall `/products/` pages. The active chart follows the current garment variant, supports US/Metric output, and is not shown for unresolved products.
+
+Affected files:
+
+```text
+fourthwall/kwfw-size-guide-data.js
+fourthwall/kwfw-size-guide.js
+fourthwall/kwfw-size-guide.css
+fourthwall/global/kw-fourthwall-loader.js
+ARCHITECTURE.md
+STYLE_KEYS.md
+MASTER.md
+fourthwall/global/README.md
+fourthwall/global/CHANGELOG.md
+HISTORY/PRE_FLIGHT_Check.md
+HISTORY/CHANGELOG.md
+HISTORY/DIFFS/2026-07-18-size-guide-registry-1.md
+```
+
+Runtime commits:
+
+```text
+416cb9dbb1303a53f6837d5f92b04e4d589d42bf
+6e97e78432418d4389515da2223b3be69feb2a8a
+0367b737e8177bf3f5bf0e4b102d443ba20cbb52
+1e5cb24e662a37358d296949e998c4980309a883
+```
+
+Reason: The previous size guide used broad category guessing and only injected into the standard carousel. Exact manufacturer/product measurements need a central source that avoids backend HTML on every Fourthwall product.
+
+Initial chart registry:
+
+```text
+Neo4ic Zyphr Mantle
+Ladies Rocker Vest
+Men's Leather Rocker Vest
+Ladies Moto Vest
+Men's Moto Vest
+Men's Hexweave Merc Vest
+Men's Blackout Merc Vest
+Men's Hooded Vest
+Men's Denim Vest
+Men's Tactical Vest
+Men's Punkass Vest
+Men's Black & Red Moto Vest
+Men's Classic Leather Moto Vest
+```
+
+Rollback: Restore loader commit `8ef32a18b59ef932c9b5364ca3e37c72183d5c3e` with cache key `20260717-variant-gallery-2`.
+
+Production candidate: Loader commit `1e5cb24e662a37358d296949e998c4980309a883`, cache key `20260717-size-guide-registry-1`.
+
+Validation: Both new JavaScript files passed `node --check`. Registry data loads before the size-guide runtime. Buttons only appear after exact registry resolution. No carousel wheel, grid, card-size, price, CTA, or variant-gallery code changed.
+
+Risks/follow-up: Native Fourthwall Add to Cart placement and exact aliases require live verification. Punkass 8X and Black & Red Moto rows below brand size 42 were obscured and were not fabricated.
 
 ## 2026-07-17 23:58 UTC — KW-RUNTIME-VARIANT-GALLERIES-010
 
-Summary: Corrected variant gallery switching after live verification showed every dropdown selection still resolved to the default variant. The modal compatibility runtime now preserves the original collection-product object used to build the dropdown, keeps product-detail data separate, resolves selected variants with normalized exact and value-based matching, and matches detail media by stable variant ID.
+Summary: Corrected variant gallery switching after the detail response caused every dropdown selection to fall back to the first variant.
 
-Affected files: /fourthwall/kwfw-modal-product-fix.js; /fourthwall/global/kw-fourthwall-loader.js; /HISTORY/CHANGELOG.md; /HISTORY/PRE_FLIGHT_Check.md; /HISTORY/DIFFS/2026-07-17-variant-gallery-2.md; /MASTER.md; /fourthwall/global/CHANGELOG.md.
+Affected runtime files: `fourthwall/kwfw-modal-product-fix.js`; `fourthwall/global/kw-fourthwall-loader.js`.
 
 Commits: `8c10091152888eb446b4d215cc837507354e6c91`; `8ef32a18b59ef932c9b5364ca3e37c72183d5c3e`.
 
-Reason: The previous runtime replaced `modal._product` with the product-detail response after the dropdown had been rendered from the collection response. When those two payloads represented option names or values differently, the exact matcher failed and returned the first variant, so the gallery remained on the default images.
+Reason: `modal._product` was being replaced by a differently shaped product-detail payload. The corrected runtime preserves the original collection-product object, stores detail data separately, normalizes option matching, and maps detail media by variant ID.
 
-Rollback: Restore global loader commit `26760b14a2676316be45e76df034638ae0990379` with cache key `20260717-variant-gallery-1`.
+Rollback: Loader commit `26760b14a2676316be45e76df034638ae0990379`, cache key `20260717-variant-gallery-1`.
 
-Production candidate: Global loader commit `8ef32a18b59ef932c9b5364ca3e37c72183d5c3e` with cache key `20260717-variant-gallery-2`.
-
-Validation: Updated JavaScript passed `node --check`. A focused matcher test covered ladies, mens/no-collar, and mens/detachable-collar values, including mismatched option-key casing and description-only variants. Confirmed the runtime no longer overwrites `modal._product`. No carousel rail, wheel, grid, card-size, or scroll files changed. Live storefront verification remains required.
-
-Risks and follow-up: If a product uses an option representation not covered by exact-key, attribute-value, description, or variant-name matching, inspect that live variant payload before extending the matcher.
+Validation: JavaScript passed `node --check`; focused matching tests covered ladies, mens/no-collar, and mens/detachable-collar values. No carousel scroll/layout files changed.
 
 ## 2026-07-17 23:38 UTC — KW-RUNTIME-VARIANT-GALLERIES-009
 
-Summary: Added selected-variant gallery switching to both the standard `kwfw` featured-product modal and the Step 3 `kwpj` base-jacket modal. When a user changes a variant, the modal now rebuilds its gallery from that variant's real Fourthwall `images` payload, resets to slide zero, and falls back to product-wide media only when the variant has no dedicated images. Standard-modal universal support slides remain preserved.
+Summary: Added selected-variant media switching to standard and Step 3 product modals using Fourthwall variant media, with product-wide fallback and preserved universal support slides.
 
-Affected files: /fourthwall/kwfw-modal-product-fix.js; /fourthwall/global/kw-fourthwall-loader.js; /ARCHITECTURE.md; /STYLE_KEYS.md; /MASTER.md; /fourthwall/README.md; /fourthwall/global/README.md; /fourthwall/global/CHANGELOG.md; /HISTORY/PRE_FLIGHT_Check.md; /HISTORY/CHANGELOG.md; /HISTORY/DIFFS/2026-07-17-variant-gallery-1.md.
+Primary commits: `114b4de424a1de30fbaa46501a03c91a6d10fbd9`; `26760b14a2676316be45e76df034638ae0990379`.
 
-Commits: `114b4de424a1de30fbaa46501a03c91a6d10fbd9`; `26760b14a2676316be45e76df034638ae0990379`; `12be83185f41430c3d96fd4f49b8098d7e7f5c8e`; `db62fcef42fd7a717cfb84bbee65902ab1a8dab7`; `baac3b3255b99a6af58f84e3b25a75c8533e6639`; `994a0932da32900cf5b81109b92a621ea4f3cee8`; `2e13d7bc302a7d8bcd1a8f85b77be8ab63fb2216`; `e6b8a9c99a58a44cc4ad7dbb5627dd48b1b31d52`; `e0937ff6d227d4bce321ecfb7c130ff9d8c955c9`; `af026509d37c94b627e7e42425c01332b26ce589`.
+Rollback: Loader commit `63ef5483c10dd2fc803be180faec584d84dbecc6`, cache key `20260717-product-modal-prices-2`.
 
-Reason: Both existing modal implementations initially rendered the product-wide media bucket and never changed it when a selected variant changed. Fourthwall's official Storefront API exposes dedicated media on each variant through `variant.images`, so the modal can use the same assignments configured in the Fourthwall product editor.
-
-Rollback: Restore global loader commit `63ef5483c10dd2fc803be180faec584d84dbecc6` with cache key `20260717-product-modal-prices-2`. That preserves the real-price and modal CTA fixes but removes variant-specific gallery filtering.
-
-Production candidate: Global loader commit `26760b14a2676316be45e76df034638ae0990379` with cache key `20260717-variant-gallery-1`.
-
-Validation: Confirmed the official Fourthwall Storefront API collection schema exposes `images` on each variant. Updated JavaScript passed `node --check`. Reviewed both modal namespaces, option selectors, custom product-rule variant IDs, gallery/dot markup, universal-media interaction, loader order, cache versioning, and observer-loop prevention. No carousel rail, wheel, grid, card-size, or scroll files changed. Live storefront verification remains required.
-
-Risks and follow-up: Verify the Samurai vest's ladies/mens and collar/no-collar variants plus representative Step 3 jacket products. Products without assigned variant media intentionally retain the product-wide gallery. Extend media-key support only if a live Fourthwall payload confirms another field.
+Validation: JavaScript passed `node --check`; no carousel wheel/grid/card-size files changed.
 
 ## 2026-07-17 21:19 UTC — KW-RUNTIME-PRODUCT-MODALS-008
 
-Summary: Corrected expanded product modal pricing for both the standard `kwfw` carousel and the Step 3 `kwpj` base-jacket carousel. The shared modal runtime now reads Fourthwall Storefront API `variant.unitPrice.value` and its currency without inventing or scaling placeholder values. It also restores the orange glowing Add to Cart CTA in the Step 3 jacket modal.
+Summary: Corrected real Fourthwall modal prices in both carousel systems and restored the Step 3 orange glowing Add to Cart CTA.
 
-Affected files: /fourthwall/kwfw-modal-product-fix.css; /fourthwall/kwfw-modal-product-fix.js; /fourthwall/global/kw-fourthwall-loader.js; /HISTORY/PRE_FLIGHT_Check.md; /HISTORY/CHANGELOG.md; /HISTORY/DIFFS/2026-07-17-product-modal-prices-2.md.
+Commits: `e4cb9d63a9c5e91d0acf006ab7a2acaad637a5a2`; `05945c729bca2dec9e03bd76b583278dd8252185`; `63ef5483c10dd2fc803be180faec584d84dbecc6`.
 
-Commits: e4cb9d63a9c5e91d0acf006ab7a2acaad637a5a2; 05945c729bca2dec9e03bd76b583278dd8252185; 63ef5483c10dd2fc803be180faec584d84dbecc6.
+Reason: The original helpers omitted Fourthwall `variant.unitPrice`, and the body-level Step 3 modal did not inherit carousel-scoped orange values.
 
-Reason: Both carousel implementations were reading `variant.price`, while Fourthwall documents the live selling price on collection/product variants as `unitPrice.value`. The earlier compatibility runtime only targeted `kwfw` panels and did not initialize when the added DOM node was itself the modal panel. The Step 3 modal also lived outside `.kwpj-carousel`, so its inherited orange CSS variables were unavailable.
-
-Rollback: Revert the listed runtime commits and restore loader commit `7db18a8ddae88d5c6dd0880014f1a07b54277761` with cache key `20260717-modal-product-fix-1`.
-
-Production candidate: Global loader commit `63ef5483c10dd2fc803be180faec584d84dbecc6` with cache key `20260717-product-modal-prices-2`.
-
-Validation: JavaScript passed `node --check`. Reviewed both modal implementations, their actual modal/product object ownership, Fourthwall’s official Storefront API product schema, the global loader order, and scoped CTA selectors. No carousel scroll files were changed. Live storefront verification remains required.
-
-Risks: The compatibility runtime performs a single cached official product-by-slug request only when the collection product object does not already expose a usable `unitPrice`. It does not fabricate a fallback price.
+Rollback: Loader commit `7db18a8ddae88d5c6dd0880014f1a07b54277761`, cache key `20260717-modal-product-fix-1`.
 
 ## 2026-07-17 20:45 UTC — KW-RUNTIME-MODAL-PRODUCT-007
 
-Summary: Added a modal-only product fix for expanded carousel product listings. The fix restores visible API-derived modal prices and forces the expanded modal Add to Cart button back to the orange glowing/pulsing CTA style without touching carousel scroll behavior.
+Summary: Added the initial modal-only price and Add to Cart compatibility layer.
 
-Affected files: /fourthwall/kwfw-modal-product-fix.css; /fourthwall/kwfw-modal-product-fix.js; /fourthwall/global/kw-fourthwall-loader.js; /HISTORY/PRE_FLIGHT_Check.md; /HISTORY/CHANGELOG.md; /HISTORY/DIFFS/2026-07-17-modal-product-fix.md.
+Commits: `335a0f92ea0d5b1302ddef7336745aee0f38b10e`; `0ec1c1c6d59f348781ff78b889ce8678dec12f10`; `7db18a8ddae88d5c6dd0880014f1a07b54277761`.
 
-Commits: 335a0f92ea0d5b1302ddef7336745aee0f38b10e; 0ec1c1c6d59f348781ff78b889ce8678dec12f10; 7db18a8ddae88d5c6dd0880014f1a07b54277761; 24384bc7dffe9c780b43f89d5ac93ac22692d8ca.
+Validation: The helper only wrote API-derived prices and did not insert placeholders.
 
-Reason: Expanded product modal prices were blank because the existing modal price helper did not cover all live Fourthwall product/variant price field shapes. The modal Add to Cart button was too low contrast in expanded view.
+## Documentation bootstrap and module mapping — 2026-07-07
 
-Rollback: Revert the listed runtime commits or remove `kwfw-modal-product-fix.css` and `kwfw-modal-product-fix.js` from the global loader. Use the previous production footer if immediate rollback is needed.
-
-Production snippet: Use global loader commit `7db18a8ddae88d5c6dd0880014f1a07b54277761` with cache key `20260717-modal-product-fix-1`.
-
-Validation: Inspected global loader order, carousel CSS/JS, product rules JS, and modal ownership. The JS helper only writes a price when it resolves one from the live `modal._product` API object or selected variant. No placeholder price is inserted. No live storefront testing performed in this session.
-
-Risks: Product data shape may still expose an undocumented field not covered by the helper. If a modal still has no price, inspect `modal._product` in DevTools and add that field path.
-
-## 2026-07-07 10:05 UTC — KW-DOC-GLOBAL-README-006
-
-Summary: Reconciled global runtime documentation with current root docs, current loader behavior, current production footer state, and current temporary title-bar hotfix state. Updated the parent Fourthwall README media boundary and inventory, the global module changelog, MASTER, pre-flight, and diff record.
-
-Affected files: /fourthwall/global/README.md; /fourthwall/global/CHANGELOG.md; /fourthwall/README.md; /MASTER.md; /HISTORY/CHANGELOG.md; /HISTORY/PRE_FLIGHT_Check.md; /HISTORY/DIFFS/2026-07-07-global-readme.md.
-
-Commits: 58d4c6a9dfa22f0aaaaba4af97f567f57777fae0; 605bdd283f87c8c3353c36cd9c6fdb29fb1c8e47; 4ee081dc07fbf86a8eddab10415d036fe114b920; 84850a0feb9cc454c028f659f39715a85d097aaf; 6a440708d2d708b5b4ae2a1da34db415d81b1d94; b84694c76b48af3fcea56ac36ec8fb4b7304fb27; e0cad86c8e4757671dae70b5181a97ee80a3616a; 5749d85b22dee99ab6fe2f43259c73165cdfa8d5; 749cff3d8cf1ab4878bfd14f54e9c7f7a6a098ea.
-
-Reason: The global runtime README still referenced older pinned states and could mislead future global/footer work.
-
-Rollback: Revert the listed commits. Runtime behavior should not change.
-
-Validation: Read root docs, module docs, current global loader, global config, header runtime, background video runtime, cart runtime, title-bar docs, and global module changelog. Updated docs only. No live storefront testing performed.
-
-Risks: Title-bar hotfix remains temporary; title-bar CSS/JS still float from main; info sections still load from kw-info-accordion-dev; remaining live Fourthwall custom sections still need audit.
-
-## 2026-07-07 09:42 UTC — KW-DOC-PROD-MEDIA-005
-
-Summary: Created product media folder README and updated related project history. Commits: 196751d10f09818e2c9c73526777716f7f2cdc18; a6094356c78c4298d2d4619ef4d59683c3b0f624. Runtime impact: none.
-
-## 2026-07-07 09:28 UTC — KW-DOC-FEATURE-MODULE-004
-
-Summary: Created Collection feature module README and updated related project history. Commits: eaa6b71124229ff8384d8af9b93e7d7ee1b83d5d; 9ad8978d3baee5e8019756bca28c7c0571ccf14b. Runtime impact: none.
-
-## 2026-07-07 09:12 UTC — KW-DOC-MEDIA-003
-
-Summary: Added MEDIA.md, linked it from README, and aligned STYLE_KEYS with the stricter media boundary. Commits: 6ffc9cd252dd5ef44cf6597881e09fe09256a8dc; d3c0572b5ed7b3130318d3f1370e5e6ff27190e2; 93273235d4609a2c475a0b22f9568ef647f0cb9a; ea6b6e65ddc7668d0fefc5a01b139514873e9e86. Runtime impact: none.
-
-## 2026-07-07 08:54 UTC — KW-DOC-MAP-002
-
-Summary: Expanded the repo/site documentation map for GitHub-hosted systems, modules, styles, live systems, risks, and cleanup tasks. See HISTORY/DIFFS/2026-07-07-doc-map.md for details. Runtime impact: none.
-
-## 2026-07-07 08:32 UTC — KW-DOC-BOOTSTRAP-001
-
-Summary: Created the root documentation system and initial repo map. See HISTORY/DIFFS/2026-07-07-doc-bootstrap.md for details. Runtime impact: none.
+The repository operating contract, root documentation system, media boundary, module READMEs, global runtime map, product-media documentation, Collection feature module documentation, and paired diff/history system were established during the July 7 documentation pass. Detailed commit lists remain in Git history and the corresponding `/HISTORY/DIFFS/` records.
