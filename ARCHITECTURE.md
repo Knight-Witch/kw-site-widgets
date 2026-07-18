@@ -160,24 +160,27 @@ fourthwall/kwfw-size-guide.js
 fourthwall/kwfw-size-guide.css
 ```
 
-`kwfw-size-guide-data.js` is the only chart-data registry. Each chart defines exact product slugs, product-title aliases, selected-variant aliases, measurement columns, rows, and notes.
+`kwfw-size-guide-data.js` is the only chart-data registry. Each chart defines exact product slugs, product-title aliases, selected-variant aliases or product-scoped variant rules, measurement columns, rows, and notes.
 
 `kwfw-size-guide.js` resolves charts in this order:
 
-1. Current selected-variant aliases
-2. Exact product slug
-3. Exact product-title aliases
-4. Controlled phrase aliases
+1. Product-scoped selected-variant rules
+2. Current selected-variant aliases
+3. Exact product slug
+4. Exact product-title aliases
+5. Controlled phrase aliases
 
 The runtime injects a Size Guide button into:
 
 ```text
-.kwfw modal quantity row beside .kwfw-qty
-.kwpj modal quantity row beside .kwpj-qty
-native /products/ pages before the detected Add to Cart control
+.kwfw modal: inside the existing .kwfw-field, wrapping only .kwfw-qty
+.kwpj modal: around the existing .kwpj-field
+native /products/ pages: before the detected Add to Cart control
 ```
 
-The modal injector creates one idempotent `.kw-size-qty-size-row`, moves the existing quantity field into it, and appends the Size Guide button. MutationObserver refreshes reuse the same row and button.
+The two carousel namespaces intentionally use different DOM ownership. Featured Spellweaves keep the Qty label outside `.kw-size-qty-size-row`, while Step 3 keeps its field-level grid. Do not force both systems through one wrapper geometry.
+
+Product-scoped variant rules are required for generic option values such as `Vegan Leather` and `Genuine Leather`; those values must not globally route unrelated products to the Samurai Moto charts.
 
 A button is only shown when a registered chart resolves. Unknown products, Cauldron Cores, wall art, collars, and other accessories do not receive a generic size chart.
 
@@ -248,9 +251,9 @@ Known dangerous state: commit `3f0582046c6c0f31aedefa5e9d4805ec9eedddf3` contain
 - Carousel desktop footprint: `fourthwall/kwfw-carousel-desktop-grid.css`
 - Carousel wheel/page-scroll behavior: `fourthwall/kwfw-carousel-wheel-bridge.js`
 - Shared product modal prices/CTA/variant gallery: `fourthwall/kwfw-modal-product-fix.*`
-- Size-chart data: `fourthwall/kwfw-size-guide-data.js`
+- Size-chart data and exact routing: `fourthwall/kwfw-size-guide-data.js`
 - Size-guide injection/modal behavior: `fourthwall/kwfw-size-guide.js`
-- Size-guide visuals: `fourthwall/kwfw-size-guide.css`
+- Size-guide visuals and namespace-specific quantity geometry: `fourthwall/kwfw-size-guide.css`
 - Universal product-support media: `fourthwall/kwfw-universal-media.*`
 - Product option rules: `fourthwall/kwfw-product-rules.*`
 - Cart guard: `fourthwall/global/kw-cart-runtime.*`
