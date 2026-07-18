@@ -2,38 +2,53 @@
 
 This module changelog records global-runtime-specific changes. `/HISTORY/CHANGELOG.md` remains canonical.
 
-## 2026-07-18 — Featured row compatibility and compact size charts
+## 2026-07-18 — Standard modal description and dynamic variant control
 
 Production candidate:
 
 ```text
-Global loader commit: aa8ad96cb30ddfcff156be0785846040633aea3d
-Cache key: 20260718-size-guide-layout-compact-1
+Global loader commit: 4bc31f2f1c2dd6253625391a45d11c9786e93f06
+Cache key: 20260718-standard-modal-layout-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 ```
 
 Changed:
 
-- Featured row styling now covers both `.kw-size-qty-size-row` and `.kw-size-qty-size-row--kwfw`.
-- This prevents Fourthwall editor hot-reloaded legacy rows from rendering Size Guide below the quantity controls.
-- Step 3 field-level grid and internal quantity geometry remain unchanged.
-- Size-chart titles now use AgencyFB with explicit letter spacing.
-- Desktop panel/table widths are content-driven instead of fixed to a broad 980px footprint.
-- Desktop table and note spacing is tighter.
-- Mobile tables no longer force a 560px minimum width.
-- Mobile header labels wrap and cells use conservative padding.
+- Returned Spellweave and Cauldron Core descriptions to the right-side `.kwfw-panel-info` column.
+- Removed new creation of `.kwfw-desc-wide` clones.
+- Added runtime cleanup for legacy wide-description clones and CSS suppression for clones recreated by an older hot-reloaded observer.
+- Renamed the visible standard `Description` option label to `Size & Style Variant` without changing the underlying Fourthwall option key.
+- Added product-specific stable select widths based on the longest option label.
+- Width calculation uses the computed select font, padding, borders, and native dropdown-arrow allowance.
+- Select widths use a `124px` minimum, clamp to the available field width, and recalculate after fonts load or the viewport resizes.
+- Moved universal-media CSS/JS from historical fixed pins to the current loader `selfRef`.
 
 Scope:
 
-- CSS and loader cache-key change only.
-- No registry, resolver, price, cart, gallery, carousel card, rail, grid, or wheel behavior changed.
+- Standard `kwfw` modal presentation only.
+- Step 3 `.kwpj-*` description placement, option labels, select widths, and quantity geometry remain unchanged.
+- No size-chart data/routing, product price, Add to Cart request, selected-variant gallery logic, carousel rail, grid, or wheel behavior changed.
+
+Runtime commits:
+
+```text
+59fba0ff65f137f3bf5c1e5835f4f6ea18201965
+9d2cb7e61fca4d27b32035f8aff8bf59833d6f87
+a721343eaa347a0ae3d49e2a3c468705d90727fa
+87805c95bceb8b0060273857fe8120de28273af4
+4bc31f2f1c2dd6253625391a45d11c9786e93f06
+```
 
 Rollback:
 
 ```text
-Global loader commit: 8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0
-Cache key: 20260718-samurai-size-guides-1
+Global loader commit: aa8ad96cb30ddfcff156be0785846040633aea3d
+Cache key: 20260718-size-guide-layout-compact-1
 ```
+
+## 2026-07-18 — Featured row compatibility and compact size charts
+
+Loader commit `aa8ad96cb30ddfcff156be0785846040633aea3d` added legacy-row-compatible Featured alignment, AgencyFB size-chart titles, content-driven chart widths, and tighter mobile table spacing.
 
 ## 2026-07-18 — Samurai chart routing and original Featured row ownership
 
