@@ -174,17 +174,19 @@ Visual and layout rules:
 - Size Guide buttons use AgencyFB, white uppercase text, black background, a subtle white border, and orange hover/focus state.
 - Modal control height is `46px`.
 - Standard `kwfw` and Step 3 `kwpj` use different quantity-row ownership.
-- Featured Spellweaves keep `.kwfw-label` directly inside `.kwfw-field`; only `.kwfw-qty` and the Size Guide button are moved into `.kw-size-qty-size-row--kwfw`.
-- The featured row uses `display:flex`, `align-items:center`, a `10px` desktop gap, and no independent bottom margin.
-- Featured quantity controls use explicit `48px 58px 48px` tracks with two `8px` gaps.
+- Featured Spellweaves keep `.kwfw-label` directly inside `.kwfw-field`; `.kwfw-qty` and Size Guide share a two-column row.
+- Featured row selectors intentionally target both `.kw-size-qty-size-row` and `.kw-size-qty-size-row--kwfw` so hot-reloaded legacy rows cannot lose alignment.
+- Featured quantity controls use explicit `48px 58px 48px` tracks with two `8px` gaps; Size Guide occupies a separate column with a `10px` desktop gap.
 - Step 3 retains a field-level `.kw-size-qty-size-row` grid with a `170px` quantity column, separate Size Guide column, and `16px` desktop gap.
 - Do not reintroduce one shared field-wrapper rule for both namespaces.
 - Native product-page buttons remain full width before Add to Cart.
 - Overlay: `rgba(0,0,0,.82)`.
-- Panel: `min(980px,96vw)`, `max-height:92vh`, near-black background, subtle red shadow.
+- Panel is content-driven with `width:fit-content`, a `560px` desktop minimum where space permits, viewport-constrained maximum width, `max-height:92vh`, near-black background, and subtle red shadow.
+- Size-chart titles use AgencyFB at heavy weight with `.09em` desktop letter spacing and `.075em` mobile letter spacing.
 - Header controls remain sticky.
 - US/Metric active state uses `#ff7a00`.
-- Chart tables use Arial/Helvetica, black cells, red headers/borders, and horizontal overflow on narrow screens.
+- Chart tables remain Arial/Helvetica for readability, use content-driven column widths, black cells, red headers/borders, and tighter desktop padding.
+- Mobile tables remove the former forced `560px` minimum, wrap header labels, use `12.5px` text and `7px 5px` cell padding, and only scroll horizontally when the actual columns require it.
 - Body scroll locks while the popup is open and focus returns on close.
 
 Chart resolution is registry-driven. Product-scoped material rules must be used for generic values such as `Vegan Leather` and `Genuine Leather`; never route those values globally.
