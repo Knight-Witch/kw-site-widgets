@@ -2,6 +2,46 @@
 
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records under `/HISTORY/DIFFS/`.
 
+## 2026-07-18 04:40 UTC — KW-RUNTIME-SIZE-GUIDES-016
+
+Summary: Corrected the remaining vertical alignment issue in the standard `kwfw` featured-product modal without changing the now-correct Step 3 `kwpj` layout.
+
+Affected files:
+
+```text
+fourthwall/kwfw-size-guide.css
+fourthwall/global/kw-fourthwall-loader.js
+MASTER.md
+STYLE_KEYS.md
+fourthwall/global/CHANGELOG.md
+HISTORY/PRE_FLIGHT_Check.md
+HISTORY/CHANGELOG.md
+HISTORY/DIFFS/2026-07-18-featured-size-guide-align-1.md
+```
+
+Runtime commits:
+
+```text
+f3be53876a4ed3b5fc4f54a022818cbfd700abf9
+2a3d96c115de79cc6a22eb85181350cb4c76b465
+```
+
+Reason: In the standard modal, the Qty label and controls were still inside one `.kwfw-field`. The Size Guide button could align against the combined field height instead of the 46px control row.
+
+Change:
+
+- Added `kwfw`-only two-row grid semantics.
+- Flattened only the standard quantity field with `display: contents`.
+- Placed the Qty label in row 1.
+- Placed the quantity controls and Size Guide button together in row 2.
+- Left all Step 3 `.kwpj-*` geometry unchanged.
+
+Rollback: Restore loader commit `0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462` with cache key `20260717-size-guide-row-fix-2`.
+
+Production candidate: Loader commit `2a3d96c115de79cc6a22eb85181350cb4c76b465`, cache key `20260717-featured-size-guide-align-1`.
+
+Scope: CSS-only modal alignment change. No JavaScript, chart data, prices, cart, gallery, carousel card, rail, or wheel behavior changed.
+
 ## 2026-07-18 04:25 UTC — KW-RUNTIME-SIZE-GUIDES-015
 
 Summary: Corrected the remaining live quantity-row failures in both carousel modal namespaces. The standard `kwfw` Size Guide button now bottom-aligns with the quantity controls, and the Step 3 `kwpj` quantity control can no longer expand underneath the Size Guide button.
