@@ -2,6 +2,75 @@
 
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records under `/HISTORY/DIFFS/`.
 
+## 2026-07-19 00:35 UTC — KW-RUNTIME-FEATURED-COLLECTIONS-023
+
+Summary: Standard featured Spellweave cards now use clean main titles and collection-aware linked subtitles. Collection identity is resolved per product, so mixed homepage carousels can correctly label products from different Collection Domains without inheriting one label from the carousel holder.
+
+Affected files:
+
+```text
+fourthwall/kw-product-modal-presentation.css
+fourthwall/kw-product-modal-presentation.js
+fourthwall/global/kw-fourthwall-loader.js
+ARCHITECTURE.md
+STYLE_KEYS.md
+MASTER.md
+fourthwall/README.md
+fourthwall/global/README.md
+fourthwall/global/CHANGELOG.md
+HISTORY/PRE_FLIGHT_Check.md
+HISTORY/CHANGELOG.md
+HISTORY/DIFFS/2026-07-19-featured-card-collections-2.md
+```
+
+Runtime commits:
+
+```text
+7a90ba867318e0491ea60d64fd4c450798231de6
+8aa3cc5eb05f286370a85b6c3c365d3cfb9e451e
+b5769ac1044197e4ca0c88409b62ecbc0f5abc8e
+08c4dca8bf833d283cedfeb471f29bd2741a70cc
+```
+
+Reason: Standard cards previously hid their product titles and had no reliable Collection Domain label. Classifying from the visible carousel handle would fail on mixed homepage carousels, while classifying only from product-title text would fail when the source title does not include the collection name.
+
+Behavior:
+
+- Restores `.kwfw-card-title` as a white AgencyFB title with a two-line clamp.
+- Adds a smaller red linked collection subtitle beneath the main title.
+- Uses one controlled registry for Edgerunners, Basscraft, Wicked Hearts, Astral Plane, Black Mass, and Starchild.
+- Fetches each controlled Fourthwall collection once per page and indexes membership by product slug and stable identifiers.
+- Resolves each product independently, including mixed carousels.
+- Uses embedded collection metadata, a dedicated holder handle, and recognized title text as progressively weaker fallbacks.
+- Extends the same registry to expanded-modal title/subtitle formatting.
+- Desktop pointer/focus glitches from the tagline to the collection name.
+- Mobile cycles between tagline and collection name every four seconds unless reduced motion is enabled.
+
+Controlled display pairs:
+
+```text
+Cyberpunk 2077 <-> Edgerunners Collection
+Eat. Sleep. Rave. Repeat. <-> Basscraft Collection
+Snakes Skulls & Sin <-> Wicked Hearts Collection
+All Things Fantasy <-> Astral Plane Collection
+Sci-fi & Beyond <-> Black Mass Collection
+Mystics Zodiacs & Vibes <-> Starchild Collection
+```
+
+Scope exclusions:
+
+- No Fourthwall product object is mutated.
+- No variant resolution, price calculation, Add to Cart request, Size Guide behavior, selected-gallery media, carousel rail, grid, or wheel behavior changed.
+- No Step 3 source file changed.
+
+Rollback: Restore loader commit `e9404864ba58ab7daee8e771894d2c374a5f8fc3` with cache key `20260718-modal-sync-2`.
+
+Production candidate: Loader commit `08c4dca8bf833d283cedfeb471f29bd2741a70cc`, cache key `20260718-featured-card-collections-2`.
+
+Validation: The final presentation runtime passed `node --check`. Title prefix/suffix stripping, one-time collection-index caching, lookup priority, reduced-motion handling, and non-interference with price/cart/gallery/scroll systems were reviewed. Live verification remains required on the mixed homepage carousel and dedicated Edgerunners/Basscraft carousels.
+
+Risks/follow-up: Future Collection Domain handles must be confirmed if they differ from the registered `-core` or plain aliases. Collection indexing adds one successful lookup per controlled collection, with an alias retry when the first handle is empty or unavailable. A full Fourthwall preview reload is required after replacing the footer so earlier script instances are discarded.
+
 ## 2026-07-18 23:58 UTC — KW-RUNTIME-MODAL-PRESENTATION-022
 
 Summary: Added one shared presentation layer for the standard Spellweave/Cauldron Core `kwfw` modal and Step 3 jacket `kwpj` modal. Both product windows now share black surfaces, desktop gallery geometry, AgencyFB typography, color assignment, navigation treatment, mobile media spacing, clean product titles, and a linked Cyberpunk/Edgerunners collection subtitle.
