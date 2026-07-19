@@ -5,15 +5,15 @@ This directory owns the site-wide Fourthwall runtime layer. Read `/OPERATING_CON
 ## Current production candidate
 
 ```text
-Commit: fe902634c6ef2c776524735fe93a778ffb52c331
-Cache key: 20260718-featured-card-collections-1
+Commit: 08c4dca8bf833d283cedfeb471f29bd2741a70cc
+Cache key: 20260718-featured-card-collections-2
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@fe902634c6ef2c776524735fe93a778ffb52c331/fourthwall/global/kw-fourthwall-loader.js?v=20260718-featured-card-collections-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@08c4dca8bf833d283cedfeb471f29bd2741a70cc/fourthwall/global/kw-fourthwall-loader.js?v=20260718-featured-card-collections-2
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -147,7 +147,7 @@ The two carousel namespaces intentionally use different quantity-row ownership. 
 3. Legacy global loaders remain in the directory.
 4. Native Fourthwall product-page markup and exact product slugs require live verification.
 5. Controlled Collection Domain handles require live verification as additional featured Spellweaves are published.
-6. Collection membership indexing adds up to six one-time API requests on pages containing standard product cards.
+6. Collection membership indexing performs one successful request per controlled collection, with an alias retry when the first handle is empty or unavailable.
 7. Fourthwall editor hot swaps cannot remove listeners from earlier script instances without a full preview reload.
 
 ## Production rules
