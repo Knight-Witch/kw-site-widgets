@@ -12,7 +12,7 @@ fourthwall/domains/collection/               Collection banner/category page mod
 fourthwall/domains/collection/feature-video/ Collection feature video module.
 fourthwall/prod_card_media/                  Product-card media manifest.
 fourthwall/kwfw-*                            Standard carousel, compatibility, size guide, universal media, and product rules.
-fourthwall/kw-product-modal-presentation.*   Shared cards/modal visual and collection-title presentation.
+fourthwall/kw-product-modal-presentation.*   Shared compact-card visibility and expanded-modal presentation.
 ```
 
 ## Global runtime
@@ -47,7 +47,7 @@ prod_card_media/README.md
 
 `kwfw-modal-product-fix.*` is the shared expanded-modal compatibility owner for standard `kwfw` and Step 3 `kwpj`. It handles live Fourthwall pricing, Add to Cart styling, selected-variant gallery filtering, and standard-only option presentation without owning rail or wheel behavior.
 
-`kw-product-modal-presentation.*` owns shared visual/title presentation. It standardizes black modal surfaces, gallery caps, AgencyFB typography, arrows, dots, mobile spacing, clean modal titles, featured-card titles, and linked collection subtitles. It maintains the controlled Collection Domain registry and resolves each standard card from product membership rather than assuming every product belongs to the visible carousel handle. It must not take ownership of variant resolution, price resolution, cart requests, or selected-gallery logic.
+`kw-product-modal-presentation.*` owns shared visual/title presentation. It standardizes black modal surfaces, gallery caps, AgencyFB typography, arrows, dots, mobile spacing, clean modal titles, and linked Collection Domain subtitles. It also suppresses product titles and collection subtitles on compact `kwfw` and `kwpj` tiles so identity information appears only after the product window is expanded. It maintains the controlled Collection Domain registry and must not take ownership of variant resolution, price resolution, cart requests, or selected-gallery logic.
 
 `kwfw-universal-media.*` owns appended support media and preserves the standard product description inside `.kwfw-panel-info`. The retired full-width `.kwfw-desc-wide` treatment must not be reintroduced.
 
