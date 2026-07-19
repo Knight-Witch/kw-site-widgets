@@ -4,9 +4,9 @@ This file is the structural blueprint for the Knight Witch site/widgets reposito
 
 ## Source-of-truth boundary
 
-GitHub owns shared code and repository documentation. Fourthwall owns snippet placement, native product and variant data, native product media, checkout, and custom page sections not represented here.
+GitHub owns shared code and repository documentation. Fourthwall owns snippet placement, native product/variant data and media, checkout, and custom page sections not represented here.
 
-Fourthwall pages should contain small loader/drop-in snippets. Shared source belongs in GitHub.
+Fourthwall pages should contain small pinned loader/drop-in snippets. Shared implementation belongs in GitHub.
 
 ## Root structure
 
@@ -62,7 +62,7 @@ fourthwall/global/kw-cart-runtime.css
 fourthwall/global/kw-cart-runtime.js
 ```
 
-The global loader derives `selfRef` from its pinned jsDelivr URL, sets `window.KWFW_SETTINGS`, loads CSS first, and loads JavaScript sequentially. When a same-key resource points to a different URL, the loader removes the stale resource before loading the new one.
+The global loader derives `selfRef` from its pinned jsDelivr URL, sets `window.KWFW_SETTINGS`, loads CSS first, and loads JavaScript sequentially. When a same-key resource points to a different URL, it removes the stale resource before loading the new one.
 
 ## Current global dependency order
 
@@ -106,7 +106,7 @@ The global loader derives `selfRef` from its pinned jsDelivr URL, sets `window.K
 16. `fourthwall/kw-product-modal-presentation.js` from `selfRef`
 17. `fourthwall/global/kw-cart-runtime.js` from `selfRef`
 
-`kwfw-size-guide-data.js` must load before `kwfw-size-guide.js`. The presentation module loads after modal compatibility so it can format final card/modal DOM without owning variant, price, cart, or selected-gallery logic.
+`kwfw-size-guide-data.js` must load before `kwfw-size-guide.js`. The presentation module loads after compatibility so it can format final modal DOM and enforce compact-card visibility without owning variant, price, cart, or selected-gallery logic.
 
 ## Product carousel systems
 
@@ -129,9 +129,11 @@ Holder selectors:
 [data-kwfw-collection]
 ```
 
-The base runtime owns product loading, card construction, the standard product modal, option selection, cart actions, and gallery controls. Desktop grid and wheel behavior are shared across base CSS, the desktop override, and the wheel bridge. Do not treat the wheel bridge as an isolated listener.
+The base runtime owns product loading, card construction, modal construction, option selection, cart actions, and gallery controls. Desktop grid and wheel behavior are shared across base CSS, the desktop override, and the wheel bridge. Do not treat the wheel bridge as an isolated listener.
 
-The base runtime renders product descriptions inside `.kwfw-panel-info`. Universal media must preserve that ownership and must not clone the description below the two-column modal grid.
+The base runtime renders descriptions inside `.kwfw-panel-info`. Universal media must preserve that ownership and must not clone the description below the modal grid.
+
+Compact `kwfw` cards retain the base media and action architecture, but shared presentation CSS suppresses `.kwfw-card-title` and `.kw-product-card-collection-link`. Product identity appears in the expanded modal only.
 
 ### Step 3 `kwpj` base-jacket carousel
 
@@ -141,7 +143,9 @@ The authoritative implementation remains on branch `kw-product-carousel-refactor
 components/kw-plain-jackets/
 ```
 
-It uses separate `.kwpj-*` selectors and a body-level `.kwpj-modal`. Global compatibility and presentation modules may support both namespaces, but Step 3 product loading, filtering, modal construction, and cart logic remain branch-owned until merged.
+It uses separate `.kwpj-*` selectors and a body-level `.kwpj-modal`. Global compatibility/presentation may support both namespaces, but Step 3 product loading, filtering, modal construction, and cart logic remain branch-owned until merged.
+
+Step 3 already hides `.kwpj-name` in its branch CSS; the global presentation layer adds a defensive compact-card suppression rule so hot-reloaded or future variants remain consistent.
 
 ### Shared modal compatibility
 
@@ -171,26 +175,27 @@ fourthwall/kw-product-modal-presentation.css
 fourthwall/kw-product-modal-presentation.js
 ```
 
-This module owns shared visual presentation and customer-facing title formatting for standard `kwfw` cards/modals and Step 3 `kwpj` modals. It does not own product loading, variant resolution, pricing, Add to Cart, or selected-variant media selection.
+This module owns cross-system modal visuals, customer-facing modal title/collection presentation, and compact-card title visibility. It does not own product loading, variant resolution, pricing, Add to Cart, or selected-variant media selection.
 
 Visual responsibilities:
 
 - Black panel, gallery, track, and information-column surfaces across both modal namespaces.
-- Shared desktop panel width, column ratio, 540px gallery cap, top-aligned `contain` media, AgencyFB typography, control colors, close buttons, details buttons, dots, and transparent gallery navigation.
+- Shared desktop panel width, column ratio, 540px gallery cap, top-aligned `contain` media, AgencyFB typography, controls, dots, and transparent gallery navigation.
 - Shared mobile gallery height, compact information spacing, dots/cue placement, and transparent edge-positioned arrows.
 - Single-media navigation suppression.
-- Standard featured-card main-title and collection-subtitle styling.
+- Hide product titles and Collection Domain subtitles on compact `kwfw` and `kwpj` cards.
+- Preserve title and Collection Domain presentation in expanded modals.
 
 Collection-title responsibilities:
 
 - Maintain the controlled six-collection registry.
 - Index product membership by fetching each controlled Fourthwall collection once per page.
-- Match products by slug and stable product identifiers, independent of the collection slug used by the visible carousel.
-- Use embedded product collection metadata when Fourthwall supplies it.
-- Use the holder collection only as a fallback for a dedicated single-collection carousel.
-- Use recognized title prefixes/suffixes only as the final fallback.
+- Match products by slug and stable identifiers, independent of the carousel holder used to surface them.
+- Use embedded collection metadata when Fourthwall supplies it.
+- Use holder collection only as a fallback for a dedicated carousel.
+- Use recognized title prefixes/suffixes as the final fallback.
 - Never mutate the Fourthwall product object.
-- Format both standard featured cards and expanded modals.
+- Format expanded modal titles and linked collection subtitles.
 - Desktop pointer/focus swaps the red tagline to the collection name through the shared glitch transition.
 - Mobile cycles between tagline and collection name every four seconds unless reduced motion is enabled.
 
@@ -216,7 +221,7 @@ starchild-core / starchild
   Mystics Zodiacs & Vibes <-> Starchild Collection
 ```
 
-Mixed homepage/featured carousels must resolve each card from product membership. They must not assign one subtitle to every card based only on the visible carousel handle.
+Mixed homepage/featured carousels must resolve expanded modal collection identity from the product, not solely from the visible carousel handle.
 
 ## Global size-guide architecture
 
@@ -228,7 +233,7 @@ fourthwall/kwfw-size-guide.js
 fourthwall/kwfw-size-guide.css
 ```
 
-`kwfw-size-guide-data.js` is the only chart-data registry. Each chart defines exact product slugs, product-title aliases, selected-variant aliases or product-scoped rules, columns, rows, and notes.
+`kwfw-size-guide-data.js` is the only chart-data registry. Each chart defines exact product slugs, title aliases, selected-variant aliases or product-scoped rules, columns, rows, and notes.
 
 Resolution order:
 
@@ -246,13 +251,7 @@ Injection points:
 native /products/ pages: before the detected Add to Cart control
 ```
 
-The two carousel namespaces intentionally use different quantity-row ownership. Product-scoped rules are required for generic values such as `Vegan Leather` and `Genuine Leather`. Unknown products and accessories do not receive a generic chart.
-
-Optional explicit markup:
-
-```html
-<button type="button" data-kw-size-guide="mens-hooded-vest">Size Guide</button>
-```
+The carousel namespaces intentionally use different quantity-row ownership. Product-scoped rules are required for generic values such as `Vegan Leather` and `Genuine Leather`. Unknown products and accessories do not receive a generic chart.
 
 ## Universal product media
 
@@ -264,9 +263,9 @@ fourthwall/kwfw-universal-media.js
 fourthwall/prod_card_media/manifest.json
 ```
 
-It appends shared support media to standard product modal galleries. Native product/variant media remains Fourthwall-hosted. Shared support media should use the Knight Witch CDN.
+It appends shared support media to standard modal galleries. Native product/variant media remains Fourthwall-hosted. Shared support media should use the Knight Witch CDN.
 
-Universal media does not own product-description placement. It removes legacy `.kwfw-desc-wide` clones and leaves the original `.kwfw-desc` inside `.kwfw-panel-info`.
+Universal media does not own description placement. It removes legacy `.kwfw-desc-wide` clones and leaves the original `.kwfw-desc` inside `.kwfw-panel-info`.
 
 ## Product rules
 
@@ -317,7 +316,7 @@ Known dangerous state: commit `3f0582046c6c0f31aedefa5e9d4805ec9eedddf3` contain
 - Carousel desktop footprint: `fourthwall/kwfw-carousel-desktop-grid.css`
 - Carousel wheel/page-scroll behavior: `fourthwall/kwfw-carousel-wheel-bridge.js`
 - Shared modal prices/CTA/variant gallery and standard options: `fourthwall/kwfw-modal-product-fix.*`
-- Cross-system modal visuals, featured-card titles, collection membership, and glitch subtitles: `fourthwall/kw-product-modal-presentation.*`
+- Cross-system modal visuals, compact-card title visibility, collection membership, and modal glitch subtitles: `fourthwall/kw-product-modal-presentation.*`
 - Standard modal support media and description preservation: `fourthwall/kwfw-universal-media.*`
 - Size-chart data and routing: `fourthwall/kwfw-size-guide-data.js`
 - Size-guide injection/modal behavior: `fourthwall/kwfw-size-guide.js`
