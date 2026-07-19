@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: fe902634c6ef2c776524735fe93a778ffb52c331
-Cache key: 20260718-featured-card-collections-1
+Commit: 08c4dca8bf833d283cedfeb471f29bd2741a70cc
+Cache key: 20260718-featured-card-collections-2
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@fe902634c6ef2c776524735fe93a778ffb52c331/fourthwall/global/kw-fourthwall-loader.js?v=20260718-featured-card-collections-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@08c4dca8bf833d283cedfeb471f29bd2741a70cc/fourthwall/global/kw-fourthwall-loader.js?v=20260718-featured-card-collections-2
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -217,7 +217,7 @@ Current behavior:
 8. `gallery-portfolio/index.html` references a missing runtime in the audited main branch.
 9. Controlled collection handles must be verified live as each Collection Domain begins carrying featured Spellweaves.
 10. Fourthwall editor hot-swaps can leave old JavaScript listeners resident until a full preview reload.
-11. Collection membership indexing adds up to six one-time collection requests on pages containing standard product cards.
+11. Collection membership indexing performs one successful lookup per controlled collection, with an alias retry when the first handle is empty or unavailable.
 
 ## Completed recent work
 
