@@ -1,4 +1,5 @@
 (() => {
+  const headerBuild = "20260718-collection-link-decode-hover-2";
   const mobileGlitchDelay = 420;
   const navigationDelay = 220;
   const textSwapDelay = 130;
@@ -107,8 +108,10 @@
   }
 
   function injectHeader() {
-    if (document.getElementById("kw-header")) return;
-    document.body.insertAdjacentHTML("afterbegin", `<nav id="kw-header"><div class="kw-bar"><button id="kw-toggle" type="button" aria-label="Open navigation">☰</button><button id="kw-close" type="button" aria-label="Close navigation">✕</button><ul class="kw-menu">${renderItems(navItems)}</ul><div class="kw-overlay" id="kw-overlay"></div><div class="kw-panels" id="kw-panels"></div></div></nav>`);
+    const existing = document.getElementById("kw-header");
+    if (existing?.dataset.kwHeaderBuild === headerBuild) return;
+    existing?.remove();
+    document.body.insertAdjacentHTML("afterbegin", `<nav id="kw-header" data-kw-header-build="${escapeAttribute(headerBuild)}"><div class="kw-bar"><button id="kw-toggle" type="button" aria-label="Open navigation">☰</button><button id="kw-close" type="button" aria-label="Close navigation">✕</button><ul class="kw-menu">${renderItems(navItems)}</ul><div class="kw-overlay" id="kw-overlay"></div><div class="kw-panels" id="kw-panels"></div></div></nav>`);
   }
 
   function triggerGlitch(element) {
@@ -232,6 +235,21 @@
     window.setTimeout(() => revealSubtitle(subtitle), subtitleRevealDelay);
   }
 
+  function getHoverSwapLinks(element) {
+    return Array.from(element?.querySelectorAll("a[data-kw-hover-text]") || []);
+  }
+
+  function cascadeHoverSwapLinks(element, forward, reverse = false) {
+    const links = getHoverSwapLinks(element);
+    const ordered = reverse ? links.reverse() : links;
+    ordered.forEach((link, index) => {
+      window.setTimeout(() => {
+        revealInlineText(link, forward ? link.dataset.kwHoverText : link.dataset.kwTitle);
+      }, index * collectionCascadeStep);
+    });
+    return ordered.length ? ((ordered.length - 1) * collectionCascadeStep) + inlineRevealDuration : 0;
+  }
+
   function isModifiedNavigation(event) {
     return event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
   }
@@ -242,23 +260,6 @@
     triggerGlitch(element);
     element.style.color = "#ff0000";
     setTimeout(() => { window.location.href = href; }, navigationDelay);
-  }
-
-  function getHoverSwapLinks(root) {
-    return Array.from(root?.querySelectorAll("a[data-kw-hover-text]") || []);
-  }
-
-  function cascadeHoverSwapLinks(root, showHoverText, reverseOrder = false) {
-    const links = getHoverSwapLinks(root);
-    if (!links.length) return 0;
-    const ordered = reverseOrder ? [...links].reverse() : links;
-    ordered.forEach((link, index) => {
-      window.setTimeout(() => {
-        const text = showHoverText ? link.dataset.kwHoverText : link.dataset.kwTitle;
-        revealInlineText(link, text || link.textContent);
-      }, index * collectionCascadeStep);
-    });
-    return ((ordered.length - 1) * collectionCascadeStep) + inlineRevealDuration;
   }
 
   function initHeader() {
@@ -274,7 +275,6 @@
     const desktopDropdownScrollSpeed = 0.34;
     let resizeFrame = null;
     let lockedDesktopItem = null;
-    let mobileCloseTimer = null;
 
     if (!header || !toggle || !closeBtn || !overlay || !desktopMenu || !panelsRoot) return;
 
@@ -581,6 +581,7 @@
 
     function buildMobilePanels() {
       if (window.innerWidth > 1024) return;
+      let mobileCloseTimer = null;
       panelsRoot.innerHTML = "";
       panelsRoot.dataset.kwMobileMode = "main";
       setMobilePanelWidth();
@@ -697,7 +698,7 @@
             const subLink = document.createElement("a");
             const text = s.dataset.kwTitle || s.textContent.trim();
             subLink.href = s.getAttribute("href") || "#";
-            subLink.className = ["kw-glitch", s.dataset.kwHoverText ? "kw-hover-swap" : ""].filter(Boolean).join(" ");
+            subLink.className = s.dataset.kwHoverText ? "kw-glitch kw-hover-swap" : "kw-glitch";
             subLink.dataset.kwText = text;
             subLink.dataset.kwTitle = text;
             if (s.dataset.kwHoverText) subLink.dataset.kwHoverText = s.dataset.kwHoverText;
@@ -751,16 +752,9 @@
     }
 
     function closeMobile() {
-      if (mobileCloseTimer) {
-        window.clearTimeout(mobileCloseTimer);
-        mobileCloseTimer = null;
-      }
       overlay.classList.remove("open");
       closeBtn.style.display = "none";
-      panelsRoot.querySelectorAll(".kw-panel.sub").forEach(panel => {
-        resetElementSubtitles(panel);
-        getHoverSwapLinks(panel).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
-      });
+      panelsRoot.querySelectorAll(".kw-panel.sub").forEach(resetElementSubtitles);
       panelsRoot.innerHTML = "";
       panelsRoot.dataset.kwMobileMode = "";
     }
