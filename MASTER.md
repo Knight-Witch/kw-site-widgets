@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: 08c4dca8bf833d283cedfeb471f29bd2741a70cc
-Cache key: 20260718-featured-card-collections-2
+Commit: 4e93f2dfefb50e6e84de61d4b45ab5dab2438b2a
+Cache key: 20260719-compact-card-media-only-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@08c4dca8bf833d283cedfeb471f29bd2741a70cc/fourthwall/global/kw-fourthwall-loader.js?v=20260718-featured-card-collections-2
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@4e93f2dfefb50e6e84de61d4b45ab5dab2438b2a/fourthwall/global/kw-fourthwall-loader.js?v=20260719-compact-card-media-only-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -50,6 +50,13 @@ fourthwall/kwfw-font-agencyfb.css
 
 Status: active. Scroll behavior remains shared across base CSS, desktop overrides, and the wheel bridge.
 
+Compact-card presentation:
+
+- Product titles are hidden on the small `kwfw` tiles.
+- Collection subtitles are hidden on the small `kwfw` tiles.
+- The card remains media-led with the existing View & Add to Cart control.
+- Product title and Collection Domain subtitle remain available in the expanded modal only.
+
 Current standard modal behavior:
 
 - Product descriptions remain in the right-side `.kwfw-panel-info` column.
@@ -64,7 +71,8 @@ Owned on branch `kw-product-carousel-refactor` under `components/kw-plain-jacket
 
 Current shared presentation behavior:
 
-- Step 3 modal media remains `object-fit:contain` and is top-aligned.
+- Step 3 compact-card product names remain hidden.
+- Step 3 modal media remains `object-fit:contain` and top-aligned.
 - Step 3 uses the same black modal surfaces, gallery footprint, AgencyFB typography, color assignment, transparent arrows, dots, close control, CTA treatment, and mobile gallery spacing as the standard modal.
 - Step 3 product loading, filters, modal construction, variant selection, and cart logic remain branch-owned.
 
@@ -99,8 +107,8 @@ fourthwall/kw-product-modal-presentation.js
 Current behavior:
 
 - Synchronizes expanded `kwfw` and `kwpj` visual styling.
-- Formats standard featured-product card titles.
-- Formats collection-aware modal titles.
+- Keeps compact carousel product titles and card collection subtitles hidden across both namespaces.
+- Formats collection-aware expanded-modal titles and linked subtitles.
 - Uses one controlled six-collection registry.
 - Fetches each controlled Fourthwall collection once per page and indexes membership by slug/product identifiers.
 - Resolves each product independently, including mixed homepage carousels.
@@ -108,8 +116,8 @@ Current behavior:
 - Uses the visible carousel handle only as a dedicated-carousel fallback.
 - Uses title parsing only as the final fallback.
 - Does not mutate Fourthwall product objects.
-- Desktop subtitles glitch between tagline and collection name on pointer/focus.
-- Mobile subtitles cycle every four seconds unless reduced motion is enabled.
+- Desktop modal subtitles glitch between tagline and collection name on pointer/focus.
+- Mobile modal subtitles cycle every four seconds unless reduced motion is enabled.
 
 Controlled display registry:
 
@@ -218,6 +226,7 @@ Current behavior:
 9. Controlled collection handles must be verified live as each Collection Domain begins carrying featured Spellweaves.
 10. Fourthwall editor hot-swaps can leave old JavaScript listeners resident until a full preview reload.
 11. Collection membership indexing performs one successful lookup per controlled collection, with an alias retry when the first handle is empty or unavailable.
+12. The new compact-card title suppression requires live verification in standard, Step 3, desktop, and mobile carousel views.
 
 ## Completed recent work
 
@@ -231,12 +240,12 @@ Current behavior:
 - Added `Size & Style Variant` presentation and stable longest-option select widths.
 - Synchronized standard and Step 3 modal backgrounds, gallery footprint, fonts, arrows, dots, buttons, and mobile spacing.
 - Added collection-aware clean modal titles and red glitch subtitles.
-- Added collection-aware featured-card main titles and subtitles.
 - Added mixed-carousel-safe per-product collection membership resolution.
+- Removed product titles and collection subtitles from all compact carousel tiles while preserving them in expanded modals.
 
 ## Pending work
 
-1. Verify the latest loader live on the homepage mixed featured carousel and dedicated Edgerunners/Basscraft carousels.
+1. Verify the latest loader live on standard and Step 3 compact cards and expanded modals.
 2. Confirm exact Fourthwall handles for future Wicked Hearts, Astral Plane, Black Mass, and Starchild featured-product collections.
 3. Add remaining garment charts as exact source data is supplied.
 4. Confirm native product slugs where normalized names differ.
@@ -249,9 +258,13 @@ Current behavior:
 
 ## REMOVALS / DECISIONS AGAINST
 
+### No product title or collection subtitle on compact product tiles
+
+Reason: compact tiles should remain image-led and use the single View & Add to Cart action. Product identity and Collection Domain information belong in the expanded product window.
+
 ### No carousel-handle-only collection labeling
 
-Reason: mixed featured carousels contain products from multiple Collection Domains. Each card must resolve from the product's own membership.
+Reason: mixed featured carousels contain products from multiple Collection Domains. Expanded modals must resolve from the product's own membership.
 
 ### No title-only collection classification
 
