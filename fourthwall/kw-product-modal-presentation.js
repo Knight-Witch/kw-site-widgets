@@ -66,11 +66,16 @@
   const qa = (selector, root = d) => Array.from(root.querySelectorAll(selector));
   let collectionIndexRequest = null;
 
-  collections.forEach(collection => collection.handles.forEach(handle => collectionByHandle.set(handle,collection)));
-
   const settings = () => window.KWFW_SETTINGS || {};
   const normalizeTitle = value => String(value ?? "").replace(/\s+/g," ").trim();
   const normalizeKey = value => String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+
+  collections.forEach(collection => {
+    [...collection.handles,collection.key,collection.alternate,collection.primary].forEach(value => {
+      const key = normalizeKey(value);
+      if(key) collectionByHandle.set(key,collection);
+    });
+  });
   const escapePattern = value => String(value).replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
   const productSlug = product => product?.slug || product?.handle || product?.productSlug || product?.product_slug || "";
   const productKeys = product => [...new Set([
