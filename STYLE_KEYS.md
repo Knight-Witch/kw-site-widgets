@@ -34,7 +34,10 @@ Current font assets live under `/FONTS/`. Product descriptions, forms, and size-
 #000       black backgrounds
 #050505    modal panel black
 #111       controls and secondary surfaces
+#1d1d1d    secondary modal buttons
+#292929    form and quantity controls
 #f00       Knight Witch red
+#ff2a1d    collection subtitle red
 #8a0000    dark red borders
 #ff4b4b    product price red
 #ff7a00    orange CTA / active control
@@ -47,8 +50,8 @@ Current font assets live under `/FONTS/`. Product descriptions, forms, and size-
 
 ```css
 @media (max-width: 768px)  shared mobile breakpoint
-@media (max-width: 760px)  carousel mobile split
-@media (min-width: 761px)  carousel desktop split
+@media (max-width: 760px)  carousel/mobile modal split
+@media (min-width: 761px)  carousel/desktop modal split
 ```
 
 ## Global foundation and background
@@ -120,6 +123,13 @@ fourthwall/kwfw-modal-product-fix.css
 fourthwall/kwfw-modal-product-fix.js
 ```
 
+Shared presentation owner:
+
+```text
+fourthwall/kw-product-modal-presentation.css
+fourthwall/kw-product-modal-presentation.js
+```
+
 Supported namespaces:
 
 ```text
@@ -135,21 +145,54 @@ color: #140a00;
 border-color: #ffb04a;
 ```
 
-The expanded Add to Cart button uses an orange glow/pulse. View Details remains dark. Prices use `#ff4b4b` and must come from real Fourthwall variant data. Selected variants switch to their assigned `variant.images` media with product-wide fallback.
+The expanded Add to Cart button uses an orange glow/pulse. View Details uses `#1d1d1d`. Prices use `#ff4b4b` and must come from real Fourthwall variant data. Selected variants switch to assigned `variant.images` media with product-wide fallback.
 
-Step 3 `.kwpj-gallery-track` images and videos use `object-fit:contain` with `object-position:top center`, matching the standard modal’s top-justified product-media presentation instead of vertically centering shorter jacket images inside the gallery viewport.
+### Unified modal surfaces and geometry
+
+- Entire modal panels, grids, galleries, tracks, and information columns are black so transparent and black-background product media blend into the window.
+- Desktop panels use `width:min(1120px,96vw)`.
+- Desktop grids use `minmax(380px,1.18fr) minmax(360px,.82fr)`.
+- Desktop galleries and tracks use a fixed `540px` height.
+- All standard and Step 3 gallery media use `object-fit:contain`, `object-position:top center`, full track height, and black backgrounds.
+- Single-media galleries hide navigation and dots.
+- Both modal namespaces use AgencyFB for titles, prices, labels, controls, buttons, and description content.
+- Product titles are white, prices red, collection subtitles red, and customer controls use `#292929`.
+- Close buttons use black circular surfaces with white borders and Arial glyphs.
+
+### Gallery navigation
+
+- Both namespaces use the standard transparent white chevron style with no box or border.
+- Desktop navigation is vertically centered, `44px × 60px`, with `10px` edge offsets.
+- Mobile navigation is vertically centered, `38px × 56px`, with `8px` edge offsets.
+- Hover/focus adds an orange/black text-shadow accent without adding a background box.
+- Dots remain centered at the gallery bottom; active dots use `#ff7a00`.
+- Standard `Swipe images` stays above the dots.
+
+### Mobile modal geometry
+
+- Panels use `width:min(100%,560px)` and `max-height:calc(100dvh - 16px)`.
+- Gallery/track height uses `clamp(360px,118vw,620px)`.
+- This replaces intrinsic-height expansion that created large gaps beneath standard product media.
+- Information columns use `28px 22px 24px` padding so titles/descriptions begin closer to the gallery.
+
+### Product title and collection subtitle
+
+- Product titles use AgencyFB, heavy uppercase weight, and `.065em` tracking.
+- Recognized `Cyberpunk 2077` title prefixes/suffixes are removed from the main title.
+- The collection appears as a smaller red subtitle linked to `/pages/edgerunners`.
+- Desktop hover/focus glitches between `Cyberpunk 2077` and `Edgerunners Collection`.
+- Mobile cycles between both labels every four seconds using the same glitch treatment.
+- Reduced-motion users receive a static subtitle without automatic animation.
+- Unrecognized collection text remains part of the original product title until a controlled mapping is documented.
 
 ### Standard `kwfw` modal layout
 
 - Gallery remains in the left column.
-- Product title, price, options, quantity, Size Guide, Add to Cart, View Details, status, and product description remain in `.kwfw-panel-info` in the right column.
+- Product title, collection subtitle, price, options, quantity, Size Guide, Add to Cart, View Details, status, and product description remain in `.kwfw-panel-info` in the right column.
 - `.kwfw-desc-wide` is a retired full-width treatment and is always hidden.
-- Standard product descriptions use AgencyFB, normal sentence casing, `.055em` tracking, and `1.55` line height.
 - The visible option label `Description` is presented as `Size & Style Variant`; the underlying Fourthwall option name remains unchanged.
-- Standard select width is calculated from the longest option for that specific product, not from the selected option.
-- Width calculation includes the computed select font, horizontal padding, borders, and native dropdown-arrow allowance.
+- Standard select width is calculated from the longest option for that specific product, not the selected option.
 - Minimum standard select width is `124px`; maximum width is the available option-field width.
-- Width remains stable while variants change and recalculates after font readiness and viewport resize.
 - Step 3 `.kwpj-select` sizing and option labels are not affected by the standard compatibility rule.
 
 ## Global size guide
@@ -190,18 +233,14 @@ Visual and layout rules:
 - Modal control height is `46px`.
 - Standard `kwfw` and Step 3 `kwpj` use different quantity-row ownership.
 - Featured Spellweaves keep `.kwfw-label` directly inside `.kwfw-field`; `.kwfw-qty` and Size Guide share a two-column row.
-- Featured row selectors intentionally target both `.kw-size-qty-size-row` and `.kw-size-qty-size-row--kwfw` so hot-reloaded legacy rows cannot lose alignment.
 - Featured quantity controls use explicit `48px 58px 48px` tracks with two `8px` gaps; Size Guide occupies a separate column with a `10px` desktop gap.
 - Step 3 retains a field-level `.kw-size-qty-size-row` grid with a `170px` quantity column, separate Size Guide column, and `16px` desktop gap.
-- Do not reintroduce one shared field-wrapper rule for both namespaces.
 - Native product-page buttons remain full width before Add to Cart.
 - Overlay: `rgba(0,0,0,.82)`.
 - Panel is content-driven with `width:fit-content`, a `560px` desktop minimum where space permits, viewport-constrained maximum width, `max-height:92vh`, near-black background, and subtle red shadow.
 - Size-chart titles use AgencyFB at heavy weight with `.09em` desktop letter spacing and `.075em` mobile letter spacing.
-- Header controls remain sticky.
-- US/Metric active state uses `#ff7a00`.
 - Chart tables remain Arial/Helvetica for readability, use content-driven column widths, black cells, red headers/borders, and tighter desktop padding.
-- Mobile tables remove the former forced `560px` minimum, wrap header labels, use `12.5px` text and `7px 5px` cell padding, and only scroll horizontally when the actual columns require it.
+- Mobile tables wrap header labels, use `12.5px` text and `7px 5px` cell padding, and scroll horizontally only when required.
 - Body scroll locks while the popup is open and focus returns on close.
 
 Chart resolution is registry-driven. Product-scoped material rules must be used for generic values such as `Vegan Leather` and `Genuine Leather`; never route those values globally.
