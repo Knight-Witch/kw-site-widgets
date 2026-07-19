@@ -2,6 +2,61 @@
 
 This module changelog records global-runtime-specific changes. `/HISTORY/CHANGELOG.md` remains canonical.
 
+## 2026-07-18 — Collection-aware featured product cards
+
+Production candidate:
+
+```text
+Global loader commit: fe902634c6ef2c776524735fe93a778ffb52c331
+Cache key: 20260718-featured-card-collections-1
+Entrypoint: fourthwall/global/kw-fourthwall-loader.js
+```
+
+Changed:
+
+- Extended `kw-product-modal-presentation.js` from modal-only title formatting to standard `kwfw` card and modal formatting.
+- Added a controlled six-collection registry for Edgerunners, Basscraft, Wicked Hearts, Astral Plane, Black Mass, and Starchild.
+- Added one-time per-page collection membership indexing through the Fourthwall Storefront API.
+- Product membership is keyed by slug and stable product identifiers.
+- Mixed homepage carousels resolve every card independently instead of inheriting the visible carousel handle.
+- Embedded product collection metadata, dedicated holder handles, and title parsing remain ordered fallbacks.
+- Standard card titles are now visible in AgencyFB and limited to two lines.
+- Cards receive a red linked collection tagline beneath the clean main title.
+- Desktop pointer/focus glitches from tagline to collection name.
+- Mobile cycles between tagline and collection name every four seconds unless reduced motion is active.
+- The same registry now also supplies collection-aware expanded-modal subtitles.
+
+Controlled pairs:
+
+```text
+Cyberpunk 2077 <-> Edgerunners Collection
+Eat. Sleep. Rave. Repeat. <-> Basscraft Collection
+Snakes Skulls & Sin <-> Wicked Hearts Collection
+All Things Fantasy <-> Astral Plane Collection
+Sci-fi & Beyond <-> Black Mass Collection
+Mystics Zodiacs & Vibes <-> Starchild Collection
+```
+
+Scope:
+
+- Standard featured-card and shared title presentation only.
+- No product object mutation, variant resolution, pricing, Add to Cart, Size Guide, selected-gallery media, rail, grid, or wheel behavior changed.
+
+Runtime commits:
+
+```text
+7a90ba867318e0491ea60d64fd4c450798231de6
+b5769ac1044197e4ca0c88409b62ecbc0f5abc8e
+fe902634c6ef2c776524735fe93a778ffb52c331
+```
+
+Rollback:
+
+```text
+Global loader commit: e9404864ba58ab7daee8e771894d2c374a5f8fc3
+Cache key: 20260718-modal-sync-2
+```
+
 ## 2026-07-18 — Unified standard and Step 3 modal presentation
 
 Production candidate:
