@@ -2,6 +2,73 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
+## 2026-07-19 00:35 UTC — PF-20260719-023 — Collection-aware featured product cards
+
+Requested change:
+
+- Apply the existing clean-title/red-subtitle logic to standard featured Spellweave product cards.
+- Resolve subtitles from the product's Collection Domain membership rather than the visible carousel slug.
+- Support mixed homepage carousels containing products from more than one controlled collection.
+- Add mappings for Edgerunners, Basscraft, Wicked Hearts, Astral Plane, Black Mass, and Starchild.
+- Retain desktop glitch and mobile four-second cycling behavior.
+
+Docs/files reviewed:
+
+- `/OPERATING_CONTRACT.md`
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/README.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/CHANGELOG.md`
+- Production-pinned `fourthwall/kwfw-carousel.js`
+- `fourthwall/kwfw-universal-media.css`
+- `fourthwall/kw-product-modal-presentation.css`
+- `fourthwall/kw-product-modal-presentation.js`
+- `fourthwall/global/kw-fourthwall-loader.js`
+- Current Collection Domain navigation destinations
+
+Risk/conflict notes:
+
+- The standard carousel product object may not consistently expose all collection memberships.
+- A mixed carousel cannot safely classify every card from the holder's one collection slug.
+- Fetching each controlled collection on every observer pass would create duplicate network requests.
+- The existing universal-media stylesheet hides `.kwfw-card-title`, so the shared presentation stylesheet must explicitly restore it after universal media loads.
+- Multiple mobile subtitles require timer cleanup when cards/modals are removed.
+- The title formatter must remain idempotent under the existing MutationObserver.
+- Product objects, variant selection, prices, Add to Cart, selected galleries, rail, grid, and wheel behavior must remain untouched.
+
+Plan/result:
+
+- Expanded the controlled registry to six Collection Domains and their page destinations.
+- Added handle aliases using `-core` and plain handles.
+- Added a one-time collection index request per page when standard cards are present.
+- Indexed products by slug, product ID, UUID, and external ID where available.
+- Added embedded collection metadata support using normalized handle, key, title, collection name, and tagline aliases.
+- Added dedicated-holder and title-prefix/suffix fallbacks after product membership lookup.
+- Added standard-card title cleanup and linked collection subtitles.
+- Restored card titles in AgencyFB with a two-line clamp.
+- Reused the existing desktop glitch/mobile cycle behavior.
+- Extended the same registry to modal subtitles for consistency.
+- Bumped the global loader cache key.
+
+Validation:
+
+- `node --check` passed for the final presentation runtime.
+- Title stripping checks passed for collection prefixes and suffixes.
+- Verified collection requests are cached in one shared promise and do not repeat on observer scans.
+- Verified the collection lookup order prioritizes product membership over holder slug.
+- Verified the standard card product array remains owned by the pinned carousel runtime.
+- Verified no Step 3 source file, price, cart, Size Guide, gallery-selection, rail, grid, or wheel file changed.
+- Live verification remains required on the mixed homepage carousel and dedicated Edgerunners/Basscraft carousels.
+
+User input required:
+
+- None for Edgerunners and Basscraft.
+- Confirm alternate Fourthwall collection handles later only if a future domain does not use the registered `-core` or plain handle.
+
 ## 2026-07-18 23:58 UTC — PF-20260718-022 — Unified standard and Step 3 modal presentation
 
 Requested change:
