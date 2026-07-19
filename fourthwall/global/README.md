@@ -5,15 +5,15 @@ This directory owns the site-wide Fourthwall runtime layer. Read `/OPERATING_CON
 ## Current production candidate
 
 ```text
-Commit: 08c4dca8bf833d283cedfeb471f29bd2741a70cc
-Cache key: 20260718-featured-card-collections-2
+Commit: 4e93f2dfefb50e6e84de61d4b45ab5dab2438b2a
+Cache key: 20260719-compact-card-media-only-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@08c4dca8bf833d283cedfeb471f29bd2741a70cc/fourthwall/global/kw-fourthwall-loader.js?v=20260718-featured-card-collections-2
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@4e93f2dfefb50e6e84de61d4b45ab5dab2438b2a/fourthwall/global/kw-fourthwall-loader.js?v=20260719-compact-card-media-only-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -54,8 +54,23 @@ The exact dependency order is documented in `/ARCHITECTURE.md`.
 - Product rules.
 - Shared modal price/CTA/variant-gallery compatibility.
 - Shared standard/Step 3 modal presentation.
-- Collection-aware standard featured-card title presentation.
+- Compact-card title/subtitle suppression.
+- Collection-aware expanded-modal title presentation.
 - Cart runtime.
+
+## Compact carousel cards
+
+The small product tiles are intentionally media-led across both active carousel namespaces:
+
+```text
+.kwfw-card-title                  hidden
+.kw-product-card-collection-link hidden
+.kwpj-name                        hidden
+```
+
+The product image/media and View & Add to Cart action remain visible. Product title and Collection Domain subtitle are presented only inside the expanded product modal.
+
+The suppression lives in `fourthwall/kw-product-modal-presentation.css` and uses `!important` defensive selectors so titles or links created by an older hot-reloaded script remain hidden.
 
 ## Standard product modal presentation
 
@@ -84,7 +99,7 @@ fourthwall/kw-product-modal-presentation.css
 fourthwall/kw-product-modal-presentation.js
 ```
 
-This layer supports standard `.kwfw-*` cards/modals and Step 3 `.kwpj-*` expanded modals. It loads after compatibility code.
+This layer supports standard `.kwfw-*` and Step 3 `.kwpj-*` expanded modals. It loads after compatibility code.
 
 Modal behavior:
 
@@ -98,12 +113,10 @@ Modal behavior:
 Collection-title behavior:
 
 - Maintains a controlled Edgerunners, Basscraft, Wicked Hearts, Astral Plane, Black Mass, and Starchild registry.
-- Fetches each controlled collection once per page when standard product cards are present.
+- Fetches each controlled collection once per page when standard product data is present.
 - Indexes products by slug and stable identifiers.
-- Resolves each card independently, including mixed homepage carousels.
 - Uses embedded collection metadata, dedicated holder handles, and recognized title text as progressively weaker fallbacks.
-- Formats both standard featured cards and expanded modals.
-- Uses white AgencyFB main titles and red linked collection taglines.
+- Formats expanded modal titles and linked red collection taglines.
 - Desktop hover/focus glitches to the collection name.
 - Mobile cycles between tagline and collection name every four seconds unless reduced motion is active.
 
@@ -149,6 +162,7 @@ The two carousel namespaces intentionally use different quantity-row ownership. 
 5. Controlled Collection Domain handles require live verification as additional featured Spellweaves are published.
 6. Collection membership indexing performs one successful request per controlled collection, with an alias retry when the first handle is empty or unavailable.
 7. Fourthwall editor hot swaps cannot remove listeners from earlier script instances without a full preview reload.
+8. Compact-card title suppression requires live verification on desktop/mobile standard and Step 3 cards.
 
 ## Production rules
 
