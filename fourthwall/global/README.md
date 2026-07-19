@@ -5,15 +5,15 @@ This directory owns the site-wide Fourthwall runtime layer. Read `/OPERATING_CON
 ## Current production candidate
 
 ```text
-Commit: e0a3259a41624d7e45ebb74a145d888a76246410
-Cache key: 20260718-step3-gallery-top-align-1
+Commit: e9404864ba58ab7daee8e771894d2c374a5f8fc3
+Cache key: 20260718-modal-sync-2
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@e0a3259a41624d7e45ebb74a145d888a76246410/fourthwall/global/kw-fourthwall-loader.js?v=20260718-step3-gallery-top-align-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@e9404864ba58ab7daee8e771894d2c374a5f8fc3/fourthwall/global/kw-fourthwall-loader.js?v=20260718-modal-sync-2
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -38,7 +38,7 @@ This remains temporary and must be folded into the title-bar component/global lo
 - Loads CSS first and JavaScript sequentially.
 - Replaces stale same-key resources when URLs change.
 - Loads `kwfw-size-guide-data.js` before `kwfw-size-guide.js`.
-- Loads current universal-media and shared modal compatibility resources from `selfRef`.
+- Loads shared modal compatibility before shared modal presentation.
 
 The exact dependency order is documented in `/ARCHITECTURE.md`.
 
@@ -52,7 +52,8 @@ The exact dependency order is documented in `/ARCHITECTURE.md`.
 - Global size-chart registry and injector.
 - Universal product-support media.
 - Product rules.
-- Shared modal price/CTA/variant-gallery and presentation compatibility.
+- Shared modal price/CTA/variant-gallery compatibility.
+- Shared standard/Step 3 modal presentation and collection-title behavior.
 - Cart runtime.
 
 ## Standard product modal presentation
@@ -73,20 +74,32 @@ Current behavior:
 - The customer-facing `Description` option label is changed to `Size & Style Variant` while the underlying API key remains unchanged.
 - Standard selects use stable product-specific widths based on their longest option.
 
-## Step 3 modal presentation
+## Unified product modal presentation
 
-The branch-owned Step 3 module remains under `components/kw-plain-jackets/` on `kw-product-carousel-refactor`.
+Owned by:
 
-The shared compatibility stylesheet applies one Step 3-only media rule:
-
-```css
-.kwpj-panel .kwpj-gallery-track img,
-.kwpj-panel .kwpj-gallery-track video {
-  object-position: top center;
-}
+```text
+fourthwall/kw-product-modal-presentation.css
+fourthwall/kw-product-modal-presentation.js
 ```
 
-This keeps `object-fit:contain`, gallery dimensions, and variant media unchanged while aligning jacket imagery to the top of the gallery viewport.
+This layer supports both `.kwfw-*` and `.kwpj-*` expanded modals and loads after compatibility code.
+
+Current behavior:
+
+- Black panel/grid/gallery/track/information surfaces.
+- Shared `1120px` desktop panel cap and standard two-column ratio.
+- Shared `540px` desktop gallery cap with top-aligned `contain` media.
+- Shared AgencyFB typography, color assignment, close buttons, details buttons, dots, and transparent arrow style.
+- Shared mobile gallery height `clamp(360px,118vw,620px)` and compact information padding.
+- Mobile arrows use the Step 3 edge offsets with the standard transparent Spellweave styling.
+- Single-media galleries hide navigation and dots.
+- Recognized `Cyberpunk 2077` text is split out of the main product title.
+- A red linked collection subtitle points to `/pages/edgerunners`.
+- Desktop hover/focus glitches to `Edgerunners Collection`.
+- Mobile cycles both labels every four seconds unless reduced motion is active.
+
+This module does not alter products, variants, prices, cart requests, or selected-variant gallery resolution.
 
 ## Global size-guide system
 
@@ -108,26 +121,14 @@ native Fourthwall /products/ pages
 
 The two carousel namespaces intentionally use different quantity-row ownership. Unknown products do not receive generic charts. Native product-page buttons remain full width before Add to Cart.
 
-The popup supports US/Metric conversion, numeric-range conversion, Escape/backdrop/close dismissal, body scroll lock, and focus restoration.
-
-## Shared modal compatibility
-
-Owned by:
-
-```text
-fourthwall/kwfw-modal-product-fix.css
-fourthwall/kwfw-modal-product-fix.js
-```
-
-It supports `.kwfw-*` and `.kwpj-*` modals, resolves actual Fourthwall prices, restores the orange Add to Cart CTA, switches gallery media to selected-variant media, owns standard-only option presentation, and applies Step 3-only top media alignment.
-
 ## Risks
 
 1. Title-bar CSS/JS still float from `main`.
 2. Info-section CSS/JS still load from `kw-info-accordion-dev`.
 3. Legacy global loaders remain in the directory.
 4. Native Fourthwall product-page markup and exact product slugs require live verification.
-5. The latest Step 3 gallery top-alignment rule requires live verification after publishing the loader.
+5. Unified modal dimensions, mobile spacing, arrows, and collection subtitle behavior require live verification across both namespaces.
+6. Fourthwall editor hot swaps cannot remove listeners from earlier script instances without a full preview reload.
 
 ## Production rules
 
