@@ -2,13 +2,13 @@
 
 This module changelog records global-runtime-specific changes. `/HISTORY/CHANGELOG.md` remains canonical.
 
-## 2026-07-18 — Collection-aware featured product cards
+## 2026-07-19 — Collection-aware featured product cards
 
 Production candidate:
 
 ```text
-Global loader commit: fe902634c6ef2c776524735fe93a778ffb52c331
-Cache key: 20260718-featured-card-collections-1
+Global loader commit: 08c4dca8bf833d283cedfeb471f29bd2741a70cc
+Cache key: 20260718-featured-card-collections-2
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 ```
 
@@ -18,13 +18,14 @@ Changed:
 - Added a controlled six-collection registry for Edgerunners, Basscraft, Wicked Hearts, Astral Plane, Black Mass, and Starchild.
 - Added one-time per-page collection membership indexing through the Fourthwall Storefront API.
 - Product membership is keyed by slug and stable product identifiers.
+- Embedded collection metadata accepts normalized handle, key, collection-name, and tagline aliases.
 - Mixed homepage carousels resolve every card independently instead of inheriting the visible carousel handle.
-- Embedded product collection metadata, dedicated holder handles, and title parsing remain ordered fallbacks.
-- Standard card titles are now visible in AgencyFB and limited to two lines.
+- Dedicated holder handles and title parsing remain ordered fallbacks.
+- Standard card titles are visible in AgencyFB and limited to two lines.
 - Cards receive a red linked collection tagline beneath the clean main title.
 - Desktop pointer/focus glitches from tagline to collection name.
 - Mobile cycles between tagline and collection name every four seconds unless reduced motion is active.
-- The same registry now also supplies collection-aware expanded-modal subtitles.
+- The same registry supplies collection-aware expanded-modal subtitles.
 
 Controlled pairs:
 
@@ -46,8 +47,9 @@ Runtime commits:
 
 ```text
 7a90ba867318e0491ea60d64fd4c450798231de6
+8aa3cc5eb05f286370a85b6c3c365d3cfb9e451e
 b5769ac1044197e4ca0c88409b62ecbc0f5abc8e
-fe902634c6ef2c776524735fe93a778ffb52c331
+08c4dca8bf833d283cedfeb471f29bd2741a70cc
 ```
 
 Rollback:
