@@ -7,18 +7,19 @@ Before editing anything in this folder, read the root docs first, then the relev
 ## Current ownership
 
 ```text
-fourthwall/global/                         Global Fourthwall runtime and production footer loader.
-fourthwall/domains/collection/             Collection banner/category page module.
+fourthwall/global/                           Global Fourthwall runtime and production footer loader.
+fourthwall/domains/collection/               Collection banner/category page module.
 fourthwall/domains/collection/feature-video/ Collection feature video module.
-fourthwall/prod_card_media/                Product-card media manifest.
-fourthwall/kwfw-*                          Product carousel, modal compatibility, size guide, universal media, product rules, and legacy variants.
+fourthwall/prod_card_media/                  Product-card media manifest.
+fourthwall/kwfw-*                            Standard carousel, compatibility, size guide, universal media, and product rules.
+fourthwall/kw-product-modal-presentation.*   Shared standard/Step 3 expanded-modal presentation.
 ```
 
 ## Global runtime
 
 See `fourthwall/global/README.md`.
 
-Global runtime work should usually happen in `fourthwall/global/` or the owning `fourthwall/kwfw-*` component file loaded by the global loader.
+Global runtime work should usually happen in `fourthwall/global/` or the owning `fourthwall/kwfw-*` / `fourthwall/kw-product-*` file loaded by the global loader.
 
 ## Product/widget runtime
 
@@ -32,6 +33,8 @@ kwfw-carousel-wheel-bridge.js
 kwfw-font-agencyfb.css
 kwfw-modal-product-fix.css
 kwfw-modal-product-fix.js
+kw-product-modal-presentation.css
+kw-product-modal-presentation.js
 kwfw-size-guide.css
 kwfw-size-guide.js
 kwfw-universal-media.css
@@ -42,9 +45,11 @@ prod_card_media/manifest.json
 prod_card_media/README.md
 ```
 
-`kwfw-modal-product-fix.js` is the shared expanded-modal compatibility owner for both the standard `kwfw` carousel and the Step 3 branch-loaded `kwpj` jacket carousel. It handles live Fourthwall variant pricing and selected-variant gallery filtering without owning rail or scroll behavior. It also owns standard-only customer-facing option relabeling and longest-option select-width calculation.
+`kwfw-modal-product-fix.*` is the shared expanded-modal compatibility owner for standard `kwfw` and Step 3 `kwpj`. It handles live Fourthwall pricing, Add to Cart styling, selected-variant gallery filtering, and standard-only option presentation without owning rail or wheel behavior.
 
-`kwfw-universal-media.js` and `kwfw-universal-media.css` own appended support media and standard gallery presentation. They preserve the product description inside `.kwfw-panel-info`; the retired full-width `.kwfw-desc-wide` treatment must not be reintroduced.
+`kw-product-modal-presentation.*` is the shared visual/title presentation owner. It standardizes black modal surfaces, gallery caps, AgencyFB typography, arrows, dots, mobile spacing, clean product titles, and linked collection subtitles. It must not take ownership of product fetching, variants, price resolution, cart requests, or gallery-selection logic.
+
+`kwfw-universal-media.*` owns appended support media and preserves the standard product description inside `.kwfw-panel-info`. The retired full-width `.kwfw-desc-wide` treatment must not be reintroduced.
 
 Legacy/experimental carousel variants are present in this folder. Do not use or edit them unless the task explicitly targets them or they are revalidated.
 
