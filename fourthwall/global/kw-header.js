@@ -1,5 +1,5 @@
 (() => {
-  const headerBuild = "20260718-collection-link-decode-hover-3";
+  const headerBuild = "20260718-collection-link-decode-hover-4";
   const mobileGlitchDelay = 420;
   const navigationDelay = 220;
   const textSwapDelay = 130;
@@ -8,9 +8,8 @@
   const inlineRevealStep = 24;
   const inlineRevealIncrement = 1.15;
   const inlineRevealDuration = 520;
-  const mobileCollectionCascadeInitialDelay = 4000;
-  const mobileCollectionCascadeStep = 500;
-  const mobileCollectionHoldDuration = 3000;
+  const mobileCollectionCascadeInitialDelay = 3000;
+  const mobileCollectionCascadeStep = 1000;
   const subtitleAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const swapTimers = new WeakMap();
   const subtitleTimers = new WeakMap();
@@ -133,8 +132,28 @@
   function setInlineText(element, value) {
     const text = String(value ?? "");
     clearInlineReveal(element);
+    element.classList.remove("kw-inline-revealing");
     element.textContent = text;
     element.dataset.kwText = text;
+  }
+
+  function renderInlineReveal(element, text, iteration) {
+    let plain = "";
+    const html = text.split("").map((character, index) => {
+      if (character === " ") {
+        plain += " ";
+        return " ";
+      }
+      if (index < iteration) {
+        plain += character;
+        return escapeHtml(character);
+      }
+      const scrambled = subtitleAlphabet[Math.floor(Math.random() * subtitleAlphabet.length)];
+      plain += scrambled;
+      return `<span class="kw-inline-scramble">${scrambled}</span>`;
+    }).join("");
+    element.innerHTML = html;
+    element.dataset.kwText = plain;
   }
 
   function revealInlineText(element, value) {
@@ -148,18 +167,11 @@
       return;
     }
     let iteration = 0;
+    element.classList.add("kw-inline-revealing");
     const timer = window.setInterval(() => {
-      const output = text.split("").map((character, index) => {
-        if (character === " ") return " ";
-        if (index < iteration) return character;
-        return subtitleAlphabet[Math.floor(Math.random() * subtitleAlphabet.length)];
-      }).join("");
-      element.textContent = output;
-      element.dataset.kwText = output;
+      renderInlineReveal(element, text, iteration);
       if (iteration >= text.length) {
-        clearInlineReveal(element);
-        element.textContent = text;
-        element.dataset.kwText = text;
+        setInlineText(element, text);
         return;
       }
       iteration += inlineRevealIncrement;
@@ -272,8 +284,8 @@
     const initialDelay = options.initialDelay ?? 0;
     const step = options.step ?? mobileCollectionCascadeStep;
     const autoReturn = Boolean(options.autoReturn);
-    const holdDuration = options.holdDuration ?? mobileCollectionHoldDuration;
     if (options.clear !== false) clearCascadeTimers(element);
+    const returnBaseDelay = ordered.length ? initialDelay + ((ordered.length - 1) * step) : 0;
     ordered.forEach((link, index) => {
       const delay = initialDelay + (index * step);
       setCascadeTimer(element, () => {
@@ -282,13 +294,13 @@
       if (forward && autoReturn) {
         setCascadeTimer(element, () => {
           revealInlineText(link, link.dataset.kwTitle || link.textContent);
-        }, delay + inlineRevealDuration + holdDuration);
+        }, returnBaseDelay + (index * step));
       }
     });
     if (!ordered.length) return 0;
-    const lastStart = initialDelay + ((ordered.length - 1) * step);
-    const lastEnd = lastStart + inlineRevealDuration;
-    return forward && autoReturn ? lastEnd + holdDuration + inlineRevealDuration : lastEnd;
+    const lastForwardStart = initialDelay + ((ordered.length - 1) * step);
+    const lastReturnStart = forward && autoReturn ? returnBaseDelay + ((ordered.length - 1) * step) : lastForwardStart;
+    return lastReturnStart + inlineRevealDuration;
   }
 
   function isModifiedNavigation(event) {
@@ -676,8 +688,7 @@
         cascadeHoverSwapLinks(panel, true, false, {
           initialDelay: mobileCollectionCascadeInitialDelay,
           step: mobileCollectionCascadeStep,
-          autoReturn: true,
-          holdDuration: mobileCollectionHoldDuration
+          autoReturn: true
         });
       }
 
