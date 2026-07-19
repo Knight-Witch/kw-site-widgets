@@ -2,12 +2,19 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
-## 2026-07-18 22:05 UTC — PF-20260718-021 — Step 3 modal gallery top alignment
+## 2026-07-18 23:58 UTC — PF-20260718-022 — Unified standard and Step 3 modal presentation
 
 Requested change:
 
-- Top-align Step 3 jacket images inside the modal gallery so they match the standard Spellweave/Cauldron Core presentation.
-- Leave Step 3 gallery sizing, variant filtering, Size Guide, pricing, quick-shop controls, and scrolling unchanged.
+- Synchronize the standard Spellweave/Cauldron Core and Step 3 expanded product-window styling.
+- Make the complete product window black in both systems.
+- Use the standard modal’s smaller desktop gallery footprint for Step 3.
+- Standardize AgencyFB typography, color assignment, control styling, navigation styling, and information presentation.
+- Use the standard transparent arrow style on Step 3 desktop.
+- On mobile, retain Step 3 edge positioning while using the standard arrow appearance.
+- Reduce the excessive standard-mobile gap between media, gallery controls, and product information.
+- Remove recognized collection text such as `- Cyberpunk 2077` from the primary product title.
+- Add a smaller red linked collection subtitle that glitches between `Cyberpunk 2077` and `Edgerunners Collection` on desktop and cycles every four seconds on mobile.
 
 Docs/files reviewed:
 
@@ -20,34 +27,61 @@ Docs/files reviewed:
 - `/fourthwall/README.md`
 - `/fourthwall/global/README.md`
 - `/fourthwall/global/CHANGELOG.md`
-- Branch-owned `components/kw-plain-jackets/kw-plain-jackets.css`
+- Production-pinned `fourthwall/kwfw-carousel.css`
+- Production-pinned `fourthwall/kwfw-carousel.js`
+- `fourthwall/kwfw-universal-media.css`
 - `fourthwall/kwfw-modal-product-fix.css`
-- `fourthwall/global/kw-fourthwall-loader.js`
-- Supplied Step 3 modal screenshot
+- `fourthwall/kwfw-modal-product-fix.js`
+- Branch-owned `components/kw-plain-jackets/kw-plain-jackets.css`
+- Branch-owned `components/kw-plain-jackets/kw-plain-jackets-v2.js`
+- `fourthwall/global/kw-header.css`
+- `fourthwall/global/kw-header.js`
+- Supplied desktop and mobile modal screenshots
 
 Risk/conflict notes:
 
-- The branch-owned Step 3 gallery already uses `object-fit:contain` but does not set `object-position`, so the browser centers the contained media vertically.
-- Changing gallery height or object-fit would alter crop/scale behavior and could affect every jacket image.
-- The global shared modal compatibility stylesheet already owns cross-system expanded-modal visual corrections and is loaded after the Step 3 source styles.
+- `kwfw` and `kwpj` have separate product-loading, modal-construction, variant, cart, and gallery-event implementations; synchronization must remain presentation-only.
+- Fixed gallery geometry can introduce crop, scale, or mobile whitespace regressions if `object-fit`, track height, and media height are not coordinated.
+- Single-media galleries must not expose unusable arrows or dots.
+- Collection parsing must be controlled rather than stripping arbitrary title suffixes.
+- Mobile subtitle timers must stop when elements are removed and respect reduced-motion preferences.
+- A broad MutationObserver must remain idempotent and must not rewrite its own subtitle continuously.
+- Fourthwall editor hot swaps cannot remove listeners installed by earlier script instances without a full preview reload.
 
 Plan/result:
 
-- Add a Step 3-only selector for `.kwpj-gallery-track img` and `video`.
-- Apply only `object-position:top center!important`.
-- Preserve all gallery height, minimum height, object-fit, media source, and selected-variant gallery logic.
-- Bump the global loader cache key.
+- Added `fourthwall/kw-product-modal-presentation.css` as the sole cross-system expanded-modal visual owner.
+- Added `fourthwall/kw-product-modal-presentation.js` as the controlled product-title and collection-subtitle owner.
+- Loaded both resources after shared modal compatibility from the global loader.
+- Standardized black surfaces, desktop panel/grid/gallery dimensions, top-aligned contained media, AgencyFB typography, controls, close buttons, details buttons, dots, and transparent navigation.
+- Applied shared mobile gallery geometry and compact information spacing.
+- Kept Step 3 edge offsets on mobile while applying the standard arrow appearance.
+- Suppressed controls for single-media galleries.
+- Added a Cyberpunk-only prefix/suffix parser and linked subtitle to `/pages/edgerunners`.
+- Added desktop hover/focus glitch swapping and mobile four-second cycling with reduced-motion handling.
+- Left product objects, pricing, variant matching, Add to Cart, media selection, rail, grid, and wheel behavior unchanged.
 
 Validation:
 
-- Compared the Step 3 branch rule with the standard modal gallery rule.
-- Confirmed no JavaScript or Step 3 branch files changed.
-- Confirmed no standard gallery, product data, Size Guide, price, cart, description, option, carousel rail, grid, or wheel behavior changed.
-- Live storefront verification remains required after replacing the footer.
+- `node --check` passed for `kw-product-modal-presentation.js`.
+- Title parser checks covered:
+  - `Sandevistan V2 - Cyberpunk 2077` → `Sandevistan V2`
+  - `Samurai Moto Jacket — Cyberpunk 2077` → `Samurai Moto Jacket`
+  - `Cyberpunk 2077 - Johnny's Samurai Jacket` → `Johnny's Samurai Jacket`
+  - unrelated titles remain unchanged
+- Verified single-media control suppression in the final stylesheet.
+- Verified loader order places presentation after modal compatibility.
+- Verified no branch-owned Step 3 source file or business-logic runtime was modified.
+- Live visual verification remains required across representative standard, Step 3, desktop, and mobile products.
 
 User input required:
 
-- None.
+- None for this release.
+- Additional collection-title mappings require explicit collection names and destinations later.
+
+## 2026-07-18 22:05 UTC — PF-20260718-021 — Step 3 modal gallery top alignment
+
+Top-aligned Step 3 jacket media inside the existing gallery without changing dimensions, variant filtering, Size Guide, prices, cart controls, or carousel scrolling.
 
 ## 2026-07-18 21:20 UTC — PF-20260718-020 — Standard modal description and variant-control layout
 
