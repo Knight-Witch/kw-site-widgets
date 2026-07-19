@@ -152,7 +152,7 @@
     display:block;color:#ffffff;line-height:1.02;
   }
   .kw-mobile-link-subtitle{
-    display:block;color:#ff0000;font-size:clamp(7px,2.2vw,10px);line-height:1;letter-spacing:clamp(1px,.35vw,1.8px);margin-top:3px;
+    display:block;color:#ff0000;font-size:clamp(9px,2.9vw,13px);line-height:1;letter-spacing:clamp(1px,.35vw,1.8px);margin-top:3px;
   }
   .kw-mobile-parent{display:flex!important;align-items:center;justify-content:space-between;gap:12px;}
   .kw-mobile-parent::after{content:"›";font-size:1.1em;line-height:1;flex:0 0 auto;}
