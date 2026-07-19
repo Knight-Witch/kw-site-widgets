@@ -2,34 +2,61 @@
 
 This module changelog records global-runtime-specific changes. `/HISTORY/CHANGELOG.md` remains canonical.
 
-## 2026-07-18 — Step 3 modal gallery top alignment
+## 2026-07-18 — Unified standard and Step 3 modal presentation
 
 Production candidate:
 
 ```text
-Global loader commit: e0a3259a41624d7e45ebb74a145d888a76246410
-Cache key: 20260718-step3-gallery-top-align-1
+Global loader commit: e9404864ba58ab7daee8e771894d2c374a5f8fc3
+Cache key: 20260718-modal-sync-2
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
+```
+
+Added:
+
+```text
+fourthwall/kw-product-modal-presentation.css
+fourthwall/kw-product-modal-presentation.js
 ```
 
 Changed:
 
-- Added a Step 3-only gallery media override in `kwfw-modal-product-fix.css`.
-- `.kwpj-gallery-track img` and `video` now use `object-position:top center!important`.
-- Preserved the existing `object-fit:contain`, gallery height, minimum height, media source, and selected-variant gallery behavior.
-- Standard Spellweave/Cauldron Core gallery behavior remains unchanged.
+- Standard `kwfw` and Step 3 `kwpj` expanded modals now share black panel, grid, gallery, track, and information surfaces.
+- Both use the standard desktop `1120px` panel cap, two-column ratio, `540px` gallery cap, top-aligned `contain` media, AgencyFB typography, color assignment, close buttons, details buttons, and dot treatment.
+- Step 3 boxed gallery navigation was replaced with the standard transparent white chevron style and standard desktop positioning.
+- Both mobile systems use Step 3 edge positioning with the transparent standard arrow style.
+- Mobile gallery height is constrained with `clamp(360px,118vw,620px)` and information padding is reduced.
+- Single-media galleries suppress arrows and dots.
+- Recognized `Cyberpunk 2077` prefixes/suffixes are removed from the main product title.
+- A red collection subtitle links to `/pages/edgerunners`.
+- Desktop hover/focus glitches the subtitle to `Edgerunners Collection`.
+- Mobile cycles between the two labels every four seconds unless reduced motion is active.
 
 Scope:
 
-- CSS and loader cache-key change only.
-- No price, Add to Cart, Size Guide, description, option control, gallery filtering, carousel rail, grid, or wheel behavior changed.
+- Shared cross-system presentation only.
+- No product loading, option data, selected-variant resolution, pricing, Add to Cart request, gallery media selection, carousel rail, grid, or wheel behavior changed.
+
+Runtime commits:
+
+```text
+91ad6c2b3dd51b72507c95b5f93453ae80a5d512
+c1e708b95ee19da4291d3dc7ee37f39d5c33fae8
+3bf1285653188743c082de2a2a4584d70100d81e
+d5dbd4e43cab008b6869439afab14e85109ba77f
+e9404864ba58ab7daee8e771894d2c374a5f8fc3
+```
 
 Rollback:
 
 ```text
-Global loader commit: 4bc31f2f1c2dd6253625391a45d11c9786e93f06
-Cache key: 20260718-standard-modal-layout-1
+Global loader commit: e0a3259a41624d7e45ebb74a145d888a76246410
+Cache key: 20260718-step3-gallery-top-align-1
 ```
+
+## 2026-07-18 — Step 3 modal gallery top alignment
+
+Loader commit `e0a3259a41624d7e45ebb74a145d888a76246410` top-aligned Step 3 media without changing gallery dimensions. Superseded by the unified presentation module.
 
 ## 2026-07-18 — Standard modal description and dynamic variant control
 
@@ -47,11 +74,11 @@ Loader commit `8666ed87f3e7a84ddebbbf1f7e3d45b25d1054c0` restored Featured quant
 
 Loader commit `0e12cbe2ff5b28bfc896c0bdf6bb6c5c8af4d462` corrected Step 3 overlap using explicit quantity tracks.
 
-## 2026-07-17 — product modal compatibility
+## 2026-07-17 — Product modal compatibility
 
 The July 17 runtime work restored real Fourthwall prices, the Step 3 orange Add to Cart CTA, selected-variant media switching, and stable collection/detail variant matching.
 
-## 2026-06-29 — verified carousel scroll runtime
+## 2026-06-29 — Verified carousel scroll runtime
 
 Historical verified state:
 
