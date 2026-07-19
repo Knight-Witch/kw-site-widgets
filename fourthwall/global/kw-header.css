@@ -145,8 +145,15 @@
   .kw-panel button:hover,
   .kw-panel a.active,
   .kw-panel button.active{color:#ff0000!important;}
-  #kw-header .kw-panel .kw-hover-swap,
-  #kw-header .kw-panel .kw-hover-swap:hover { color: #ffffff !important; }
+  .kw-panel a.kw-mobile-subtitled-link{
+    display:flex;flex-direction:column;align-items:flex-start;gap:0;padding-bottom:0;
+  }
+  .kw-mobile-link-title{
+    display:block;color:#ffffff;line-height:1.02;
+  }
+  .kw-mobile-link-subtitle{
+    display:block;color:#ff0000;font-size:clamp(7px,2.2vw,10px);line-height:1;letter-spacing:clamp(1px,.35vw,1.8px);margin-top:3px;
+  }
   .kw-mobile-parent{display:flex!important;align-items:center;justify-content:space-between;gap:12px;}
   .kw-mobile-parent::after{content:"›";font-size:1.1em;line-height:1;flex:0 0 auto;}
   .kw-mobile-label{display:block;position:relative;flex:1 1 auto;min-width:0;}
