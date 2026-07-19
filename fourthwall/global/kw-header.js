@@ -1,5 +1,5 @@
 (() => {
-  const headerBuild = "20260718-collection-link-decode-hover-2";
+  const headerBuild = "20260718-collection-link-decode-hover-3";
   const mobileGlitchDelay = 420;
   const navigationDelay = 220;
   const textSwapDelay = 130;
@@ -8,11 +8,14 @@
   const inlineRevealStep = 24;
   const inlineRevealIncrement = 1.15;
   const inlineRevealDuration = 520;
-  const collectionCascadeStep = 85;
+  const mobileCollectionCascadeInitialDelay = 4000;
+  const mobileCollectionCascadeStep = 500;
+  const mobileCollectionHoldDuration = 3000;
   const subtitleAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const swapTimers = new WeakMap();
   const subtitleTimers = new WeakMap();
   const inlineTimers = new WeakMap();
+  const cascadeTimers = new WeakMap();
 
   const navItems = [
     { title: "Home", href: "/" },
@@ -239,15 +242,53 @@
     return Array.from(element?.querySelectorAll("a[data-kw-hover-text]") || []);
   }
 
-  function cascadeHoverSwapLinks(element, forward, reverse = false) {
+  function clearCascadeTimers(element) {
+    const timers = cascadeTimers.get(element);
+    if (timers) timers.forEach(timer => window.clearTimeout(timer));
+    cascadeTimers.delete(element);
+  }
+
+  function setCascadeTimer(element, callback, delay) {
+    const timers = cascadeTimers.get(element) || [];
+    const timer = window.setTimeout(() => {
+      callback();
+      const active = cascadeTimers.get(element);
+      if (!active) return;
+      const remaining = active.filter(item => item !== timer);
+      if (remaining.length) cascadeTimers.set(element, remaining);
+      else cascadeTimers.delete(element);
+    }, delay);
+    timers.push(timer);
+    cascadeTimers.set(element, timers);
+  }
+
+  function hasHoverSwapState(element) {
+    return getHoverSwapLinks(element).some(link => (link.dataset.kwText || link.textContent || "") !== (link.dataset.kwTitle || ""));
+  }
+
+  function cascadeHoverSwapLinks(element, forward, reverse = false, options = {}) {
     const links = getHoverSwapLinks(element);
-    const ordered = reverse ? links.reverse() : links;
+    const ordered = reverse ? links.slice().reverse() : links;
+    const initialDelay = options.initialDelay ?? 0;
+    const step = options.step ?? mobileCollectionCascadeStep;
+    const autoReturn = Boolean(options.autoReturn);
+    const holdDuration = options.holdDuration ?? mobileCollectionHoldDuration;
+    if (options.clear !== false) clearCascadeTimers(element);
     ordered.forEach((link, index) => {
-      window.setTimeout(() => {
+      const delay = initialDelay + (index * step);
+      setCascadeTimer(element, () => {
         revealInlineText(link, forward ? link.dataset.kwHoverText : link.dataset.kwTitle);
-      }, index * collectionCascadeStep);
+      }, delay);
+      if (forward && autoReturn) {
+        setCascadeTimer(element, () => {
+          revealInlineText(link, link.dataset.kwTitle || link.textContent);
+        }, delay + inlineRevealDuration + holdDuration);
+      }
     });
-    return ordered.length ? ((ordered.length - 1) * collectionCascadeStep) + inlineRevealDuration : 0;
+    if (!ordered.length) return 0;
+    const lastStart = initialDelay + ((ordered.length - 1) * step);
+    const lastEnd = lastStart + inlineRevealDuration;
+    return forward && autoReturn ? lastEnd + holdDuration + inlineRevealDuration : lastEnd;
   }
 
   function isModifiedNavigation(event) {
@@ -592,13 +633,19 @@
 
       function closeSubPanels() {
         const openPanels = Array.from(panelsRoot.querySelectorAll(".kw-panel.sub.open"));
-        const delay = openPanels.reduce((duration, panel) => Math.max(duration, cascadeHoverSwapLinks(panel, false, true)), 0);
+        const delay = openPanels.reduce((duration, panel) => {
+          clearCascadeTimers(panel);
+          if (!hasHoverSwapState(panel)) return duration;
+          return Math.max(duration, cascadeHoverSwapLinks(panel, false, true, { clear: false }));
+        }, 0);
         const close = () => {
           panelsRoot.dataset.kwMobileMode = "main";
           main.classList.remove("kw-panel-off");
           openPanels.forEach(panel => {
+            clearCascadeTimers(panel);
             panel.classList.remove("open");
             resetElementSubtitles(panel);
+            getHoverSwapLinks(panel).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
           });
           mobileCloseTimer = null;
         };
@@ -616,15 +663,22 @@
         main.classList.add("kw-panel-off");
         panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(openPanel => {
           if (openPanel !== panel) {
+            clearCascadeTimers(openPanel);
             openPanel.classList.remove("open");
             resetElementSubtitles(openPanel);
             getHoverSwapLinks(openPanel).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
           }
         });
+        clearCascadeTimers(panel);
         getHoverSwapLinks(panel).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
         panel.classList.add("open");
         revealElementSubtitle(panel);
-        window.setTimeout(() => cascadeHoverSwapLinks(panel, true), 180);
+        cascadeHoverSwapLinks(panel, true, false, {
+          initialDelay: mobileCollectionCascadeInitialDelay,
+          step: mobileCollectionCascadeStep,
+          autoReturn: true,
+          holdDuration: mobileCollectionHoldDuration
+        });
       }
 
       const topItems = desktopMenu.querySelectorAll(":scope > li");
@@ -754,7 +808,10 @@
     function closeMobile() {
       overlay.classList.remove("open");
       closeBtn.style.display = "none";
-      panelsRoot.querySelectorAll(".kw-panel.sub").forEach(resetElementSubtitles);
+      panelsRoot.querySelectorAll(".kw-panel.sub").forEach(panel => {
+        clearCascadeTimers(panel);
+        resetElementSubtitles(panel);
+      });
       panelsRoot.innerHTML = "";
       panelsRoot.dataset.kwMobileMode = "";
     }
