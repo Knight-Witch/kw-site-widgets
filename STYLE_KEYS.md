@@ -114,32 +114,19 @@ gap: 12px
 
 Carousel scroll behavior is shared across base CSS, desktop overrides, and the wheel bridge. Do not change one layer in isolation.
 
-### Featured product-card titles
+### Compact product cards
 
-Standard `kwfw` cards use:
-
-```text
-main title: AgencyFB, white, uppercase, 20px desktop / 19px mobile
-main title tracking: .055em
-main title line clamp: 2 lines
-collection subtitle: AgencyFB, #ff2a1d, uppercase
-collection subtitle size: 13px desktop / 12px mobile
-```
-
-The collection subtitle is a real link to the matching Collection Domain page. Desktop hover/focus glitches from the tagline to the collection name. Mobile cycles every four seconds. Reduced-motion mode disables the animation.
-
-Controlled collection display pairs:
+Compact `kwfw` and `kwpj` product tiles are intentionally media-led:
 
 ```text
-Cyberpunk 2077 <-> Edgerunners Collection
-Eat. Sleep. Rave. Repeat. <-> Basscraft Collection
-Snakes Skulls & Sin <-> Wicked Hearts Collection
-All Things Fantasy <-> Astral Plane Collection
-Sci-fi & Beyond <-> Black Mass Collection
-Mystics Zodiacs & Vibes <-> Starchild Collection
+product title: hidden
+collection subtitle: hidden
+primary visible action: View & Add to Cart
 ```
 
-Card subtitles must be resolved per product. Mixed carousels must not inherit one subtitle from the visible carousel slug.
+The title and Collection Domain subtitle belong in the expanded product modal only. Defensive selectors in `kw-product-modal-presentation.css` suppress both native compact-card titles and any card subtitle left behind by a hot-reloaded older presentation script.
+
+Do not restore `.kwfw-card-title`, `.kwpj-name`, or `.kw-product-card-collection-link` on compact tiles without an explicit design decision.
 
 ## Product modal
 
@@ -181,6 +168,19 @@ Shared presentation rules:
 - Single-media galleries hide arrows, dots, and the standard swipe cue.
 - Titles use AgencyFB, white, uppercase, `.065em` tracking, and `30px` desktop size.
 - Recognized collection text is removed from the main title and displayed as a smaller red linked subtitle.
+- Desktop pointer/focus glitches the subtitle to the Collection Domain name.
+- Mobile cycles between tagline and Collection Domain name every four seconds unless reduced motion is enabled.
+
+Controlled modal subtitle pairs:
+
+```text
+Cyberpunk 2077 <-> Edgerunners Collection
+Eat. Sleep. Rave. Repeat. <-> Basscraft Collection
+Snakes Skulls & Sin <-> Wicked Hearts Collection
+All Things Fantasy <-> Astral Plane Collection
+Sci-fi & Beyond <-> Black Mass Collection
+Mystics Zodiacs & Vibes <-> Starchild Collection
+```
 
 ### Standard `kwfw` modal layout
 
