@@ -7,7 +7,7 @@
   const repo = m ? m[1] : "Knight-Witch/kw-site-widgets";
   const selfRef = m ? m[2] : "main";
   const base = `https://cdn.jsdelivr.net/gh/${repo}`;
-  const version = s?.dataset.version || "20260719-compact-card-media-only-1";
+  const version = s?.dataset.version || "20260719-tactical-merc-size-guide-1";
 
   const manifest =
     s?.dataset.productMediaManifest ||
@@ -59,6 +59,7 @@
     { type: "js", key: "kwfw-carousel-js", src: url("1dd6c66c60d54694a177e6f663c060c322154826", "fourthwall/kwfw-carousel.js") },
     { type: "js", key: "kwfw-carousel-wheel-bridge-js", src: url(selfRef, "fourthwall/kwfw-carousel-wheel-bridge.js", version) },
     { type: "js", key: "kwfw-size-guide-data-js", src: url(selfRef, "fourthwall/kwfw-size-guide-data.js", version) },
+    { type: "js", key: "kwfw-size-guide-tactical-merc-patch-js", src: url(selfRef, "fourthwall/kwfw-size-guide-tactical-merc-patch.js", version) },
     { type: "js", key: "kwfw-size-guide-js", src: url(selfRef, "fourthwall/kwfw-size-guide.js", version) },
     { type: "js", key: "kwfw-universal-media-js", src: url(selfRef, "fourthwall/kwfw-universal-media.js", version) },
     { type: "js", key: "kwfw-product-rules-js", src: url("ef9f1ec0947d4144803c46c45c331e93b09dc9d3", "fourthwall/kwfw-product-rules.js") },
