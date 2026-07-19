@@ -2,6 +2,44 @@
 
 This module changelog records global-runtime-specific changes. `/HISTORY/CHANGELOG.md` remains canonical.
 
+## 2026-07-19 — Media-only compact carousel cards
+
+Production candidate:
+
+```text
+Global loader commit: 4e93f2dfefb50e6e84de61d4b45ab5dab2438b2a
+Cache key: 20260719-compact-card-media-only-1
+Entrypoint: fourthwall/global/kw-fourthwall-loader.js
+```
+
+Changed:
+
+- Standard `kwfw` compact-card product titles are hidden.
+- Standard compact-card Collection Domain subtitles are hidden.
+- Step 3 `.kwpj-name` remains hidden and receives a defensive global suppression rule.
+- Product title and Collection Domain subtitle remain visible in expanded `kwfw` and `kwpj` modals.
+- Existing media, View & Add to Cart controls, prices, variants, galleries, Size Guides, rails, grids, and wheel behavior remain unchanged.
+
+Runtime commits:
+
+```text
+5340614e27eec89244f15b0fe8aaa80605b455c4
+4e93f2dfefb50e6e84de61d4b45ab5dab2438b2a
+```
+
+Rollback:
+
+```text
+Global loader commit: 08c4dca8bf833d283cedfeb471f29bd2741a70cc
+Cache key: 20260718-featured-card-collections-2
+```
+
+Validation:
+
+- Final CSS uses namespace-scoped `display:none!important` selectors after all earlier card-title/subtitle declarations.
+- Expanded modal selectors use different classes and remain unaffected.
+- No JavaScript or branch-owned Step 3 source file changed.
+
 ## 2026-07-19 — Collection-aware featured product cards
 
 Production candidate:
@@ -19,12 +57,8 @@ Changed:
 - Added one-time per-page collection membership indexing through the Fourthwall Storefront API.
 - Product membership is keyed by slug and stable product identifiers.
 - Embedded collection metadata accepts normalized handle, key, collection-name, and tagline aliases.
-- Mixed homepage carousels resolve every card independently instead of inheriting the visible carousel handle.
+- Mixed homepage carousels resolve every product independently instead of inheriting the visible carousel handle.
 - Dedicated holder handles and title parsing remain ordered fallbacks.
-- Standard card titles are visible in AgencyFB and limited to two lines.
-- Cards receive a red linked collection tagline beneath the clean main title.
-- Desktop pointer/focus glitches from tagline to collection name.
-- Mobile cycles between tagline and collection name every four seconds unless reduced motion is active.
 - The same registry supplies collection-aware expanded-modal subtitles.
 
 Controlled pairs:
@@ -38,11 +72,6 @@ Sci-fi & Beyond <-> Black Mass Collection
 Mystics Zodiacs & Vibes <-> Starchild Collection
 ```
 
-Scope:
-
-- Standard featured-card and shared title presentation only.
-- No product object mutation, variant resolution, pricing, Add to Cart, Size Guide, selected-gallery media, rail, grid, or wheel behavior changed.
-
 Runtime commits:
 
 ```text
@@ -50,13 +79,6 @@ Runtime commits:
 8aa3cc5eb05f286370a85b6c3c365d3cfb9e451e
 b5769ac1044197e4ca0c88409b62ecbc0f5abc8e
 08c4dca8bf833d283cedfeb471f29bd2741a70cc
-```
-
-Rollback:
-
-```text
-Global loader commit: e9404864ba58ab7daee8e771894d2c374a5f8fc3
-Cache key: 20260718-modal-sync-2
 ```
 
 ## 2026-07-18 — Unified standard and Step 3 modal presentation
@@ -78,21 +100,11 @@ fourthwall/kw-product-modal-presentation.js
 
 Changed:
 
-- Standard `kwfw` and Step 3 `kwpj` expanded modals now share black panel, grid, gallery, track, and information surfaces.
-- Both use the standard desktop `1120px` panel cap, two-column ratio, `540px` gallery cap, top-aligned `contain` media, AgencyFB typography, color assignment, close buttons, details buttons, and dot treatment.
-- Step 3 boxed gallery navigation was replaced with the standard transparent white chevron style and standard desktop positioning.
+- Standard `kwfw` and Step 3 `kwpj` expanded modals share black surfaces, desktop dimensions, top-aligned `contain` media, AgencyFB typography, controls, dots, and transparent navigation.
 - Both mobile systems use Step 3 edge positioning with the transparent standard arrow style.
-- Mobile gallery height is constrained with `clamp(360px,118vw,620px)` and information padding is reduced.
+- Mobile gallery height is constrained with `clamp(360px,118vw,620px)`.
 - Single-media galleries suppress arrows and dots.
-- Recognized `Cyberpunk 2077` prefixes/suffixes are removed from the main product title.
-- A red collection subtitle links to `/pages/edgerunners`.
-- Desktop hover/focus glitches the subtitle to `Edgerunners Collection`.
-- Mobile cycles between the two labels every four seconds unless reduced motion is active.
-
-Scope:
-
-- Shared cross-system presentation only.
-- No product loading, option data, selected-variant resolution, pricing, Add to Cart request, gallery media selection, carousel rail, grid, or wheel behavior changed.
+- Recognized collection text is removed from the main product title and rendered as a linked glitch subtitle.
 
 Runtime commits:
 
@@ -102,13 +114,6 @@ c1e708b95ee19da4291d3dc7ee37f39d5c33fae8
 3bf1285653188743c082de2a2a4584d70100d81e
 d5dbd4e43cab008b6869439afab14e85109ba77f
 e9404864ba58ab7daee8e771894d2c374a5f8fc3
-```
-
-Rollback:
-
-```text
-Global loader commit: e0a3259a41624d7e45ebb74a145d888a76246410
-Cache key: 20260718-step3-gallery-top-align-1
 ```
 
 ## 2026-07-18 — Step 3 modal gallery top alignment
