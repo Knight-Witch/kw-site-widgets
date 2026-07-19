@@ -5,15 +5,15 @@ This directory owns the site-wide Fourthwall runtime layer. Read `/OPERATING_CON
 ## Current production candidate
 
 ```text
-Commit: e9404864ba58ab7daee8e771894d2c374a5f8fc3
-Cache key: 20260718-modal-sync-2
+Commit: fe902634c6ef2c776524735fe93a778ffb52c331
+Cache key: 20260718-featured-card-collections-1
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@e9404864ba58ab7daee8e771894d2c374a5f8fc3/fourthwall/global/kw-fourthwall-loader.js?v=20260718-modal-sync-2
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@fe902634c6ef2c776524735fe93a778ffb52c331/fourthwall/global/kw-fourthwall-loader.js?v=20260718-featured-card-collections-1
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -38,7 +38,7 @@ This remains temporary and must be folded into the title-bar component/global lo
 - Loads CSS first and JavaScript sequentially.
 - Replaces stale same-key resources when URLs change.
 - Loads `kwfw-size-guide-data.js` before `kwfw-size-guide.js`.
-- Loads shared modal compatibility before shared modal presentation.
+- Loads shared modal compatibility before shared presentation.
 
 The exact dependency order is documented in `/ARCHITECTURE.md`.
 
@@ -53,7 +53,8 @@ The exact dependency order is documented in `/ARCHITECTURE.md`.
 - Universal product-support media.
 - Product rules.
 - Shared modal price/CTA/variant-gallery compatibility.
-- Shared standard/Step 3 modal presentation and collection-title behavior.
+- Shared standard/Step 3 modal presentation.
+- Collection-aware standard featured-card title presentation.
 - Cart runtime.
 
 ## Standard product modal presentation
@@ -69,12 +70,12 @@ fourthwall/kwfw-modal-product-fix.js
 
 Current behavior:
 
-- Spellweave and Cauldron Core descriptions remain in `.kwfw-panel-info` under the quick-shop controls.
+- Spellweave and Cauldron Core descriptions remain in `.kwfw-panel-info` beneath quick-shop controls.
 - The old full-width `.kwfw-desc-wide` clone is removed/hidden.
 - The customer-facing `Description` option label is changed to `Size & Style Variant` while the underlying API key remains unchanged.
 - Standard selects use stable product-specific widths based on their longest option.
 
-## Unified product modal presentation
+## Unified product presentation
 
 Owned by:
 
@@ -83,21 +84,39 @@ fourthwall/kw-product-modal-presentation.css
 fourthwall/kw-product-modal-presentation.js
 ```
 
-This layer supports both `.kwfw-*` and `.kwpj-*` expanded modals and loads after compatibility code.
+This layer supports standard `.kwfw-*` cards/modals and Step 3 `.kwpj-*` expanded modals. It loads after compatibility code.
 
-Current behavior:
+Modal behavior:
 
 - Black panel/grid/gallery/track/information surfaces.
 - Shared `1120px` desktop panel cap and standard two-column ratio.
 - Shared `540px` desktop gallery cap with top-aligned `contain` media.
-- Shared AgencyFB typography, color assignment, close buttons, details buttons, dots, and transparent arrow style.
+- Shared AgencyFB typography, color assignment, close buttons, details buttons, dots, and transparent arrows.
 - Shared mobile gallery height `clamp(360px,118vw,620px)` and compact information padding.
-- Mobile arrows use the Step 3 edge offsets with the standard transparent Spellweave styling.
-- Single-media galleries hide navigation and dots.
-- Recognized `Cyberpunk 2077` text is split out of the main product title.
-- A red linked collection subtitle points to `/pages/edgerunners`.
-- Desktop hover/focus glitches to `Edgerunners Collection`.
-- Mobile cycles both labels every four seconds unless reduced motion is active.
+- Single-media galleries hide navigation, dots, and the standard swipe cue.
+
+Collection-title behavior:
+
+- Maintains a controlled Edgerunners, Basscraft, Wicked Hearts, Astral Plane, Black Mass, and Starchild registry.
+- Fetches each controlled collection once per page when standard product cards are present.
+- Indexes products by slug and stable identifiers.
+- Resolves each card independently, including mixed homepage carousels.
+- Uses embedded collection metadata, dedicated holder handles, and recognized title text as progressively weaker fallbacks.
+- Formats both standard featured cards and expanded modals.
+- Uses white AgencyFB main titles and red linked collection taglines.
+- Desktop hover/focus glitches to the collection name.
+- Mobile cycles between tagline and collection name every four seconds unless reduced motion is active.
+
+Controlled pairs:
+
+```text
+Cyberpunk 2077 <-> Edgerunners Collection
+Eat. Sleep. Rave. Repeat. <-> Basscraft Collection
+Snakes Skulls & Sin <-> Wicked Hearts Collection
+All Things Fantasy <-> Astral Plane Collection
+Sci-fi & Beyond <-> Black Mass Collection
+Mystics Zodiacs & Vibes <-> Starchild Collection
+```
 
 This module does not alter products, variants, prices, cart requests, or selected-variant gallery resolution.
 
@@ -127,8 +146,9 @@ The two carousel namespaces intentionally use different quantity-row ownership. 
 2. Info-section CSS/JS still load from `kw-info-accordion-dev`.
 3. Legacy global loaders remain in the directory.
 4. Native Fourthwall product-page markup and exact product slugs require live verification.
-5. Unified modal dimensions, mobile spacing, arrows, and collection subtitle behavior require live verification across both namespaces.
-6. Fourthwall editor hot swaps cannot remove listeners from earlier script instances without a full preview reload.
+5. Controlled Collection Domain handles require live verification as additional featured Spellweaves are published.
+6. Collection membership indexing adds up to six one-time API requests on pages containing standard product cards.
+7. Fourthwall editor hot swaps cannot remove listeners from earlier script instances without a full preview reload.
 
 ## Production rules
 
