@@ -2,15 +2,14 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
-## 2026-07-19 00:35 UTC — PF-20260719-023 — Collection-aware featured product cards
+## 2026-07-19 01:10 UTC — PF-20260719-024 — Media-only compact carousel cards
 
 Requested change:
 
-- Apply the existing clean-title/red-subtitle logic to standard featured Spellweave product cards.
-- Resolve subtitles from the product's Collection Domain membership rather than the visible carousel slug.
-- Support mixed homepage carousels containing products from more than one controlled collection.
-- Add mappings for Edgerunners, Basscraft, Wicked Hearts, Astral Plane, Black Mass, and Starchild.
-- Retain desktop glitch and mobile four-second cycling behavior.
+- Remove product titles from all compact product carousel tiles.
+- Remove Collection Domain subtitles from all compact product carousel tiles.
+- Preserve product title and Collection Domain presentation inside expanded product windows.
+- Leave standard and Step 3 card media/actions intact.
 
 Docs/files reviewed:
 
@@ -23,128 +22,49 @@ Docs/files reviewed:
 - `/fourthwall/README.md`
 - `/fourthwall/global/README.md`
 - `/fourthwall/global/CHANGELOG.md`
-- Production-pinned `fourthwall/kwfw-carousel.js`
-- `fourthwall/kwfw-universal-media.css`
 - `fourthwall/kw-product-modal-presentation.css`
 - `fourthwall/kw-product-modal-presentation.js`
+- Production-pinned `fourthwall/kwfw-carousel.css`
+- Branch-owned `components/kw-plain-jackets/kw-plain-jackets.css`
 - `fourthwall/global/kw-fourthwall-loader.js`
-- Current Collection Domain navigation destinations
+- Supplied standard compact-card and expanded-modal screenshots
 
 Risk/conflict notes:
 
-- The standard carousel product object may not consistently expose all collection memberships.
-- A mixed carousel cannot safely classify every card from the holder's one collection slug.
-- Fetching each controlled collection on every observer pass would create duplicate network requests.
-- The existing universal-media stylesheet hides `.kwfw-card-title`, so the shared presentation stylesheet must explicitly restore it after universal media loads.
-- Multiple mobile subtitles require timer cleanup when cards/modals are removed.
-- The title formatter must remain idempotent under the existing MutationObserver.
-- Product objects, variant selection, prices, Add to Cart, selected galleries, rail, grid, and wheel behavior must remain untouched.
+- Standard card titles are displayed by the pinned base carousel and restored by the shared presentation stylesheet.
+- Older Fourthwall editor script instances can leave `.kw-product-card-collection-link` elements in compact cards after a hot reload.
+- Step 3 already hides `.kwpj-name`, but defensive global consistency is required.
+- Expanded modal titles use `.kwfw-panel-title` / `.kwpj-panel-title` and modal collection subtitles use `.kw-product-collection-link`; these must not be hidden.
+- Product media, CTA, prices, variants, galleries, Size Guide, rails, grids, and wheel behavior must remain untouched.
 
 Plan/result:
 
-- Expanded the controlled registry to six Collection Domains and their page destinations.
-- Added handle aliases using `-core` and plain handles.
-- Added a one-time collection index request per page when standard cards are present.
-- Indexed products by slug, product ID, UUID, and external ID where available.
-- Added embedded collection metadata support using normalized handle, key, title, collection name, and tagline aliases.
-- Added dedicated-holder and title-prefix/suffix fallbacks after product membership lookup.
-- Added standard-card title cleanup and linked collection subtitles.
-- Restored card titles in AgencyFB with a two-line clamp.
-- Reused the existing desktop glitch/mobile cycle behavior.
-- Extended the same registry to modal subtitles for consistency.
+- Added final namespace-scoped suppression selectors in `kw-product-modal-presentation.css`.
+- Hid `.kwfw-card-title` and card-scoped `.kw-product-card-collection-link`.
+- Kept `.kwpj-name` hidden with a defensive global selector.
+- Did not target expanded modal title or collection-link classes.
 - Bumped the global loader cache key.
+- Did not modify JavaScript or branch-owned Step 3 source.
 
 Validation:
 
-- `node --check` passed for the final presentation runtime.
-- Title stripping checks passed for collection prefixes and suffixes.
-- Verified collection requests are cached in one shared promise and do not repeat on observer scans.
-- Verified the collection lookup order prioritizes product membership over holder slug.
-- Verified the standard card product array remains owned by the pinned carousel runtime.
-- Verified no Step 3 source file, price, cart, Size Guide, gallery-selection, rail, grid, or wheel file changed.
-- Live verification remains required on the mixed homepage carousel and dedicated Edgerunners/Basscraft carousels.
+- Verified the suppression block appears after earlier compact-title/subtitle display declarations.
+- Verified `display:none!important` has greater specificity than the earlier `.kwfw-card-title` rule.
+- Verified modal title/subtitle selectors are separate and unaffected.
+- Verified no product loading, variant, price, cart, Size Guide, selected-gallery, rail, grid, or wheel file changed.
+- Live desktop/mobile verification remains required for standard and Step 3 compact cards.
 
 User input required:
 
-- None for Edgerunners and Basscraft.
-- Confirm alternate Fourthwall collection handles later only if a future domain does not use the registered `-core` or plain handle.
+- None.
+
+## 2026-07-19 00:35 UTC — PF-20260719-023 — Collection-aware featured product cards
+
+Added the controlled six-collection registry, one-time product-membership indexing, mixed-carousel-safe product resolution, clean product-title formatting, and linked Collection Domain subtitles. Product/variant/cart/gallery/scroll systems remained unchanged.
 
 ## 2026-07-18 23:58 UTC — PF-20260718-022 — Unified standard and Step 3 modal presentation
 
-Requested change:
-
-- Synchronize the standard Spellweave/Cauldron Core and Step 3 expanded product-window styling.
-- Make the complete product window black in both systems.
-- Use the standard modal’s smaller desktop gallery footprint for Step 3.
-- Standardize AgencyFB typography, color assignment, control styling, navigation styling, and information presentation.
-- Use the standard transparent arrow style on Step 3 desktop.
-- On mobile, retain Step 3 edge positioning while using the standard arrow appearance.
-- Reduce the excessive standard-mobile gap between media, gallery controls, and product information.
-- Remove recognized collection text such as `- Cyberpunk 2077` from the primary product title.
-- Add a smaller red linked collection subtitle that glitches between `Cyberpunk 2077` and `Edgerunners Collection` on desktop and cycles every four seconds on mobile.
-
-Docs/files reviewed:
-
-- `/OPERATING_CONTRACT.md`
-- `/ARCHITECTURE.md`
-- `/STYLE_KEYS.md`
-- `/MASTER.md`
-- `/HISTORY/CHANGELOG.md`
-- `/HISTORY/PRE_FLIGHT_Check.md`
-- `/fourthwall/README.md`
-- `/fourthwall/global/README.md`
-- `/fourthwall/global/CHANGELOG.md`
-- Production-pinned `fourthwall/kwfw-carousel.css`
-- Production-pinned `fourthwall/kwfw-carousel.js`
-- `fourthwall/kwfw-universal-media.css`
-- `fourthwall/kwfw-modal-product-fix.css`
-- `fourthwall/kwfw-modal-product-fix.js`
-- Branch-owned `components/kw-plain-jackets/kw-plain-jackets.css`
-- Branch-owned `components/kw-plain-jackets/kw-plain-jackets-v2.js`
-- `fourthwall/global/kw-header.css`
-- `fourthwall/global/kw-header.js`
-- Supplied desktop and mobile modal screenshots
-
-Risk/conflict notes:
-
-- `kwfw` and `kwpj` have separate product-loading, modal-construction, variant, cart, and gallery-event implementations; synchronization must remain presentation-only.
-- Fixed gallery geometry can introduce crop, scale, or mobile whitespace regressions if `object-fit`, track height, and media height are not coordinated.
-- Single-media galleries must not expose unusable arrows or dots.
-- Collection parsing must be controlled rather than stripping arbitrary title suffixes.
-- Mobile subtitle timers must stop when elements are removed and respect reduced-motion preferences.
-- A broad MutationObserver must remain idempotent and must not rewrite its own subtitle continuously.
-- Fourthwall editor hot swaps cannot remove listeners installed by earlier script instances without a full preview reload.
-
-Plan/result:
-
-- Added `fourthwall/kw-product-modal-presentation.css` as the sole cross-system expanded-modal visual owner.
-- Added `fourthwall/kw-product-modal-presentation.js` as the controlled product-title and collection-subtitle owner.
-- Loaded both resources after shared modal compatibility from the global loader.
-- Standardized black surfaces, desktop panel/grid/gallery dimensions, top-aligned contained media, AgencyFB typography, controls, close buttons, details buttons, dots, and transparent navigation.
-- Applied shared mobile gallery geometry and compact information spacing.
-- Kept Step 3 edge offsets on mobile while applying the standard arrow appearance.
-- Suppressed controls for single-media galleries.
-- Added a Cyberpunk-only prefix/suffix parser and linked subtitle to `/pages/edgerunners`.
-- Added desktop hover/focus glitch swapping and mobile four-second cycling with reduced-motion handling.
-- Left product objects, pricing, variant matching, Add to Cart, media selection, rail, grid, and wheel behavior unchanged.
-
-Validation:
-
-- `node --check` passed for `kw-product-modal-presentation.js`.
-- Title parser checks covered:
-  - `Sandevistan V2 - Cyberpunk 2077` → `Sandevistan V2`
-  - `Samurai Moto Jacket — Cyberpunk 2077` → `Samurai Moto Jacket`
-  - `Cyberpunk 2077 - Johnny's Samurai Jacket` → `Johnny's Samurai Jacket`
-  - unrelated titles remain unchanged
-- Verified single-media control suppression in the final stylesheet.
-- Verified loader order places presentation after modal compatibility.
-- Verified no branch-owned Step 3 source file or business-logic runtime was modified.
-- Live visual verification remains required across representative standard, Step 3, desktop, and mobile products.
-
-User input required:
-
-- None for this release.
-- Additional collection-title mappings require explicit collection names and destinations later.
+Added the shared expanded-modal presentation layer, black surfaces, synchronized gallery geometry, AgencyFB typography, transparent arrows, mobile spacing, and controlled collection subtitles.
 
 ## 2026-07-18 22:05 UTC — PF-20260718-021 — Step 3 modal gallery top alignment
 
