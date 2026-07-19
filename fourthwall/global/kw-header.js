@@ -1,5 +1,5 @@
 (() => {
-  const headerBuild = "20260718-collection-link-decode-hover-4";
+  const headerBuild = "20260718-collection-mobile-subtitles-1";
   const mobileGlitchDelay = 420;
   const navigationDelay = 220;
   const textSwapDelay = 130;
@@ -7,14 +7,10 @@
   const subtitleRevealStep = 28;
   const inlineRevealStep = 24;
   const inlineRevealIncrement = 1.15;
-  const inlineRevealDuration = 520;
-  const mobileCollectionCascadeInitialDelay = 3000;
-  const mobileCollectionCascadeStep = 1000;
   const subtitleAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const swapTimers = new WeakMap();
   const subtitleTimers = new WeakMap();
   const inlineTimers = new WeakMap();
-  const cascadeTimers = new WeakMap();
 
   const navItems = [
     { title: "Home", href: "/" },
@@ -254,62 +250,13 @@
     return Array.from(element?.querySelectorAll("a[data-kw-hover-text]") || []);
   }
 
-  function clearCascadeTimers(element) {
-    const timers = cascadeTimers.get(element);
-    if (timers) timers.forEach(timer => window.clearTimeout(timer));
-    cascadeTimers.delete(element);
-  }
-
-  function setCascadeTimer(element, callback, delay) {
-    const timers = cascadeTimers.get(element) || [];
-    const timer = window.setTimeout(() => {
-      callback();
-      const active = cascadeTimers.get(element);
-      if (!active) return;
-      const remaining = active.filter(item => item !== timer);
-      if (remaining.length) cascadeTimers.set(element, remaining);
-      else cascadeTimers.delete(element);
-    }, delay);
-    timers.push(timer);
-    cascadeTimers.set(element, timers);
-  }
-
-  function hasHoverSwapState(element) {
-    return getHoverSwapLinks(element).some(link => (link.dataset.kwText || link.textContent || "") !== (link.dataset.kwTitle || ""));
-  }
-
-  function cascadeHoverSwapLinks(element, forward, reverse = false, options = {}) {
-    const links = getHoverSwapLinks(element);
-    const ordered = reverse ? links.slice().reverse() : links;
-    const initialDelay = options.initialDelay ?? 0;
-    const step = options.step ?? mobileCollectionCascadeStep;
-    const autoReturn = Boolean(options.autoReturn);
-    if (options.clear !== false) clearCascadeTimers(element);
-    const returnBaseDelay = ordered.length ? initialDelay + ((ordered.length - 1) * step) : 0;
-    ordered.forEach((link, index) => {
-      const delay = initialDelay + (index * step);
-      setCascadeTimer(element, () => {
-        revealInlineText(link, forward ? link.dataset.kwHoverText : link.dataset.kwTitle);
-      }, delay);
-      if (forward && autoReturn) {
-        setCascadeTimer(element, () => {
-          revealInlineText(link, link.dataset.kwTitle || link.textContent);
-        }, returnBaseDelay + (index * step));
-      }
-    });
-    if (!ordered.length) return 0;
-    const lastForwardStart = initialDelay + ((ordered.length - 1) * step);
-    const lastReturnStart = forward && autoReturn ? returnBaseDelay + ((ordered.length - 1) * step) : lastForwardStart;
-    return lastReturnStart + inlineRevealDuration;
-  }
-
   function isModifiedNavigation(event) {
     return event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
   }
 
   function navigateAfterTap(element, href) {
     clearInlineReveal(element);
-    element.dataset.kwText = element.textContent || element.dataset.kwText || "";
+    element.dataset.kwText = element.dataset.kwTitle || element.dataset.kwText || element.textContent || "";
     triggerGlitch(element);
     element.style.color = "#ff0000";
     setTimeout(() => { window.location.href = href; }, navigationDelay);
@@ -634,7 +581,6 @@
 
     function buildMobilePanels() {
       if (window.innerWidth > 1024) return;
-      let mobileCloseTimer = null;
       panelsRoot.innerHTML = "";
       panelsRoot.dataset.kwMobileMode = "main";
       setMobilePanelWidth();
@@ -644,52 +590,25 @@
       panelsRoot.appendChild(main);
 
       function closeSubPanels() {
-        const openPanels = Array.from(panelsRoot.querySelectorAll(".kw-panel.sub.open"));
-        const delay = openPanels.reduce((duration, panel) => {
-          clearCascadeTimers(panel);
-          if (!hasHoverSwapState(panel)) return duration;
-          return Math.max(duration, cascadeHoverSwapLinks(panel, false, true, { clear: false }));
-        }, 0);
-        const close = () => {
-          panelsRoot.dataset.kwMobileMode = "main";
-          main.classList.remove("kw-panel-off");
-          openPanels.forEach(panel => {
-            clearCascadeTimers(panel);
-            panel.classList.remove("open");
-            resetElementSubtitles(panel);
-            getHoverSwapLinks(panel).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
-          });
-          mobileCloseTimer = null;
-        };
-        if (mobileCloseTimer) window.clearTimeout(mobileCloseTimer);
-        if (delay) mobileCloseTimer = window.setTimeout(close, delay);
-        else close();
+        panelsRoot.dataset.kwMobileMode = "main";
+        main.classList.remove("kw-panel-off");
+        panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(panel => {
+          panel.classList.remove("open");
+          resetElementSubtitles(panel);
+        });
       }
 
       function openSubPanel(panel) {
-        if (mobileCloseTimer) {
-          window.clearTimeout(mobileCloseTimer);
-          mobileCloseTimer = null;
-        }
         panelsRoot.dataset.kwMobileMode = "sub";
         main.classList.add("kw-panel-off");
         panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(openPanel => {
           if (openPanel !== panel) {
-            clearCascadeTimers(openPanel);
             openPanel.classList.remove("open");
             resetElementSubtitles(openPanel);
-            getHoverSwapLinks(openPanel).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
           }
         });
-        clearCascadeTimers(panel);
-        getHoverSwapLinks(panel).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
         panel.classList.add("open");
         revealElementSubtitle(panel);
-        cascadeHoverSwapLinks(panel, true, false, {
-          initialDelay: mobileCollectionCascadeInitialDelay,
-          step: mobileCollectionCascadeStep,
-          autoReturn: true
-        });
       }
 
       const topItems = desktopMenu.querySelectorAll(":scope > li");
@@ -762,12 +681,24 @@
           links.forEach(s => {
             const subLink = document.createElement("a");
             const text = s.dataset.kwTitle || s.textContent.trim();
+            const mobileSubtitle = s.dataset.kwHoverText || "";
             subLink.href = s.getAttribute("href") || "#";
-            subLink.className = s.dataset.kwHoverText ? "kw-glitch kw-hover-swap" : "kw-glitch";
+            subLink.className = mobileSubtitle ? "kw-glitch kw-mobile-subtitled-link" : "kw-glitch";
             subLink.dataset.kwText = text;
             subLink.dataset.kwTitle = text;
-            if (s.dataset.kwHoverText) subLink.dataset.kwHoverText = s.dataset.kwHoverText;
-            subLink.textContent = text;
+            if (mobileSubtitle) subLink.dataset.kwMobileLinkSubtitle = mobileSubtitle;
+            if (mobileSubtitle) {
+              const titleSpan = document.createElement("span");
+              titleSpan.className = "kw-mobile-link-title";
+              titleSpan.textContent = text;
+              const subtitleSpan = document.createElement("span");
+              subtitleSpan.className = "kw-mobile-link-subtitle";
+              subtitleSpan.textContent = mobileSubtitle;
+              subLink.appendChild(titleSpan);
+              subLink.appendChild(subtitleSpan);
+            } else {
+              subLink.textContent = text;
+            }
             if (s.classList.contains("active")) subLink.classList.add("active");
             subLink.addEventListener("click", e => {
               e.preventDefault();
@@ -819,10 +750,7 @@
     function closeMobile() {
       overlay.classList.remove("open");
       closeBtn.style.display = "none";
-      panelsRoot.querySelectorAll(".kw-panel.sub").forEach(panel => {
-        clearCascadeTimers(panel);
-        resetElementSubtitles(panel);
-      });
+      panelsRoot.querySelectorAll(".kw-panel.sub").forEach(resetElementSubtitles);
       panelsRoot.innerHTML = "";
       panelsRoot.dataset.kwMobileMode = "";
     }
