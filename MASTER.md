@@ -7,15 +7,15 @@ This is the source bible for the Knight Witch site/widgets repository. Read `/OP
 ### Global Fourthwall loader
 
 ```text
-Commit: e0a3259a41624d7e45ebb74a145d888a76246410
-Cache key: 20260718-step3-gallery-top-align-1
+Commit: e9404864ba58ab7daee8e771894d2c374a5f8fc3
+Cache key: 20260718-modal-sync-2
 Entrypoint: fourthwall/global/kw-fourthwall-loader.js
 Shop domain: knightwitchapparel.com
 Currency: USD
 ```
 
 ```text
-https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@e0a3259a41624d7e45ebb74a145d888a76246410/fourthwall/global/kw-fourthwall-loader.js?v=20260718-step3-gallery-top-align-1
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@e9404864ba58ab7daee8e771894d2c374a5f8fc3/fourthwall/global/kw-fourthwall-loader.js?v=20260718-modal-sync-2
 ```
 
 The live storefront token is intentionally not stored in repository documentation.
@@ -56,17 +56,12 @@ Standard modal behavior:
 - Legacy full-width `.kwfw-desc-wide` clones are removed/hidden.
 - The visible combined variant label is `Size & Style Variant` while the Fourthwall option key remains `Description` for correct cart selection.
 - Standard selects use a stable product-specific width based on their longest option and clamp to the available column width.
-- Select widths recalculate after font readiness and viewport resize without changing when the selected option changes.
 
 ### Step 3 base-jacket carousel
 
 Owned on branch `kw-product-carousel-refactor` under `components/kw-plain-jackets/`.
 
-Current global compatibility behavior:
-
-- Step 3 modal images and videos remain `object-fit:contain`.
-- Their gallery alignment is forced to `object-position:top center` so shorter jacket images sit against the top of the gallery like the standard Spellweave/Cauldron Core modal.
-- Step 3 description placement, option labels, select widths, quantity geometry, variant gallery filtering, and carousel scrolling remain unchanged.
+The branch retains product loading, filter tabs, modal construction, quantity controls, cart actions, and gallery navigation events. Shared global presentation now standardizes the final Step 3 modal visuals without changing that branch-owned behavior.
 
 ### Shared product modal compatibility
 
@@ -82,11 +77,32 @@ Current behavior:
 - Supports `.kwfw-*` and `.kwpj-*` modals.
 - Displays actual Fourthwall selected-variant prices.
 - Restores the orange glowing Add to Cart CTA.
-- Switches galleries to selected-variant media.
-- Falls back to product-wide media.
+- Switches galleries to selected-variant media with product-wide fallback.
 - Preserves standard-modal universal support slides.
 - Owns standard-only visible option relabeling and stable select-width calculation.
-- Applies Step 3-only top alignment to gallery media without changing gallery dimensions.
+
+### Unified product modal presentation
+
+Owned by:
+
+```text
+fourthwall/kw-product-modal-presentation.css
+fourthwall/kw-product-modal-presentation.js
+```
+
+Current behavior:
+
+- Makes the complete `kwfw` and `kwpj` modal surface black: panel, grid, gallery, track, and information column.
+- Uses one desktop panel width, column ratio, `540px` gallery cap, AgencyFB typography, color system, close-button style, details-button style, dot style, and transparent white arrow treatment.
+- Forces both systems’ media to `object-fit:contain`, `object-position:top center`, and the full fixed gallery height.
+- Hides controls for single-media galleries.
+- Uses a shared mobile gallery height of `clamp(360px,118vw,620px)` and compact information spacing.
+- Positions both mobile arrow systems at the Step 3 edge offsets while using the standard transparent Spellweave arrow style.
+- Removes recognized `Cyberpunk 2077` prefixes/suffixes from modal titles.
+- Adds a smaller red `Cyberpunk 2077` collection subtitle linked to `/pages/edgerunners`.
+- Desktop hover/focus glitches the subtitle to `Edgerunners Collection`.
+- Mobile cycles between both labels every four seconds unless reduced motion is enabled.
+- Does not alter product objects, prices, variant selection, cart submission, or selected-variant gallery routing.
 
 ### Global product size guide
 
@@ -100,21 +116,13 @@ fourthwall/kwfw-size-guide.css
 
 Current behavior:
 
-- Injects into featured Spellweave/standard modals.
-- Injects into Step 3 base-jacket modals.
-- Injects into registered native Fourthwall product pages.
+- Injects into featured Spellweave/standard modals, Step 3 base-jacket modals, and registered native Fourthwall product pages.
 - Follows the selected garment variant.
-- Uses AgencyFB in carousel modals.
-- Standard `kwfw` modals keep the Qty label in the field and place quantity controls plus Size Guide in the same two-column row.
-- Standard row CSS also targets legacy unmodified `.kw-size-qty-size-row` elements so editor hot reloads do not leave Size Guide on a second line.
-- Step 3 `kwpj` modals retain the verified field-level two-column grid and explicit `48px 58px 48px` quantity geometry.
-- Native product-page buttons remain full width before Add to Cart.
-- Supports US/Metric conversion and standard modal dismissal/focus behavior.
+- Keeps separate `kwfw` and `kwpj` quantity-row ownership.
+- Supports US/Metric conversion and standard dismissal/focus behavior.
 - Supports product-scoped variant rules for generic material options.
 - Does not show a generic chart for unresolved products.
-- Size-chart headings use AgencyFB with controlled letter spacing.
-- Chart panels and tables use content-driven widths and tighter spacing.
-- Mobile tables do not enforce a blanket `560px` minimum width.
+- Uses AgencyFB chart headings, content-driven widths, and compact mobile tables.
 
 Current registry:
 
@@ -142,10 +150,8 @@ Samurai mapping decisions:
 
 - Featured `Ladies Rocker Vest` resolves to **Ladies Crop-Top Vest Size Chart**.
 - Featured `Mens Rocker Vest` and mens vest-only/collar variants resolve to **Men's Hooded Vest Size Chart**.
-- The Samurai Moto Jacket uses product-scoped material routing.
-- `Vegan Leather` resolves to **Vegan Moto Jacket - Unisex**.
-- `Genuine Leather` resolves to **Genuine Leather Moto Jacket - Unisex**.
-- Generic Vegan/Genuine options on unrelated products do not resolve to the Samurai charts.
+- `Vegan Leather` resolves to **Vegan Moto Jacket - Unisex** only within the Samurai Moto product context.
+- `Genuine Leather` resolves to **Genuine Leather Moto Jacket - Unisex** only within the Samurai Moto product context.
 
 Known chart-data gaps:
 
@@ -162,12 +168,7 @@ fourthwall/kwfw-universal-media.js
 fourthwall/prod_card_media/manifest.json
 ```
 
-Current behavior:
-
-- Appends configured/manifest support media to standard modal galleries.
-- No longer clones descriptions into a full-width row.
-- Removes legacy `.kwfw-desc-wide` clones and leaves the original description in `.kwfw-panel-info`.
-- CSS hides legacy clones that may be recreated by an older hot-reloaded observer.
+It appends configured support media, preserves the standard description in `.kwfw-panel-info`, removes legacy wide clones, and does not own cross-system modal presentation.
 
 ## Active risks
 
@@ -179,75 +180,73 @@ Current behavior:
 6. Exact product slugs/aliases must expand as more garment charts are supplied.
 7. Variant-specific gallery behavior still needs broad live verification.
 8. `gallery-portfolio/index.html` references a missing runtime in the audited branch.
-9. The latest Step 3 gallery top-alignment override requires live visual verification after publishing the new footer.
-10. In a Fourthwall editor session that hot-swaps loaders without a page reload, old JavaScript listeners may remain resident; CSS explicitly neutralizes legacy wide-description clones.
+9. The unified desktop/mobile modal geometry, arrows, and title subtitle behavior require live visual verification across representative standard and Step 3 products.
+10. Collection-title parsing currently recognizes Cyberpunk 2077 only; other collection mappings require controlled additions.
+11. Fourthwall editor hot swaps cannot remove listeners from older scripts without a full preview reload.
 
 ## Completed recent work
 
 - Restored real modal prices and Add to Cart styling.
 - Added selected-variant galleries and corrected default-variant fallback.
 - Added the centralized size-chart registry and global injector.
-- Corrected ladies product identities and chart mappings.
-- Fixed Step 3 quantity overlap with namespace-specific fixed geometry.
-- Restored Featured Spellweave quantity-box ownership.
-- Added exact Samurai vest mappings.
-- Added separate unisex Vegan and Genuine Leather Samurai Moto charts.
-- Added legacy-row-compatible Featured alignment selectors.
-- Added AgencyFB chart titles and condensed desktop/mobile chart spacing.
+- Corrected ladies product identities and Samurai chart mappings.
+- Fixed Step 3 quantity overlap and Featured Size Guide placement.
+- Added AgencyFB chart titles and compact desktop/mobile table spacing.
 - Returned standard product descriptions to the right information column.
-- Replaced the visible standard `Description` label with `Size & Style Variant` without changing the API option key.
-- Added longest-option-based stable standard select widths.
-- Top-aligned Step 3 modal gallery media to match the standard modal.
+- Added `Size & Style Variant` presentation and stable longest-option select widths.
+- Top-aligned Step 3 gallery media.
+- Added a shared modal presentation layer for black surfaces, gallery caps, typography, navigation, mobile spacing, clean titles, and linked collection subtitles.
 
 ## Pending work
 
-1. Verify the latest loader live in standard Spellweave, Cauldron Core, Step 3, and native product contexts.
-2. Add remaining garment charts as exact source data is supplied.
-3. Confirm native product slugs where normalized names differ.
-4. Obtain unobscured missing men's chart rows.
-5. Separate size and style into independent front-end controls while continuing to resolve the correct Fourthwall variant for cart submission.
-6. Fold the title-bar hotfix into the base component.
-7. Stabilize or merge `kw-info-accordion-dev`.
-8. Audit/archive obsolete carousel experiments.
-9. Resolve the missing gallery portfolio runtime.
+1. Verify the new loader live in standard Spellweave, Cauldron Core, Step 3, and mobile contexts.
+2. Add controlled collection-title mappings beyond Cyberpunk 2077 as required.
+3. Add remaining garment size charts as exact source data is supplied.
+4. Confirm native product slugs where normalized names differ.
+5. Obtain unobscured missing men's chart rows.
+6. Separate size and style into independent front-end controls while resolving the correct Fourthwall variant for cart submission.
+7. Fold the title-bar hotfix into the base component.
+8. Stabilize or merge `kw-info-accordion-dev`.
+9. Audit/archive obsolete carousel experiments.
+10. Resolve the missing gallery portfolio runtime.
 
 ## REMOVALS / DECISIONS AGAINST
 
-### No vertical centering for Step 3 modal product media
+### No separate visual systems for standard and Step 3 expanded modals
 
-Reason: jacket imagery should align to the top of the fixed gallery viewport, matching the standard modal and avoiding large empty space above shorter product images.
+Reason: product windows should share panel color, gallery footprint, typography, navigation, mobile spacing, and color assignment. Functional product-loading and cart logic remain separate.
+
+### No collection text embedded in recognized primary product titles
+
+Reason: `Cyberpunk 2077` is metadata/navigation context rather than the core product name. It now occupies a linked red subtitle.
+
+### No boxed Step 3 gallery arrows
+
+Reason: both modal systems use the cleaner transparent Spellweave arrow treatment.
+
+### No intrinsic-height mobile gallery expansion
+
+Reason: uncontrolled media height created excessive blank space between standard product imagery, dots, and product information.
 
 ### No full-width standard product description row
 
-Reason: Spellweave and Cauldron Core descriptions should remain in the same right-side information column architecture as Step 3 instead of extending beneath the gallery.
+Reason: descriptions belong in the right-side information column.
 
 ### No selected-option-driven dropdown width
 
-Reason: a select that resizes on every option change is visually jumpy. Width must be calculated once from the product's longest option and remain stable.
-
-### No visible `Description` label for combined variants
-
-Reason: it is an internal Fourthwall option name and does not describe the customer-facing control. The UI uses `Size & Style Variant` while preserving the original key for cart resolution.
+Reason: width must remain stable based on the product's longest option.
 
 ### No shared quantity-row DOM ownership for `kwfw` and `kwpj`
 
-Reason: Featured Spellweaves require the row inside `.kwfw-field` around `.kwfw-qty`; Step 3 requires a field-level grid. Treating both the same repeatedly regressed one system.
-
-### No fixed blanket mobile table width
-
-Reason: short size charts should use available mobile space efficiently; only genuinely wide charts should scroll horizontally.
+Reason: the two systems require different Size Guide wrapper geometry.
 
 ### No global material-only chart routing
 
-Reason: `Vegan Leather` and `Genuine Leather` appear on multiple products. Samurai Moto routing must also match the Samurai product context.
+Reason: generic material values must also match the product context.
 
-### No broad generic jacket/vest chart matching
+### No broad generic jacket/vest chart matching or fabricated rows
 
-Reason: garments use different manufacturers and measurements.
-
-### No fabricated sizing rows
-
-Reason: customer-facing measurements must come from legible source data.
+Reason: customer-facing sizing must use exact source data.
 
 ### No `@main` production footer
 
