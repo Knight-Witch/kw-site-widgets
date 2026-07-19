@@ -329,3 +329,9 @@
     opacity:0!important
   }
 }
+.kwfw-card .kwfw-card-title,
+.kwfw-card .kw-product-card-collection-link,
+.kwpj-card .kwpj-name,
+.kwpj-card .kw-product-card-collection-link{
+  display:none!important
+}
