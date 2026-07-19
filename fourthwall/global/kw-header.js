@@ -4,9 +4,14 @@
   const textSwapDelay = 130;
   const subtitleRevealDelay = 180;
   const subtitleRevealStep = 28;
+  const inlineRevealStep = 24;
+  const inlineRevealIncrement = 1.15;
+  const inlineRevealDuration = 520;
+  const collectionCascadeStep = 85;
   const subtitleAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const swapTimers = new WeakMap();
   const subtitleTimers = new WeakMap();
+  const inlineTimers = new WeakMap();
 
   const navItems = [
     { title: "Home", href: "/" },
@@ -18,12 +23,12 @@
       mobileSubtitle: "Shop Signature Spellweaves",
       children: [
         { title: "Shop The Full Collection", href: "/pages/the-collection-domain" },
-        { title: "Edgerunners", href: "/pages/edgerunners" },
-        { title: "Basscraft", href: "/pages/basscraft" },
-        { title: "Wicked Hearts", href: "/pages/wicked-hearts" },
-        { title: "Astral Plane", href: "/pages/astral-plane" },
-        { title: "Black Mass", href: "/pages/black-mass" },
-        { title: "Starchild", href: "/pages/starchild" }
+        { title: "Edgerunners", hoverText: "Cyberpunk 2077", href: "/pages/edgerunners" },
+        { title: "Basscraft", hoverText: "Eat. Sleep. Rave. Repeat.", href: "/pages/basscraft" },
+        { title: "Wicked Hearts", hoverText: "Snakes. Skulls. Sin", href: "/pages/wicked-hearts" },
+        { title: "Astral Plane", hoverText: "All Things Fantasy", href: "/pages/astral-plane" },
+        { title: "Black Mass", hoverText: "Sci-fi & Beyond", href: "/pages/black-mass" },
+        { title: "Starchild", hoverText: "Mystics. Zodiacs. Vibes", href: "/pages/starchild" }
       ]
     },
     {
@@ -90,12 +95,14 @@
       const hasSub = Array.isArray(item.children) && item.children.length;
       const isTopLevel = level === 0;
       const classNames = [item.className, hasSub ? "has-sub" : ""].filter(Boolean).join(" ");
+      const linkClasses = ["kw-glitch", item.hoverText ? "kw-hover-swap" : ""].filter(Boolean).join(" ");
       const drawerTitle = item.drawerTitle || item.title;
-      const linkData = ` data-kw-text="${escapeAttribute(item.title)}"${isTopLevel ? ` data-kw-title="${escapeAttribute(item.title)}"` : ""}`;
+      const linkData = ` data-kw-text="${escapeAttribute(item.title)}" data-kw-title="${escapeAttribute(item.title)}"`;
       const drawerData = isTopLevel && hasSub ? ` data-kw-drawer-title="${escapeAttribute(drawerTitle)}" data-kw-mobile-subtitle="${escapeAttribute(item.mobileSubtitle || "")}"` : "";
+      const hoverData = item.hoverText ? ` data-kw-hover-text="${escapeAttribute(item.hoverText)}"` : "";
       const subtitle = isTopLevel && item.mobileSubtitle ? `<li class="kw-desktop-subtitle kw-subtitle-reveal" data-kw-subtitle="${escapeAttribute(item.mobileSubtitle)}" data-kw-decoded="0"></li>` : "";
       const sub = hasSub ? `<ul class="kw-sub">${subtitle}${renderItems(item.children, level + 1)}</ul>` : "";
-      return `<li${classNames ? ` class="${escapeAttribute(classNames)}"` : ""}><a class="kw-glitch" href="${escapeAttribute(item.href)}"${linkData}${drawerData}>${escapeHtml(item.title)}</a>${sub}</li>`;
+      return `<li${classNames ? ` class="${escapeAttribute(classNames)}"` : ""}><a class="${escapeAttribute(linkClasses)}" href="${escapeAttribute(item.href)}"${linkData}${drawerData}${hoverData}>${escapeHtml(item.title)}</a>${sub}</li>`;
     }).join("");
   }
 
@@ -109,6 +116,49 @@
     element.classList.remove("is-glitching");
     void element.offsetWidth;
     element.classList.add("is-glitching");
+  }
+
+  function clearInlineReveal(element) {
+    const existing = inlineTimers.get(element);
+    if (existing) window.clearInterval(existing);
+    inlineTimers.delete(element);
+  }
+
+  function setInlineText(element, value) {
+    const text = String(value ?? "");
+    clearInlineReveal(element);
+    element.textContent = text;
+    element.dataset.kwText = text;
+  }
+
+  function revealInlineText(element, value) {
+    if (!element) return;
+    const text = String(value ?? "");
+    const currentText = element.dataset.kwText || element.textContent || "";
+    if (currentText === text) return;
+    clearInlineReveal(element);
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setInlineText(element, text);
+      return;
+    }
+    let iteration = 0;
+    const timer = window.setInterval(() => {
+      const output = text.split("").map((character, index) => {
+        if (character === " ") return " ";
+        if (index < iteration) return character;
+        return subtitleAlphabet[Math.floor(Math.random() * subtitleAlphabet.length)];
+      }).join("");
+      element.textContent = output;
+      element.dataset.kwText = output;
+      if (iteration >= text.length) {
+        clearInlineReveal(element);
+        element.textContent = text;
+        element.dataset.kwText = text;
+        return;
+      }
+      iteration += inlineRevealIncrement;
+    }, inlineRevealStep);
+    inlineTimers.set(element, timer);
   }
 
   function setGlitchText(element, value) {
@@ -187,9 +237,28 @@
   }
 
   function navigateAfterTap(element, href) {
+    clearInlineReveal(element);
+    element.dataset.kwText = element.textContent || element.dataset.kwText || "";
     triggerGlitch(element);
     element.style.color = "#ff0000";
     setTimeout(() => { window.location.href = href; }, navigationDelay);
+  }
+
+  function getHoverSwapLinks(root) {
+    return Array.from(root?.querySelectorAll("a[data-kw-hover-text]") || []);
+  }
+
+  function cascadeHoverSwapLinks(root, showHoverText, reverseOrder = false) {
+    const links = getHoverSwapLinks(root);
+    if (!links.length) return 0;
+    const ordered = reverseOrder ? [...links].reverse() : links;
+    ordered.forEach((link, index) => {
+      window.setTimeout(() => {
+        const text = showHoverText ? link.dataset.kwHoverText : link.dataset.kwTitle;
+        revealInlineText(link, text || link.textContent);
+      }, index * collectionCascadeStep);
+    });
+    return ((ordered.length - 1) * collectionCascadeStep) + inlineRevealDuration;
   }
 
   function initHeader() {
@@ -205,6 +274,7 @@
     const desktopDropdownScrollSpeed = 0.34;
     let resizeFrame = null;
     let lockedDesktopItem = null;
+    let mobileCloseTimer = null;
 
     if (!header || !toggle || !closeBtn || !overlay || !desktopMenu || !panelsRoot) return;
 
@@ -390,6 +460,7 @@
       li.classList.remove("open");
       resetTopLink(li);
       resetElementSubtitles(li);
+      getHoverSwapLinks(li).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
     }
 
     function closeDesktopItems() {
@@ -435,6 +506,26 @@
         if (!lockedDesktopItem) closeDesktopItems();
       });
 
+      desktopMenu.addEventListener("pointerover", event => {
+        if (window.innerWidth <= 1024 || (event.pointerType && event.pointerType !== "mouse")) return;
+        const target = event.target instanceof Element ? event.target : null;
+        const link = target?.closest(".kw-sub a[data-kw-hover-text]");
+        if (!link || !desktopMenu.contains(link)) return;
+        const related = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+        if (related && link.contains(related)) return;
+        revealInlineText(link, link.dataset.kwHoverText || link.textContent);
+      });
+
+      desktopMenu.addEventListener("pointerout", event => {
+        if (window.innerWidth <= 1024 || (event.pointerType && event.pointerType !== "mouse")) return;
+        const target = event.target instanceof Element ? event.target : null;
+        const link = target?.closest(".kw-sub a[data-kw-hover-text]");
+        if (!link || !desktopMenu.contains(link)) return;
+        const related = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+        if (related && link.contains(related)) return;
+        revealInlineText(link, link.dataset.kwTitle || link.textContent);
+      });
+
       document.addEventListener("click", event => {
         if (window.innerWidth <= 1024) return;
         if (header.contains(event.target)) return;
@@ -449,6 +540,7 @@
         const target = event.target instanceof Element ? event.target : null;
         const element = target?.closest(".kw-glitch");
         if (!element || !header.contains(element)) return;
+        if (element.dataset.kwHoverText) return;
         const related = event.relatedTarget instanceof Node ? event.relatedTarget : null;
         if (related && element.contains(related)) return;
         triggerGlitch(element);
@@ -462,6 +554,8 @@
         const href = link.href;
         if (!href || targetWindow === "_blank") return;
         event.preventDefault();
+        clearInlineReveal(link);
+        link.dataset.kwText = link.textContent || link.dataset.kwText || "";
         triggerGlitch(link);
         window.setTimeout(() => { window.location.href = href; }, navigationDelay);
       });
@@ -496,25 +590,40 @@
       panelsRoot.appendChild(main);
 
       function closeSubPanels() {
-        panelsRoot.dataset.kwMobileMode = "main";
-        main.classList.remove("kw-panel-off");
-        panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(panel => {
-          panel.classList.remove("open");
-          resetElementSubtitles(panel);
-        });
+        const openPanels = Array.from(panelsRoot.querySelectorAll(".kw-panel.sub.open"));
+        const delay = openPanels.reduce((duration, panel) => Math.max(duration, cascadeHoverSwapLinks(panel, false, true)), 0);
+        const close = () => {
+          panelsRoot.dataset.kwMobileMode = "main";
+          main.classList.remove("kw-panel-off");
+          openPanels.forEach(panel => {
+            panel.classList.remove("open");
+            resetElementSubtitles(panel);
+          });
+          mobileCloseTimer = null;
+        };
+        if (mobileCloseTimer) window.clearTimeout(mobileCloseTimer);
+        if (delay) mobileCloseTimer = window.setTimeout(close, delay);
+        else close();
       }
 
       function openSubPanel(panel) {
+        if (mobileCloseTimer) {
+          window.clearTimeout(mobileCloseTimer);
+          mobileCloseTimer = null;
+        }
         panelsRoot.dataset.kwMobileMode = "sub";
         main.classList.add("kw-panel-off");
         panelsRoot.querySelectorAll(".kw-panel.sub.open").forEach(openPanel => {
           if (openPanel !== panel) {
             openPanel.classList.remove("open");
             resetElementSubtitles(openPanel);
+            getHoverSwapLinks(openPanel).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
           }
         });
+        getHoverSwapLinks(panel).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
         panel.classList.add("open");
         revealElementSubtitle(panel);
+        window.setTimeout(() => cascadeHoverSwapLinks(panel, true), 180);
       }
 
       const topItems = desktopMenu.querySelectorAll(":scope > li");
@@ -586,10 +695,12 @@
           const links = subList ? subList.querySelectorAll("a") : [];
           links.forEach(s => {
             const subLink = document.createElement("a");
-            const text = s.textContent.trim();
+            const text = s.dataset.kwTitle || s.textContent.trim();
             subLink.href = s.getAttribute("href") || "#";
-            subLink.className = "kw-glitch";
+            subLink.className = ["kw-glitch", s.dataset.kwHoverText ? "kw-hover-swap" : ""].filter(Boolean).join(" ");
             subLink.dataset.kwText = text;
+            subLink.dataset.kwTitle = text;
+            if (s.dataset.kwHoverText) subLink.dataset.kwHoverText = s.dataset.kwHoverText;
             subLink.textContent = text;
             if (s.classList.contains("active")) subLink.classList.add("active");
             subLink.addEventListener("click", e => {
@@ -640,9 +751,16 @@
     }
 
     function closeMobile() {
+      if (mobileCloseTimer) {
+        window.clearTimeout(mobileCloseTimer);
+        mobileCloseTimer = null;
+      }
       overlay.classList.remove("open");
       closeBtn.style.display = "none";
-      panelsRoot.querySelectorAll(".kw-panel.sub").forEach(resetElementSubtitles);
+      panelsRoot.querySelectorAll(".kw-panel.sub").forEach(panel => {
+        resetElementSubtitles(panel);
+        getHoverSwapLinks(panel).forEach(link => setInlineText(link, link.dataset.kwTitle || link.textContent));
+      });
       panelsRoot.innerHTML = "";
       panelsRoot.dataset.kwMobileMode = "";
     }
