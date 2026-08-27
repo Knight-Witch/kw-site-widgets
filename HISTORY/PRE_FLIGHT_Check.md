@@ -2,6 +2,64 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
+## 2026-08-27 13:06 UTC — PF-20260827-026 — Reusable Featured-style section title bar
+
+Requested change:
+
+- Add a reusable title-bar variant with the same title/subtitle treatment as the Featured Spellweaves carousel heading currently embedded in Fourthwall.
+- Keep the implementation inside the existing GitHub `kw-title-bars` component so Fourthwall pages need only reusable HTML markup.
+- Support optional width matching through the existing `data-kw-fit` interface.
+
+Docs/files reviewed:
+
+- `/OPERATING_CONTRACT.md`
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/README.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/CHANGELOG.md`
+- `/components/kw-title-bars/README.md`
+- `components/kw-title-bars/kw-title-bars.css`
+- `components/kw-title-bars/kw-title-bars.js`
+- `components/kw-title-bars/kw-title-bars-hotfix.css`
+- `components/kw-title-bars/kw-title-bars-hotfix-loader.js`
+- `components/kw-title-bars/examples/fourthwall-title-bars.html`
+- `fourthwall/global/kw-fourthwall-loader.js`
+- User-supplied Fourthwall Featured Spellweaves title-bar HTML, CSS, and JavaScript
+
+Risk/conflict notes:
+
+- The base `.kw-title-bar` typography and spacing already match the supplied Featured Spellweaves styling on desktop.
+- The temporary hotfix forces transparent background, visible overflow, different mobile margins/type values, and `width:fit-content` with `!important`.
+- The hotfix's width declaration prevents the current normal-priority inline width written by `data-kw-fit` from taking effect.
+- The new behavior must remain scoped to the new section variant and explicit `data-kw-fit` bars; step and compact variants must remain unchanged.
+- The existing global loader already loads the title-bar CSS and JavaScript from `main`, so no new footer resource or loader-order change is needed.
+
+Plan:
+
+- Add `.kw-title-bar--section` as the reusable Featured-style title/subtitle variant with solid black fill and the supplied desktop/mobile presentation.
+- Use high-specificity compatibility declarations only where the active hotfix would otherwise alter the section variant.
+- Make `data-kw-fit` widths important at the inline declaration so the existing explicit fitting API works with the hotfix.
+- Add reusable markup to the component README and Fourthwall example file.
+- Update reusable style, project-state, changelog, and diff records.
+
+Result/validation:
+
+- Added `.kw-title-bar--section` with the supplied solid-black Featured Spellweaves desktop/mobile presentation.
+- Added scoped high-specificity section rules only for values the active hotfix would otherwise change.
+- Updated `data-kw-fit` to write an important inline desktop width so the explicit fit target outranks the hotfix's general width rule.
+- Added reusable standalone and Featured-row-matched markup examples.
+- Ran `node --check` on `kw-title-bars.js`; parsing passed.
+- Ran `git diff --check`; no whitespace errors were reported.
+- A local rendered browser comparison was attempted, but the browser binary was unavailable and its download timed out. Live Fourthwall visual verification remains required.
+
+User input required:
+
+- None. Text remains authored per placement in the Fourthwall HTML block.
+
 ## 2026-08-27 06:51 UTC — PF-20260827-025 — Step title-bar black fill
 
 Requested change:

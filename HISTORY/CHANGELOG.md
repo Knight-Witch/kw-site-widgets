@@ -2,6 +2,49 @@
 
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records under `/HISTORY/DIFFS/`.
 
+## 2026-08-27 13:10 UTC — KW-TITLE-BARS-026
+
+Commit SHA: `338f4118005e8749122fdafb3d51bcae8529f07f`
+
+Summary: Added `.kw-title-bar--section`, a reusable solid-black title/subtitle bar matching the supplied Featured Spellweaves presentation. Fourthwall placements require only the shared title-bar HTML markup; no additional footer resource is needed.
+
+Affected files:
+
+```text
+components/kw-title-bars/kw-title-bars.css
+components/kw-title-bars/kw-title-bars.js
+components/kw-title-bars/README.md
+components/kw-title-bars/examples/fourthwall-title-bars.html
+STYLE_KEYS.md
+MASTER.md
+HISTORY/PRE_FLIGHT_Check.md
+HISTORY/CHANGELOG.md
+HISTORY/DIFFS/2026-08-27-1306-featured-style-section-title-bar-338f4118.md
+```
+
+Reason: The Featured Spellweaves title bar remained embedded directly in Fourthwall and could not be reused as simple page markup. The new component variant centralizes that visual treatment in GitHub and supports arbitrary per-placement text.
+
+Behavior:
+
+- Adds the reusable `.kw-title-bar--section` modifier to the existing `.kw-title-bar` component.
+- Uses the supplied solid black background, red border, AgencyFB title/subtitle typography, desktop spacing, and mobile spacing/type values.
+- Preserves the section variant against conflicting temporary-hotfix declarations without changing step or compact presentation.
+- Keeps the existing optional `data-kw-fit` API and makes its desktop inline width outrank the active hotfix's general important width.
+- Requires no new JavaScript file, footer loader, loader-order change, cache-key change, or carousel-code change.
+
+Rollback: Restore `components/kw-title-bars/kw-title-bars.css` and `components/kw-title-bars/kw-title-bars.js` from parent commit `631b36b2b16c4a23709f691e50b65b90f70f86f5`. No Fourthwall snippet rollback is required.
+
+Production URLs:
+
+```text
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@main/components/kw-title-bars/kw-title-bars.css
+https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@main/components/kw-title-bars/kw-title-bars.js
+```
+
+Risks/follow-up: Title-bar assets still float from `main`, and the separate pinned hotfix remains active. The original Featured Spellweaves inline Fourthwall block remains in place and was not migrated in this update. Folding the hotfix into the base/global-loader architecture remains pending.
+
+Validation: `node --check` and `git diff --check` passed. Source values were compared directly against the supplied Featured Spellweaves CSS. Local rendered QA was blocked by an unavailable browser binary and a timed-out download; live Fourthwall visual verification remains required.
+
 ## 2026-08-27 06:53 UTC — KW-TITLE-BARS-025
 
 Commit SHA: `1a87d806d05b1bb8dd32cdc3280a3408a33fc756`

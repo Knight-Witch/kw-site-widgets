@@ -83,11 +83,12 @@ Owned by `components/kw-title-bars/`.
 
 ```text
 .kw-title-bar
+.kw-title-bar--section
 .kw-title-bar--step
 .kw-title-bar--compact
 ```
 
-The base and compact variants use a transparent background. Step title bars use `rgba(0, 0, 0, .95)` inside the red `1px` border, leaving 5% transparency. All variants use AgencyFB uppercase title text, white title text, muted subtitles where present, and responsive fitting. The separate title-bar hotfix remains temporary and mirrors the step background while active.
+The base and compact variants use a transparent background. The reusable section variant reproduces the Featured Spellweaves title/subtitle presentation with a solid `#000` background, the original desktop/mobile spacing, and optional `data-kw-fit` width matching. Step title bars use `rgba(0, 0, 0, .95)` inside the red `1px` border, leaving 5% transparency. All variants use AgencyFB uppercase title text, white title text, muted subtitles where present, and responsive fitting. The separate title-bar hotfix remains temporary; scoped section rules preserve the Featured presentation while it is active.
 
 ## Product carousel
 

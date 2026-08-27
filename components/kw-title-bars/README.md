@@ -44,6 +44,8 @@ Required follow-up: fold the hotfix into the base component/global-loader archit
 
 When the global loader is active, do not add separate base CSS/JS tags for title bars. Add only the title-bar markup where needed.
 
+No additional footer loader or jsDelivr tag is required for the section variant.
+
 ## Featured Spellweaves
 
 ```html
@@ -58,6 +60,26 @@ When the global loader is active, do not add separate base CSS/JS tags for title
 ```html
 <div class="kw-title-bar kw-title-bar--step">
   <div class="kw-title-bar__title">STEP 1: CHOOSE YOUR CAULDRON CORE™</div>
+</div>
+```
+
+## Reusable Section Title
+
+Use this variant for a large section introduction with the same solid-black title/subtitle treatment as the Featured Spellweaves heading.
+
+```html
+<div class="kw-title-bar kw-title-bar--section">
+  <div class="kw-title-bar__title">YOUR SECTION TITLE</div>
+  <div class="kw-title-bar__subtitle">Your introduction or context goes here.</div>
+</div>
+```
+
+To match the span of the existing Featured Spellweaves button row:
+
+```html
+<div class="kw-title-bar kw-title-bar--section" data-kw-fit=".featured-prebuilds-nav .featured-prebuilds-btn">
+  <div class="kw-title-bar__title">BUILD YOUR SPELLWEAVE</div>
+  <div class="kw-title-bar__subtitle">Choose each part of your custom jacket below.</div>
 </div>
 ```
 
@@ -86,6 +108,7 @@ The selector should target the repeated child buttons or tiles, not only the par
 Base conventions:
 
 - Transparent background for the base and compact variants.
+- Section variant background: solid `#000` with the Featured Spellweaves title/subtitle sizing and spacing.
 - Step variant background: `rgba(0, 0, 0, .95)`.
 - Red `1px` border.
 - AgencyFB uppercase title text.
@@ -102,6 +125,8 @@ Temporary hotfix conventions:
 - Mobile width: `calc(100vw - 32px)`.
 - Mobile title letter spacing: `.18em`.
 - Must not become permanent architecture.
+
+The section variant contains scoped compatibility declarations that preserve the supplied Featured Spellweaves mobile presentation while the hotfix remains active.
 
 ## Editing rules
 
