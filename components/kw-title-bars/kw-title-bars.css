@@ -20,6 +20,12 @@
   --kw-subtitle-letter-spacing:.05em;
   --kw-title-line-height:1.1;
   --kw-subtitle-line-height:1.1;
+  --kw-body-top:4px;
+  --kw-body-bottom:14px;
+  --kw-body-gap:5px;
+  --kw-body-font-size:clamp(.9rem, .65vw + .55rem, 1.15rem);
+  --kw-body-letter-spacing:.035em;
+  --kw-body-line-height:1.25;
   --kw-title-max-width:95vw;
 
   box-sizing:border-box;
@@ -68,6 +74,26 @@
   overflow:hidden !important;
 }
 
+.kw-title-bar--section .kw-title-bar__body{
+  box-sizing:border-box;
+  display:grid;
+  gap:var(--kw-body-gap);
+  margin:0;
+  padding:var(--kw-body-top) var(--kw-title-inside-x) var(--kw-body-bottom);
+}
+
+.kw-title-bar--section .kw-title-bar__body-row{
+  box-sizing:border-box;
+  margin:0;
+  color:#ddd;
+  font-family:"AgencyFB", Arial, sans-serif;
+  font-size:var(--kw-body-font-size);
+  font-weight:400;
+  line-height:var(--kw-body-line-height);
+  letter-spacing:var(--kw-body-letter-spacing);
+  text-align:center;
+}
+
 .kw-title-bar--step{
   --kw-title-outside-top:-24px;
   --kw-title-outside-bottom:-20px;
@@ -109,6 +135,10 @@
     --kw-title-font-size:clamp(1.2rem, 5vw, 2rem);
     --kw-subtitle-font-size:clamp(.8rem, 3.5vw, 1rem);
     --kw-title-letter-spacing:.12em;
+    --kw-body-top:2px;
+    --kw-body-bottom:12px;
+    --kw-body-gap:4px;
+    --kw-body-font-size:clamp(.82rem, 3.4vw, 1rem);
   }
 
   .kw-title-bar.kw-title-bar--section{
