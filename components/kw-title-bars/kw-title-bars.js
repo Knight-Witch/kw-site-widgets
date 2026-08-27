@@ -64,7 +64,7 @@
           const width = measureSpan(fitElements);
 
           if(width !== null && width >= minimumFitWidth){
-            bar.style.width = `${width}px`;
+            bar.style.setProperty("width", `${width}px`, "important");
           }else{
             bar.style.removeProperty("width");
           }
