@@ -36,6 +36,16 @@ Status: active temporary compatibility layer.
 
 Owned by `fourthwall/global/` and coordinated by `kw-fourthwall-loader.js`.
 
+### Reusable title bars
+
+Owned by `components/kw-title-bars/`.
+
+Current behavior:
+
+- `.kw-title-bar--step` uses a 95%-opaque black background inside the existing red border.
+- Base and compact title-bar variants remain transparent.
+- The temporary title-bar hotfix mirrors the step fill and remains active until it is folded into the base/global-loader architecture.
+
 ### Standard product carousel
 
 Owned by:
@@ -230,6 +240,7 @@ Current behavior:
 
 ## Completed recent work
 
+- Added a 95%-opaque black fill to step title bars without changing their dimensions, typography, spacing, border, or the background of other title-bar variants.
 - Restored real modal prices and the expanded Add to Cart CTA.
 - Added selected-variant galleries and corrected default fallback.
 - Added the centralized size-chart registry and injector.

@@ -87,7 +87,7 @@ Owned by `components/kw-title-bars/`.
 .kw-title-bar--compact
 ```
 
-Transparent background, red 1px border, AgencyFB uppercase title, white title text, muted subtitle, and responsive fitting. The separate title-bar hotfix remains temporary.
+The base and compact variants use a transparent background. Step title bars use `rgba(0, 0, 0, .95)` inside the red `1px` border, leaving 5% transparency. All variants use AgencyFB uppercase title text, white title text, muted subtitles where present, and responsive fitting. The separate title-bar hotfix remains temporary and mirrors the step background while active.
 
 ## Product carousel
 

@@ -2,6 +2,42 @@
 
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records under `/HISTORY/DIFFS/`.
 
+## 2026-08-27 06:53 UTC — KW-TITLE-BARS-025
+
+Commit SHA: `1a87d806d05b1bb8dd32cdc3280a3408a33fc756`
+
+Summary: Added a 95%-opaque black background inside the red border of `.kw-title-bar--step` containers. Base and compact title-bar variants remain transparent.
+
+Affected files:
+
+```text
+components/kw-title-bars/kw-title-bars.css
+components/kw-title-bars/kw-title-bars-hotfix.css
+components/kw-title-bars/README.md
+STYLE_KEYS.md
+MASTER.md
+HISTORY/PRE_FLIGHT_Check.md
+HISTORY/CHANGELOG.md
+HISTORY/DIFFS/2026-08-27-0651-step-title-bar-black-fill-1a87d806.md
+```
+
+Reason: The transparent step bars allowed the page background to show fully through the bordered title area. The requested treatment keeps only 5% transparency while preserving the existing layout and red border.
+
+Behavior:
+
+- Applies `rgba(0, 0, 0, .95)` only to `.kw-title-bar--step`.
+- Uses the combined `.kw-title-bar.kw-title-bar--step` selector with `!important` so the base rule beats the active hotfix's general transparent-background declaration.
+- Mirrors the step rule in the hotfix source for compatibility parity.
+- Leaves dimensions, margins, padding, typography, borders, responsive sizing, JavaScript, and non-step title-bar backgrounds unchanged.
+
+Rollback: Restore both title-bar stylesheets from parent commit `c29c146b818e62c8c405e2b93a7c28127a1e14c0`. No loader, snippet, or cache-key rollback is required.
+
+Production URL: `https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@main/components/kw-title-bars/kw-title-bars.css`
+
+Risks/follow-up: The title-bar base assets still float from `main`, and the separate pinned hotfix remains active. Folding the hotfix into the base/global-loader architecture remains pending.
+
+Validation: `git diff --check` passed. The updated rule was retrieved from jsDelivr using the current loader cache query, and selector specificity was checked against the active hotfix. Live Fourthwall visual verification remains required.
+
 ## 2026-07-19 01:10 UTC — KW-RUNTIME-COMPACT-CARDS-024
 
 Summary: Removed product-title and Collection Domain text from all compact active carousel tiles. Standard `kwfw` and Step 3 `kwpj` tiles remain image-led with their existing View & Add to Cart action; product identity and collection subtitle remain in the expanded modal only.

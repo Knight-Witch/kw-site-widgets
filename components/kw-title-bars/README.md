@@ -85,7 +85,8 @@ The selector should target the repeated child buttons or tiles, not only the par
 
 Base conventions:
 
-- Transparent background.
+- Transparent background for the base and compact variants.
+- Step variant background: `rgba(0, 0, 0, .95)`.
 - Red `1px` border.
 - AgencyFB uppercase title text.
 - White title.
@@ -97,6 +98,7 @@ Base conventions:
 Temporary hotfix conventions:
 
 - Forces title bar, title, and subtitle visibility.
+- Mirrors the step variant's 95%-opaque black background so the compatibility layer cannot restore transparency.
 - Mobile width: `calc(100vw - 32px)`.
 - Mobile title letter spacing: `.18em`.
 - Must not become permanent architecture.

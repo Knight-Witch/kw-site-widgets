@@ -2,6 +2,55 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
+## 2026-08-27 06:51 UTC — PF-20260827-025 — Step title-bar black fill
+
+Requested change:
+
+- Give `.kw-title-bar--step` containers a 95%-opaque black background inside the existing red border.
+- Preserve the current title-bar dimensions, typography, spacing, border, and other variants.
+
+Docs/files reviewed:
+
+- `/OPERATING_CONTRACT.md`
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/README.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/CHANGELOG.md`
+- `/components/kw-title-bars/README.md`
+- `components/kw-title-bars/kw-title-bars.css`
+- `components/kw-title-bars/kw-title-bars-hotfix.css`
+- `components/kw-title-bars/kw-title-bars-hotfix-loader.js`
+- `fourthwall/global/kw-fourthwall-loader.js`
+
+Risk/conflict notes:
+
+- The temporary hotfix forces `.kw-title-bar` to `background:transparent!important` and loads after the base stylesheet.
+- A normal background declaration in the base step rule would therefore remain transparent in production.
+- The fill must be scoped to the step variant so Featured Spellweaves and compact title bars are unchanged.
+- No loader-order, JavaScript, dimensions, or responsive behavior needs to change.
+
+Plan:
+
+- Add a step-specific 95%-opaque black background to the base stylesheet with enough specificity to beat the active hotfix.
+- Mirror the same step-specific rule in the hotfix source for compatibility parity.
+- Update the title-bar style documentation and history records.
+
+Result/validation:
+
+- Added `.kw-title-bar.kw-title-bar--step` with `background:rgba(0, 0, 0, .95)!important` to both title-bar stylesheets.
+- Confirmed the base selector has greater specificity than the active hotfix's general transparent-background selector.
+- Confirmed jsDelivr serves the updated base stylesheet from `@main` with the existing loader cache query.
+- Ran `git diff --check`; no whitespace errors were reported.
+- Live visual verification in Fourthwall remains required.
+
+User input required:
+
+- None. The user confirmed 95% opacity, leaving 5% transparency.
+
 ## 2026-07-19 01:10 UTC — PF-20260719-024 — Media-only compact carousel cards
 
 Requested change:
