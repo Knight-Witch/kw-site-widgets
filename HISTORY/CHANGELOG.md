@@ -2,6 +2,43 @@
 
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records under `/HISTORY/DIFFS/`.
 
+## 2026-08-27 14:04 UTC — KW-TITLE-BARS-027
+
+Commit SHA: `04f3423268aa8b735d85592fb9b25d3210e37d16`
+
+Summary: Added an optional body area to `.kw-title-bar--section` with any number of individually editable text rows. Existing section bars remain unchanged when the body markup is omitted.
+
+Affected files:
+
+```text
+components/kw-title-bars/kw-title-bars.css
+components/kw-title-bars/README.md
+components/kw-title-bars/examples/fourthwall-title-bars.html
+STYLE_KEYS.md
+MASTER.md
+HISTORY/PRE_FLIGHT_Check.md
+HISTORY/CHANGELOG.md
+HISTORY/DIFFS/2026-08-27-1402-section-title-bar-body-rows-04f34232.md
+```
+
+Reason: Introductory section bars need to outline several short points without forcing them into a single paragraph or requiring one-off Fourthwall styling.
+
+Behavior:
+
+- Adds an optional `.kw-title-bar__body` grid to the reusable section variant.
+- Supports any number of repeated `.kw-title-bar__body-row` elements.
+- Gives each row separate centered AgencyFB body styling with responsive type, spacing, tracking, and line height.
+- Keeps title, subtitle, width matching, step bars, compact bars, JavaScript, loader order, and existing section bars unchanged.
+- Requires no new JavaScript or global-footer resource.
+
+Rollback: Restore `components/kw-title-bars/kw-title-bars.css` from parent commit `dc3dde6348f0a07682b4047c7f49494250e1eb30`. No JavaScript, loader, or Fourthwall snippet rollback is required.
+
+Production URL: `https://cdn.jsdelivr.net/gh/Knight-Witch/kw-site-widgets@main/components/kw-title-bars/kw-title-bars.css`
+
+Risks/follow-up: Title-bar assets still float from `main`, and the separate pinned hotfix remains active. Live desktop/mobile verification is required with representative short and wrapping body rows.
+
+Validation: `git diff --check` passed, CSS brace counts are balanced, and the new rules are scoped to `.kw-title-bar--section`. Live Fourthwall visual verification remains required.
+
 ## 2026-08-27 13:10 UTC — KW-TITLE-BARS-026
 
 Commit SHA: `338f4118005e8749122fdafb3d51bcae8529f07f`

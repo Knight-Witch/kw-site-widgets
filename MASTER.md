@@ -44,6 +44,7 @@ Current behavior:
 
 - `.kw-title-bar--section` provides the solid-black Featured Spellweaves title/subtitle presentation as reusable HTML-only page markup.
 - Section bars may use `data-kw-fit` to match an existing row such as `.featured-prebuilds-nav .featured-prebuilds-btn`.
+- Section bars may optionally contain any number of individually editable `.kw-title-bar__body-row` lines inside `.kw-title-bar__body`.
 - `.kw-title-bar--step` uses a 95%-opaque black background inside the existing red border.
 - Base and compact title-bar variants remain transparent.
 - The temporary title-bar hotfix mirrors the step fill and remains active until it is folded into the base/global-loader architecture.
@@ -242,6 +243,7 @@ Current behavior:
 
 ## Completed recent work
 
+- Added optional responsive body rows to reusable section title bars without changing bars that omit the body block.
 - Added the reusable Featured-style section title bar and restored explicit `data-kw-fit` sizing compatibility with the active hotfix.
 - Added a 95%-opaque black fill to step title bars without changing their dimensions, typography, spacing, border, or the background of other title-bar variants.
 - Restored real modal prices and the expanded Add to Cart CTA.

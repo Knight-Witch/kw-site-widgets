@@ -74,6 +74,20 @@ Use this variant for a large section introduction with the same solid-black titl
 </div>
 ```
 
+The subtitle and body are independently optional. To add separate body rows, include the body wrapper and repeat `.kw-title-bar__body-row` as many times as needed:
+
+```html
+<div class="kw-title-bar kw-title-bar--section">
+  <div class="kw-title-bar__title">YOUR SECTION TITLE</div>
+  <div class="kw-title-bar__subtitle">Your introduction or context goes here.</div>
+  <div class="kw-title-bar__body">
+    <div class="kw-title-bar__body-row">Your first body row goes here.</div>
+    <div class="kw-title-bar__body-row">Your second body row goes here.</div>
+    <div class="kw-title-bar__body-row">Your third body row goes here.</div>
+  </div>
+</div>
+```
+
 To match the span of the existing Featured Spellweaves button row:
 
 ```html
@@ -109,6 +123,7 @@ Base conventions:
 
 - Transparent background for the base and compact variants.
 - Section variant background: solid `#000` with the Featured Spellweaves title/subtitle sizing and spacing.
+- Optional section body rows use centered AgencyFB text, `#ddd`, compact gaps, and responsive body sizing.
 - Step variant background: `rgba(0, 0, 0, .95)`.
 - Red `1px` border.
 - AgencyFB uppercase title text.

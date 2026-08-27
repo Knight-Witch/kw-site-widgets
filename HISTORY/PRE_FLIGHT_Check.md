@@ -2,6 +2,62 @@
 
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
+## 2026-08-27 14:02 UTC — PF-20260827-027 — Optional section title-bar body rows
+
+Requested change:
+
+- Extend `.kw-title-bar--section` with an optional body area containing multiple individually editable text rows.
+- Keep each row visually separate so short points do not need to be written as one paragraph.
+- Preserve existing section bars when the optional body markup is absent.
+
+Docs/files reviewed:
+
+- `/OPERATING_CONTRACT.md`
+- `/ARCHITECTURE.md`
+- `/STYLE_KEYS.md`
+- `/MASTER.md`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+- `/fourthwall/README.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/CHANGELOG.md`
+- `/components/kw-title-bars/README.md`
+- `components/kw-title-bars/kw-title-bars.css`
+- `components/kw-title-bars/kw-title-bars.js`
+- `components/kw-title-bars/kw-title-bars-hotfix.css`
+- `components/kw-title-bars/examples/fourthwall-title-bars.html`
+- `fourthwall/global/kw-fourthwall-loader.js`
+
+Risk/conflict notes:
+
+- Body styling must be scoped to `.kw-title-bar--section` so step, compact, and base title bars are unchanged.
+- The body block must contribute no layout or spacing when omitted.
+- The temporary hotfix does not target the proposed body classes, so no hotfix or JavaScript change is required.
+- Body rows need responsive type and spacing that remain readable without competing with the title or subtitle hierarchy.
+- The existing global loader already loads the owning stylesheet from `main`; no new footer resource is needed.
+
+Plan:
+
+- Add an optional `.kw-title-bar__body` grid containing repeated `.kw-title-bar__body-row` elements.
+- Style rows with centered AgencyFB body text, restrained tracking, and compact responsive gaps/padding.
+- Add the optional body markup to the reusable section example and component documentation.
+- Update reusable style, project-state, changelog, and diff records.
+
+Result/validation:
+
+- Added the optional `.kw-title-bar__body` grid and repeatable `.kw-title-bar__body-row` elements.
+- Scoped all new presentation rules to `.kw-title-bar--section`.
+- Added compact desktop/mobile padding, gaps, font sizing, tracking, line height, and centered `#ddd` body text.
+- Confirmed the optional block contributes no markup, height, or spacing when omitted.
+- Updated the reusable section examples with three independently editable rows.
+- Ran `git diff --check`; no whitespace errors were reported.
+- Confirmed the stylesheet's opening and closing brace counts remain balanced.
+- Live Fourthwall visual verification remains required.
+
+User input required:
+
+- None. The user can add, remove, and edit rows independently in each Fourthwall HTML block.
+
 ## 2026-08-27 13:06 UTC — PF-20260827-026 — Reusable Featured-style section title bar
 
 Requested change:
