@@ -71,6 +71,10 @@
   --kw-title-letter-spacing:.18em;
 }
 
+.kw-title-bar.kw-title-bar--step{
+  background:rgba(0, 0, 0, .95) !important;
+}
+
 .kw-title-bar--step .kw-title-bar__subtitle{
   display:none;
 }
