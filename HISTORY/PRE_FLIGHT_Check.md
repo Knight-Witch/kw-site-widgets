@@ -1,5 +1,42 @@
 # Pre-Flight Check Log
 
+## 2026-09-21 07:25 UTC — PF-20260921-028 — Web runtime licensing
+
+Requested change:
+
+- Add an explicit license appropriate to a repository that is publicly readable because production assets are delivered through public GitHub/jsDelivr.
+- Preserve the existing production delivery architecture.
+
+Docs/files reviewed:
+
+- `/OPERATING_CONTRACT.md`
+- `/README.md`
+- `/fourthwall/global/README.md`
+- `/fourthwall/global/kw-fourthwall-loader.js`
+- `/HISTORY/CHANGELOG.md`
+- `/HISTORY/PRE_FLIGHT_Check.md`
+
+Risk/conflict notes:
+
+- Making the repository private under the current architecture would break public jsDelivr/GitHub delivery.
+- A public repository without an explicit license creates an unclear reuse boundary.
+- The license must allow browser/CDN execution needed by the live site without granting general reuse or redistribution rights.
+
+Plan/result:
+
+- Added `LICENSE` with the Knight Witch Apparel Web Runtime License v1.0.
+- Updated the README with a concise licensing explanation.
+- Did not alter any loader, runtime, CSS, JS, asset, cache key, production snippet, dependency order, or Fourthwall behavior.
+
+Validation:
+
+- Documentation-only change; no live production verification required.
+- Existing public delivery architecture remains unchanged.
+
+User input required:
+
+- None for the license implementation. Repository visibility should remain public while this delivery architecture is active.
+
 This is the rolling pre-flight log for the Knight Witch site/widgets repository. Older detailed entries remain available through Git history and paired files under `/HISTORY/DIFFS/`.
 
 ## 2026-08-27 14:02 UTC — PF-20260827-027 — Optional section title-bar body rows
