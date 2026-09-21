@@ -1,0 +1,40 @@
+Knight Witch Apparel Web Runtime License v1.0
+
+Copyright (c) 2026 Knight Witch Apparel.
+All rights reserved except as expressly granted below.
+
+This repository is publicly readable because Knight Witch Apparel uses public GitHub/jsDelivr delivery for portions of its website runtime. Public availability of the source does not make this an open-source project.
+
+1. Limited runtime permission
+
+Knight Witch Apparel grants end users a limited, non-exclusive, revocable permission to receive, temporarily cache, and execute the unmodified runtime files from this repository when those files are loaded by a website or service operated by or for Knight Witch Apparel.
+
+Ordinary browser caching, CDN caching performed on behalf of the official deployment, and copies technically necessary to load and display the official site are permitted.
+
+2. No general reuse license
+
+Except for the limited runtime permission above, no permission is granted to copy, modify, adapt, publish, redistribute, rehost, mirror, sublicense, sell, deploy, or incorporate this repository or any substantial portion of it into another website, application, product, service, template, theme, component library, or commercial or non-commercial project.
+
+You may not:
+
+- operate an independent or competing deployment of these materials;
+- distribute modified or unmodified builds of these materials;
+- remove or obscure copyright, license, attribution, provenance, or third-party notices;
+- use Knight Witch or Knight Witch Apparel names, logos, artwork, trade dress, or other branding in a way that suggests endorsement, affiliation, or official status; or
+- use repository contents as training data, fine-tuning data, or a dataset for a machine-learning or generative-AI model without prior written permission.
+
+3. Third-party material
+
+Third-party software, libraries, fonts, assets, services, and other materials remain subject to their own rights and license terms. Nothing in this license relicenses third-party material.
+
+4. No trademark license
+
+No trademark, service mark, trade name, logo, or brand license is granted.
+
+5. Disclaimer of warranty and limitation of liability
+
+THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, KNIGHT WITCH APPAREL SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE MATERIALS OR THEIR USE.
+
+For permissions beyond this license, contact Knight Witch Apparel through an official business channel.
