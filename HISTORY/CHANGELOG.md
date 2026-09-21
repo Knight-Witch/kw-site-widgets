@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-09-21 07:25 UTC — KW-LICENSE-028
+
+Commit SHAs: `753283224f91eb608ff4416fe049957a646509de` (`LICENSE`), `146d88a0fd4cea68f35d77406ca80e195398c062` (`README.md`).
+
+Summary: Added the Knight Witch Apparel Web Runtime License v1.0 and documented the licensing boundary in the repository README.
+
+Affected files:
+
+```text
+LICENSE
+README.md
+HISTORY/PRE_FLIGHT_Check.md
+HISTORY/CHANGELOG.md
+```
+
+Reason: This repository must remain publicly readable for the current GitHub/jsDelivr production delivery model, but public visibility should not imply an open-source grant or general reuse right.
+
+Behavior: Official-site browser execution, normal browser caching, and official CDN delivery are expressly permitted. Independent reuse, redistribution, rehosting, derivative deployment, and commercialization remain reserved.
+
+Rollback: Revert the license/README commits if the legal terms are intentionally replaced by a later license. No loader, CDN URL, cache key, Fourthwall snippet, or runtime rollback is required.
+
+Risks/follow-up: If storefront delivery is later moved away from public GitHub/jsDelivr, repository visibility can be reconsidered independently of this license.
+
+Validation: Documentation-only change. No JS, CSS, asset, loader, snippet, cache/version, or production runtime file changed; live Fourthwall validation is not required.
+
 Canonical repo-wide changelog. Module changelogs do not replace this file. Earlier detailed entries remain available through Git history and paired records under `/HISTORY/DIFFS/`.
 
 ## 2026-08-27 14:04 UTC — KW-TITLE-BARS-027
