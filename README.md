@@ -68,3 +68,10 @@ The current production footer state is documented in [`/MASTER.md`](./MASTER.md)
 ## Validation note
 
 The documentation map was built from the uploaded `kw-site-widgets-main.zip`, direct GitHub file reads, existing module docs, and known recent commits. Live Fourthwall behavior was not directly validated during the documentation pass.
+
+
+## License
+
+This repository is publicly readable because the production storefront loads runtime assets through public GitHub/jsDelivr delivery. Public visibility does **not** make the project open source.
+
+The repository is governed by the **Knight Witch Apparel Web Runtime License v1.0**; see [`LICENSE`](./LICENSE). The license permits official-site browser/CDN execution while reserving reuse, redistribution, rehosting, derivative deployment, and commercialization rights.
